@@ -20,331 +20,6 @@ def normalize_text(value: object) -> str:
   return re.sub(r"\s+", " ", text)
 
 
-def normalize_ticket_count(value: object) -> int:
-    if value is None:
-        return 1
-    if isinstance(value, (int, float)):
-        return int(value)
-    text = str(value).strip().replace(",", ".")
-    try:
-        return int(float(text))
-    except ValueError:
-        return 1
-
-
-def normalize_created_at(value: object) -> str:
-    if isinstance(value, dt.datetime):
-        return value.date().isoformat()
-    if isinstance(value, dt.date):
-        return value.isoformat()
-
-    text = normalize_text(value)
-    if not text:
-        return ""
-
-    for fmt in ("%d.%m.%Y", "%Y-%m-%d"):
-        try:
-            return dt.datetime.strptime(text, fmt).date().isoformat()
-        except ValueError:
-            continue
-    return ""
-
-
-def normalize_no_sensor_info_label(text: str) -> str:
-    if text.lower() == "no sensor info":
-        return "No sensor info"
-    return text
-
-
-def normalize_category_level_3(value: object) -> str:
-    return normalize_no_sensor_info_label(normalize_text(value))
-
-
-def normalize_category_level_4(value: object) -> str:
-    return normalize_no_sensor_info_label(normalize_text(value))
-
-
-_DR_DEVICE = re.compile(r"\b(interface|remote|hub|dock|module|connector|sensorbox|wandbox)\b|usb.?box")
-_DR_DEFECT = re.compile(
-  r"no power|not power(?:ing)?|won['.\s]?t power|fails? to power|will not power|not lighting up"
-  r"|invisible|unable to acquire"
-  r"|keine funktion"  # DE: kein Strom/keine Funktion
-)
-# CAT4-Werte die eindeutig auf ein Hardware-Remote-Problem hinweisen
-_DR_HW_CATS = {"usb module issue", "connector issue"}
-
-
-def classify_description(description: str, cat4: str = "") -> tuple[str, str]:
-  text = normalize_text(description)
-  value = text.lower()
-  cat4_lc = cat4.lower().strip()
-  if not value:
-    return "Unknown/Other", "Unknown"
-
-  # Spare Parts / RMA zuerst prüfen – Prefix "spare part:" darf nicht von Remote Failureüberschrieben werden
-  if re.search(r"\bspare parts?\b|\bparts? request\b|\brma\b|\breturn\b|sensor replacement|pn request|replacement request", value):
-    if re.search(r"ptc proc rma|\brma\b", value):
-      return "Spare Parts/RMA/Logistics", "RMA Request"
-    if "spare part" in value or "part request" in value or "pn request" in value:
-      return "Spare Parts/RMA/Logistics", "Spare Part Request"
-    if "sensor replacement" in value or "replacement request" in value:
-      return "Spare Parts/RMA/Logistics", "Spare Part Request"
-    return "Spare Parts/RMA/Logistics", "Logistics"
-  _has_device = bool(_DR_DEVICE.search(value))
-  _has_defect = bool(_DR_DEFECT.search(value))
-  # Gerät + Verbindungsproblem → Connectivity (vor Remote Failure prüfen)
-  _has_conn = bool(re.search(
-    r"not connect(?:ing)?|connection issue|won['\s]?t connect|will not connect"
-    r"|not recogniz(?:ed|ing)?|not detect(?:ed)?|undetect(?:ed)?|not recognized|not recognizing"
-    r"|intermittent connect|no connection",
-    value,
-  ))
-  if _has_device and _has_conn and not _has_defect:
-    _has_sensor_d = bool(re.search(r"\bsensor\b|\bsensors\b|sensoren|schick sensor|capteur|sensore", value))
-    _has_iface_d = bool(re.search(r"\binterface\b|\bremote\b|\bhub\b|\bmodule\b|\bbox\b|usb\s*box", value))
-    _has_interm_d = bool(re.search(r"intermittent|disconnect|drops?|off and on|unstable", value))
-    if _has_sensor_d and _has_iface_d:
-      return "Connectivity/Recognition", "Ambiguous Detection Failure (Sensor/Remote)"
-    if _has_sensor_d:
-      return "Connectivity/Recognition", "Sensor Detection Failure (Intermittent)" if _has_interm_d else "Sensor Detection Failure (Persistent)"
-    if _has_iface_d:
-      return "Connectivity/Recognition", "Remote Detection Failure (Intermittent)" if _has_interm_d else "Remote Detection Failure (Persistent)"
-    return "Connectivity/Recognition", "Ambiguous Detection Failure (Sensor/Remote)"
-  if _has_device and _has_defect:
-    return "Hardware Defect/Physical Damage", "Remote Failure"
-  # Fallback: starkes CAT4-Signal reicht wenn min. Gerät oder Defekt vorhanden
-  if cat4_lc in _DR_HW_CATS and (_has_device or _has_defect):
-    return "Hardware Defect/Physical Damage", "Remote Failure"
-
-  # Remote Failure: abgeleitet aus 32 verifizierten Tickets
-
-  if re.search(r"warranty|guarantee|part number|parts kit", value):
-    if "warranty" in value:
-      return "Warranty/Part Number/Commercial", "Warranty"
-    if "part number" in value:
-      return "Warranty/Part Number/Commercial", "Part Number"
-    return "Warranty/Part Number/Commercial", "Commercial Inquiry"
-
-  if re.search(r"install|installation|setup|upgrade|new workstation", value):
-    if "driver" in value:
-      return "Installation/Setup/Upgrade", "Driver Install"
-    if "upgrade" in value:
-      return "Installation/Setup/Upgrade", "Upgrade"
-    return "Installation/Setup/Upgrade", "Install/Setup"
-
-  if re.search(r"setting up (a )?new sensors?|new sensors?|new sensor", value):
-    return "Installation/Setup/Upgrade", "Install/Setup"
-
-  if re.search(r"documentation:|call back|callback|call dropped|on site: i/o user study", value):
-    return "Info/Inquiry/How-to", "General Inquiry"
-
-  if re.search(r"admin password|sensor supp+ort|frage zur anordung", value):
-    return "Info/Inquiry/How-to", "General Inquiry"
-
-  if re.search(r"sidexis 4|win(?:dows)? 11|24h2|25h2|device manager", value):
-    return "Software/Firmware/Driver", "Update/Version"
-
-  if re.search(r"xios xg kp nicht m[öo]glich|konstanzpr[üu]fung nicht m[öo]glich|abnahmepr[üu]fung nicht m[öo]glich|kein konstanz m[öo]gl|keine konstanzpr[üu]fung|keine abnahmepr[üu]fung", value):
-    return "Imaging/Acquisition/Exposure", "Cannot Acquire Image"
-
-  # Mehrsprachig: Bildaufnahme nicht möglich (Italienisch, Türkisch, Französisch)
-  if re.search(r"no acquisizione|acquisizione non possibile|çekim alinamiyor|non [èe] possibile acquisire"
-    r"|gerg: sensore.*non acquisisce|mancato trasferimento immagine"
-    r"|plus d acquisition capteur|les clich[eé]s sont blancs|lastre bianche"
-    , value):
-    return "Imaging/Acquisition/Exposure", "Cannot Acquire Image"
-
-  if re.search(r"sidexis|cdr dicom|cdrdicom|curve dental|curve capture|curve integration|patterson integration|ioss\s*3|s4sp", value):
-    return "Software/Firmware/Driver", "Software"
-
-  if re.search(r"server migration|other: extreme slowness after ioss insta|schick template issue|odbc error|schick integration|ioss.*curve", value):
-    return "Software/Firmware/Driver", "Software"
-
-  if re.search(r"immagini non leggibili|sensor blurry|white screen", value):
-    return "Imaging/Acquisition/Exposure", "Image Quality"
-
-  # FR/IT Bildqualität
-  if re.search(r"lignes? verticales?|gerg: qualit[aà] immagini|latence capteur|artefact issue", value):
-    return "Imaging/Acquisition/Exposure", "Image Quality"
-
-  if re.search(r"kp p[üu]rfk[öo]rper nicht richtig erkennbar|geht nicht in den bereit modus", value):
-    return "Imaging/Acquisition/Exposure", "Cannot Acquire Image"
-
-  if re.search(r"cannot capture|unable to capture|capture issue|capture issues|not captured|no capture|can['\s]*t\s*take\s*imag(?:e|es|s)|can\s*not\s*take\s*imag(?:e|es|s)|unable to take\s*imag(?:e|es|s)|could not take\s*imag(?:e|es|s)|cannot take\s*imag(?:e|es|s)|cannot take\s*scans?|cant take\s*scans?|cant take\s*scan|can['\s]*t\s*take\s*scans?|not able to capture|sensor not capturing|issues capturing", value):
-    return "Imaging/Acquisition/Exposure", "Cannot Acquire Image"
-
-  if re.search(r"sensor registration|sensor not register|sensor not registering|sensor not seen|sensor not found|sensor not showing|not recongni|not recogniz|not reading|cannot be registered|not in system|not in devicemanger|not in device manager|sensor undetected|sensor not detected", value):
-    return "Connectivity/Recognition", "Sensor Detection Failure (Persistent)"
-
-  if re.search(r"unable to register sensor|sensor cannot be registered|registering sensors|sensor not in inventory|product not in dscrm|device currently in use|sensor in another session|sensor being used in another session|sensor not loading|sensor does not get ready|no sensor attached error|sensor nicht im devicemanger angezeigt|on site service: schick sensor not conne|sensor will not connect|sensor won['\ s]*t connect|sensor cannot connect|sensor not connect(?:ing)?", value):
-    return "Connectivity/Recognition", "Sensor Detection Failure (Persistent)"
-
-  # DE/IT: Sensor nicht erkannt / nicht im Gerätemanager
-  if re.search(r"nicht im device ?man(?:a)?ger|nicht in device ?man(?:a)?ger|nicht in devman|nicht in s4 angezeigt|gerät nicht angezeigt|nicht angezeigt"
-    r"|sensorbereitschaft nicht vorhanden|sensor nicht hinzuzuf[\u00fcu]gen|sensor lässt sich nicht einbinden"
-    r"|gerg: mancato riconoscimento|sensore non viene riconosciuto|sensore.*non si connet"
-    r"|sensor service dienst startet nicht|system blinkt im gerätemanager"
-    , value):
-    return "Connectivity/Recognition", "Sensor Detection Failure (Persistent)"
-
-  # FR/IT: Verbindungsprobleme
-  if re.search(r"pb communication entre capteur|pb deconnexion capteur|probleme de connexion capteur"
-    r"|d[e\u00e9]connexion capteur|plus de connexion|xios si scollega|il sensore non si connette"
-    r"|boîtier n allume pas|plus de connexion.alimentation"
-    , value):
-    if re.search(r"boîtier|alimentation", value):
-      return "Connectivity/Recognition", "Remote Detection Failure (Persistent)"
-    return "Connectivity/Recognition", "Sensor Detection Failure (Intermittent)"
-
-  if re.search(r"sensor in use(?:\s|$|\b)|device in use error|sensor not accessible|sensor not ready|sensor is not ready|sensor not going ready|sensor icon missing|ghosted devices", value):
-    return "Connectivity/Recognition", "Sensor Detection Failure (Persistent)"
-
-  if re.search(r"dead interface|dead remote|dead hub|dead box|out of box failure", value):
-    return "Hardware Defect/Physical Damage", "Physical Damage"
-
-  if re.search(r"unit not accessible|interface issue|interface issues|interface module issue|hub issue|bad remote|no power|no lights|not powering|nicht erreichbar|no conecta", value):
-    return "Connectivity/Recognition", "Remote Detection Failure (Persistent)"
-
-  if re.search(r"interface not responding|interface power issue|interface not turning on|sensor remote problem|dead interface|dead remote|bad interface|power issue|box doesn\s*t work|issue with remote|remote stays red|remote stopped working|unable to use remote", value):
-    return "Connectivity/Recognition", "Remote Detection Failure (Persistent)"
-  if re.search(r"remote disconnect|remote disconenct|hub drops at times|off and on light", value):
-    return "Connectivity/Recognition", "Remote Detection Failure (Intermittent)"
-
-  if re.search(r"sensor communication issue|issue with ae interface", value):
-    return "Connectivity/Recognition", "Ambiguous Detection Failure (Sensor/Remote)"
-
-  if re.search(r"xios xg kabel|kabelgeb", value):
-    return "Hardware Defect/Physical Damage", "Cable Issue"
-
-  # DE: Kabeldefekte
-  if re.search(r"kabel defekt|kabel l[\u00f6o]st sich|sensorkabel|xios kabel defekt|xios ae kabel", value):
-    return "Hardware Defect/Physical Damage", "Cable Issue"
-
-  if re.search(r"self.?trigger(?:ing)?|autofiring sensor|sensor auto.?fir(?:e|es|ing)|sensor autofiring", value):
-    return "Hardware Defect/Physical Damage", "Sensor Failure"
-
-  if re.search(r"hallo zusammen|call back request|escalation", value):
-    return "Info/Inquiry/How-to", "General Inquiry"
-
-  # Gerät + physischer Defektterm → Physical Damage (vor dem allgemeinen Connectivity-Catch-All)
-  if _has_device and re.search(r"defective|dead|faulty|broken|loose|not working|no longer working", value):
-    return "Hardware Defect/Physical Damage", "Physical Damage"
-
-  if re.search(r"interface|remote|hub|module", value) and re.search(r"no power|not powering|not power|not accessible|not working|no lights", value):
-    return "Connectivity/Recognition", "Remote Detection Failure (Persistent)"
-  if re.search(r"interface|remote|hub|module", value) and re.search(r"intermittent", value):
-    return "Connectivity/Recognition", "Remote Detection Failure (Intermittent)"
-
-  if re.search(r"firmware|software|driver|version|update|app|crash|freeze|twain", value):
-    if "firmware" in value:
-      return "Software/Firmware/Driver", "Firmware"
-    if "driver" in value or "twain" in value:
-      return "Software/Firmware/Driver", "Driver"
-    if "update" in value or "upgrade" in value:
-      return "Software/Firmware/Driver", "Update/Version"
-    return "Software/Firmware/Driver", "Software"
-
-  # Mehrsprachig: Sensor-Defekt (Französisch, Italienisch, Deutsch)
-  # Sensor + Kabel-Defektterm vor Sensor-Failure prüfen, damit kein Kabelticket falsch landet
-  if re.search(r"(?:bad|faulty|broken|damaged|defective|loose)\s+(?:sensor\s+)?cable|cable\s+(?:bad|faulty|broken|damaged|loose)", value):
-    return "Hardware Defect/Physical Damage", "Cable Issue"
-  # sensor wird nicht erkannt → Sensor Detection Failure (Persistent)
-  if re.search(r"sensor wird nicht erkannt|sensors? not detected by|sensor nicht erkannt", value):
-    return "Connectivity/Recognition", "Sensor Detection Failure (Persistent)"
-  if re.search(r"capteur hs|pb capteur|capteur d[eé]fectueux|panne capteur|bonjour le capteur ne fonctionne plus|capteur d[eé]faillant"  # Französisch
-    r"|sensore ko|sensore.*non funzionante|gerg: sensore difettoso|gerg: sensore ko"  # Italienisch
-    r"|sensor defekt|sensor ohne funktion|selbstauslöser|selbstauslösung|defekter sensor|ausfall sensor|sensor aussetzer|gerät ohne funktion"  # Deutsch
-    r"|sensor sin funci[oó]n|sensor averiado"  # Spanisch
-    , value):
-    return "Hardware Defect/Physical Damage", "Sensor Failure"
-
-  if re.search(r"bad sensor|sensor not working|sensor is not working|sensor does not work|sensor doesn['\s]*t work|sensor won['\s]*t work|sensor will not work|sensor failure|sensor defect|sensor problem|sensor issue|sensor issues|issue with sensor|issues with sensor|issues with sensors|sensors not working|sensor troubleshooting|sensor stopped working|sensor stop working|sensor stops working|sensor not responding|sensor not functioning|sensor does not function|sensor not operational|sensor inoperative|sensor inop(?:erable)?\b|sensor dead|dead sensor|sensor faulty|faulty sensor|sensor broken|sensor malfunction|sensor drops(?:\s|$)|sensor works intermittent|sensor works intermittently|sensor intermittent issues|sensor repair|xios xg sensor|xios xg not working|elite sensor|senor not working|hardware not working|unable to use sensor|not able to use the sensor|not able to use sensors|sensor was not functioning|xios xg supreme not working|schick issue|schick issues|schick troubleshooting|schick sensor issue|schick sensor issues|schick sensor troubleshooting|issues with schick sensor|schick sensor failed test|schick sensor not ready|sensors are not working|device not working"
-    r"|st[\u00f6o]rung xios|xios.*nicht mehr|sensor.*ohne funktion|keine funktion|unit has died|faulty out of the box|not working properly"
-    , value):
-    return "Hardware Defect/Physical Damage", "Sensor Failure"
-
-  if re.search(r"intermittent schick failure to fire|issues with scans", value):
-    return "Imaging/Acquisition/Exposure", "Cannot Acquire Image"
-
-  if re.search(r"intermittent operation|intermittent issues?|intermittent schick function|intermittent$", value):
-    return "Connectivity/Recognition", "Ambiguous Detection Failure (Sensor/Remote)"
-
-  if re.search(r"cable|connector|plug|button|housing|broken|damage|damaged|defect|elastomer|dead|defective|faulty|loose|not working|no longer working", value):
-    if "cable" in value:
-      return "Hardware Defect/Physical Damage", "Cable Issue"
-    if "connector" in value or "plug" in value:
-      return "Hardware Defect/Physical Damage", "Connector Issue"
-    # Sensor-Defektterme vor allgemeinem Physical Damage
-    if re.search(r"defective sensor|broken sensor|defective schick|faulty sensor|sensor defective|dead sensor", value):
-      return "Hardware Defect/Physical Damage", "Sensor Failure"
-    return "Hardware Defect/Physical Damage", "Physical Damage"
-
-  if re.search(r"stripped screws", value):
-    return "Hardware Defect/Physical Damage", "Physical Damage"
-
-  if re.search(r"free good replacement|repair kit request|varify a part", value):
-    return "Spare Parts/RMA/Logistics", "Spare Part Request"
-
-  if re.search(r"wifi|wi-fi|usb|bluetooth|ethernet|network|connect|connection|verbind|erkannt|detect|recogniz|not seen|not found|not showing|registration", value):
-    if "wifi" in value or "wi-fi" in value:
-      return "Connectivity/Recognition", "Ambiguous Detection Failure (Sensor/Remote)"
-    if re.search(r"not detected|not recognized|nicht erkannt|nicht mehr erkannt|not seen|not found|not showing|registration", value):
-      if re.search(r"interface|remote|hub|module", value):
-        return "Connectivity/Recognition", "Remote Detection Failure (Persistent)"
-      return "Connectivity/Recognition", "Sensor Detection Failure (Persistent)"
-    if "no sensor info" in value:
-      return "Connectivity/Recognition", "Sensor Detection Failure (Persistent)"
-    return "Connectivity/Recognition", "Ambiguous Detection Failure (Sensor/Remote)"
-
-  if re.search(r"x-?ray|xray|image|imaging|exposure|acquire|aufnahme|bild|artifact", value):
-    if "quality" in value:
-      return "Imaging/Acquisition/Exposure", "Image Quality"
-    if re.search(r"blurry|grainy|grain|white image|light image|dark image|lines in image|scrambled|washed out|artifact|ligne|vertical lines|horizontale", value):
-      return "Imaging/Acquisition/Exposure", "Image Quality"
-    if re.search(r"cannot take|cant take|can['\s]*t take|can\s*not take|unable to take|could not take|unable to acquire|keine aufnahme|unable to capture|cannot capture|capture issue|take\s*imag(?:e|es|s)", value):
-      return "Imaging/Acquisition/Exposure", "Cannot Acquire Image"
-    if re.search(r"konstanzpr[üu]fung nicht m[öo]glich|abnahmepr[üu]fung nicht m[öo]glich|xios xg kp nicht m[öo]glich", value):
-      return "Imaging/Acquisition/Exposure", "Cannot Acquire Image"
-    if "exposure" in value:
-      return "Imaging/Acquisition/Exposure", "Exposure Issue"
-    return "Imaging/Acquisition/Exposure", "Imaging Issue"
-
-  # No Sensor Info vor General Inquiry abfangen
-  if re.search(r"no sensor info|sensor no info|sensor info not available", value):
-    return "Connectivity/Recognition", "Sensor Detection Failure (Persistent)"
-
-  if re.search(r"inquiry|question|support|help|info", value):
-    return "Info/Inquiry/How-to", "General Inquiry"
-
-  return "Unknown/Other", "Other"
-
-
-def classify_region(hub: str) -> str:
-    hub_code = hub.upper().strip()
-    if hub_code == "US":
-        return "US"
-    if hub_code in EU_CODES:
-        return "EU"
-    return "REST"
-
-
-def classify_record_type_group(record_type: str) -> str:
-    value = record_type.lower().strip()
-    if "complaint" in value:
-        return "COMPLAINT"
-    if "inquiry" in value:
-        return "INQUIRY"
-    return "REST"
-
-
-def find_header_row_from_values(rows: list[tuple[object, ...]], max_scan_rows: int = 50) -> tuple[int, list[str]]:
-  for row_idx, row in enumerate(rows[:max_scan_rows], start=1):
-    labels = [normalize_text(c) for c in row]
-    if "Transaction Number" in labels and "Support Hub (old)" in labels and "Tickets" in labels:
-      return row_idx, labels
-  raise ValueError("Header row not found in worksheet SRQ_QR_TICKETS_Z1")
-
-
 def counter_to_sorted_rows(counter: Counter, top_n: int | None = None) -> list[list[object]]:
     items = sorted(counter.items(), key=lambda item: (-item[1], item[0]))
     if top_n is not None:
@@ -397,6 +72,10 @@ def build_report_data(rows: list[dict[str, object]], file_name: str, generated_a
             "Region": str(r["Region"]),
             "Notes": str(r.get("Notes", "")),
             "Clarity": str(r.get("Clarity", "")),
+            "SparePartGroup": str(r.get("SparePartGroup", "")),
+            "MajorIssueDomain": str(r.get("MajorIssueDomain", "")),
+            "MajorIssueTheme": str(r.get("MajorIssueTheme", "")),
+            "SolutionPath": str(r.get("SolutionPath", "")),
         }
         for r in rows
     ]
@@ -1457,62 +1136,6 @@ def render_html(report_data: dict[str, object]) -> str:
       `).join('');
     }}
 
-    function classifySparePartGroup(row) {{
-      const descText = normalizeCategory(row['Description']).toLowerCase();
-      const text = [
-        normalizeCategory(row['Description']),
-        normalizeCategory(row['Category Level 3']),
-        normalizeCategory(row['Category Level 4']),
-      ].join(' ').toLowerCase();
-      const sensorPrefixes = new Set([
-        '11', '12', '13', '14', '15', '16', '17', '18', '19',
-        '21', '22', '23', '24', '25', '26', '27', '28', '29',
-        '60', '61', '62', '63', '64', '65', '70', '71', '72',
-      ]);
-      const numberTokens = descText.match(/\\b\\d{{2,}}\\b/g) || [];
-
-      if (/(cable|kabel)/.test(descText)) {{
-        return 'Sensor Cable';
-      }}
-
-      if (/\\b33\\b/.test(descText)) {{
-        return 'Sensor';
-      }}
-
-      if (numberTokens.some(token => sensorPrefixes.has(token.slice(0, 2)))) {{
-        return 'Sensor';
-      }}
-
-      // Additional sensor indicator: sensor serial numbers are 8 digits.
-      if (/\\b\\d{{8}}\\b/.test(descText)) {{
-        return 'Sensor';
-      }}
-
-      // PTC PROC RMA entries with 7-digit numbers are handled as Remote RMAs.
-      if (/ptc\s*proc\s*rma/.test(descText) && /\\b\\d{{7}}\\b/.test(descText)) {{
-        return 'Remote';
-      }}
-
-      if (/(sensor\s*cable|sensorkabel|replaceable cable|cable issue|kabel)/.test(text) && /(sensor|schick|xios)/.test(text)) {{
-        return 'Sensor Cable';
-      }}
-      if (/(usb\s*a-?b|micro\s*b|usb\s*c|usb cable|usb\s*3\.0|usb\s*2\s*a\s*male|usb\s*cable)/.test(text)) {{
-        return 'USB Cable';
-      }}
-      if (/(remote|interface|hub|usb module|box|control box)/.test(text)) {{
-        return 'Remote';
-      }}
-      if (/(sensor|schick|xios)/.test(text)) {{
-        return 'Sensor';
-      }}
-
-      // Fallback: remaining unknown spare-part rows with XS/XL/US markers are treated as cable cases.
-      if (/(\\bxs\\b|\\bxl\\b|\\bus\\b|\\bxs\\d+\\b|\\bxl\\d+\\b|\\bus\\d+\\b)/.test(descText)) {{
-        return 'Sensor Cable';
-      }}
-      return 'Unassigned';
-    }}
-
     function renderSparePartStats(allRows) {{
       const spareRows = allRows.filter(row => normalizeCategory(row['Description Primary']) === 'Spare Parts/RMA/Logistics');
       const chartEl = document.getElementById('sparePartChart');
@@ -1530,7 +1153,7 @@ def render_html(report_data: dict[str, object]) -> str:
 
       for (const row of spareRows) {{
         const tickets = Number(row.Tickets) || 0;
-        const group = classifySparePartGroup(row);
+        const group = row.SparePartGroup || 'Unassigned';
         totals.set(group, (totals.get(group) || 0) + tickets);
       }}
 
@@ -1580,78 +1203,11 @@ def render_html(report_data: dict[str, object]) -> str:
         return `<tr><td style="${{color}}">${{esc(name)}}</td><td>${{nf.format(value)}}</td><td>${{share}}%</td></tr>`;
       }}).join('');
 
-      function extractLabeledSection(notesText, sectionName, stopLabels) {{
-        if (!notesText) return '';
-        const source = String(notesText);
-        const sourceLower = source.toLowerCase();
-        const label = String(sectionName).toLowerCase();
-        const labelPos = sourceLower.lastIndexOf(label);
-        if (labelPos < 0) return '';
-
-        let start = labelPos + label.length;
-        while (start < source.length) {{
-          const ch = source[start];
-          const code = source.charCodeAt(start);
-          if (ch === ':' || ch === ' ' || code === 9 || code === 10 || code === 13) {{
-            start += 1;
-            continue;
-          }}
-          break;
-        }}
-
-        let end = source.length;
-        for (const stopLabel of stopLabels) {{
-          const stopPos = sourceLower.indexOf(String(stopLabel).toLowerCase(), start);
-          if (stopPos >= 0 && stopPos < end) end = stopPos;
-        }}
-
-        let sectionText = source.slice(start, end);
-        const cleanedLines = [];
-        for (const rawLine of sectionText.split(String.fromCharCode(10))) {{
-          const line = rawLine.trim();
-          if (!line) continue;
-          if (line.startsWith('_____') || line.startsWith('-----')) continue;
-          if (/^\d{{2}}[./]\d{{2}}[./]\d{{4}}\s+\d{{2}}:\d{{2}}:\d{{2}}/.test(line)) continue;
-          cleanedLines.push(line);
-        }}
-        return cleanedLines.join(' ').trim();
-      }}
-
-      function classifyPrimarySolutionPath(row) {{
-        const notesText = String(row.Notes || '');
-        const descriptionText = String(row.Description || '');
-        const solutionText = extractLabeledSection(
-          notesText,
-          'Solution Description',
-          ['Problem Description', 'Resolution', 'Internal Note', 'Customer Communication']
-        ) || notesText;
-        const combinedText = `${{solutionText}} ${{descriptionText}}`;
-
-        const buckets = [
-          ['Cable-Sensor contact renewed', /(?:re-?seat(?:ed|ing)?|replug(?:ged|ging)?|reconnect(?:ed|ing)?|neu\s+gesetzt|neu\s+eingesetzt|erneut\s+eingesteckt|tighten(?:ed|ing)?|retighten(?:ed|ing)?|tighten(?:ed)?\s+sensor\s+cable|sensor\s+cable\s+screws?|festgeschraubt|schrauben?\s+nachgezogen|schrauben?\s+festgezogen|elastomer\s+(?:was\s+)?(?:replace|replaced|changed|swapped)|replace(?:d|ment)?\s+(?:the\s+)?elastomer|changed\s+elastomer|elastomer\s+getauscht|elastomer\s+erneuert|elastomeric\s+swap|elastomeric\s+was\s+swapped|clean(?:ed|ing)?\s+(?:the\s+)?contacts?|contacts?\s+cleaned|clean\s+contact|cleaned\s+contact|kontakte?\s+gereinigt|kontakte?\s+gesaeubert|kontakte?\s+gesäubert|contact\s+surface\s+cleaned)/i],
-          ['Software or plugin reinstalled/updated', /(?:uninstall(?:ed)?|reinstall(?:ed)?|install(?:ed)?|updated?|upgraded?|patch(?:ed)?|plugin|plug-?in|sidexis\s+4\s+sensor\s+plugin|c\+\+\s+2008|c\+\+\s+2012|driver\s+download|removed\s+.*driver|driver\s+removed|drivers?|filters?|safecomm|pre[ -]?reqs?|prereq|prerequisite|missing\s+component|corrupt\s+files)/i],
-          ['Service or application restarted', /(?:restart(?:ed)?|restarted|start(?:ed)?\s+service|sirona intraoral service|ioss service|io sensor service|service restarted|power cycle(?:d)?|reboot(?:ed)?|restarted pc|neu gestartet)/i],
-          ['USB/port or workstation connection changed', /(?:another port|different usb|move to another port|changed usb|swap(?:ped)? usb|usb port|another workstation|different workstation|other pc|other computer|moved to.*port|usb modul|usb module|spannungsversorgung|power supply|tried new pc)/i],
-          ['Configuration/settings corrected', /(?:configuration|config|setting(?:s)?|template|calibration|registry|sql|odbc|database|permissions?|compatibility mode|device manager|assigned|mapping|setup|power management|power save|disabled power management|proper exposure times|exposure time|nomad|disb?abl?e?\s+core\s+isolation|core\s+isolation|turning\s+off\s+memory\s+integrity|memory\s+integrity)/i],
-          ['Firmware updated', /(?:firmware\s+update(?:d)?|updated firmware|flash(?:ed)? firmware|downgraded firmware|upgraded firmware)/i],
-          ['Hardware replaced', /(?:replace(?:d|ment)?\s+(?:the\s+)?(?:sensor|remote|interface|hub|module|usb box|usb module|cable)|new\s+(?:sensor|remote|interface|hub|module|cable)|swapped?\s+(?:sensor|remote|interface|hub|module|cable)|usb\s*box\s+getaushct|usb\s*box\s+getauscht|usb\s*box\s+austausch(?:en|t)?|usb\s*box\s+austauschen|rma|need\s+to\s+be\s+replaced|would\s+need\s+to\s+be\s+replaced|replacement\s+kit|\bpn\s+[a-z0-9-]+)/i],
-          ['Guidance/troubleshooting only', /(?:advised|recommended|instructed|guided|walked\s+(?:them|customer|tech)|troubleshoot(?:ing)?|verify|checked|confirmed|pointed\s+it|explained|informed|technical bulletin|transferred the call|not trained|partners|relationship)/i],
-        ];
-
-        for (const [label, rx] of buckets) {{
-          if (rx.test(combinedText)) return label;
-        }}
-        if (/i\/?o\s+user\s+study|io\s+user\s+study|on\s+site:\s*i\/?o\s+user\s+study/i.test(descriptionText)) {{
-          return 'Guidance/troubleshooting only';
-        }}
-        return 'Other resolved action';
-      }}
-
       const solutionCounts = new Map();
       const clearRows = withNotes.filter(row => row.Clarity === 'clear');
       let solutionBase = 0;
       for (const row of clearRows) {{
-        const solutionPath = classifyPrimarySolutionPath(row);
+        const solutionPath = row.SolutionPath || 'Other resolved action';
         const tickets = Number(row.Tickets) || 0;
         solutionBase += tickets;
         solutionCounts.set(solutionPath, (solutionCounts.get(solutionPath) || 0) + tickets);
@@ -2056,72 +1612,6 @@ def render_html(report_data: dict[str, object]) -> str:
       renderCurrentDescriptionDetailRows();
     }}
 
-    function mapSoftwareTheme(row) {{
-      const secondary = normalizeCategory(row['Description Secondary']);
-      const notes = String(row.Notes || '').toLowerCase();
-      const softwareClasses = new Set(['Software', 'Update/Version', 'Upgrade', 'Driver', 'Driver Install']);
-      if (!softwareClasses.has(secondary)) return null;
-
-      if (/ioss|slow|slowness|latency|lag|performance|takes .*seconds|wait until/.test(notes)) return 'IOSS Performance / Slowness';
-      if (/sidexis/.test(notes)) return 'SIDEXIS Issue';
-      if (/curve|cdr\s?dicom|cdrdicom|patterson|integration/.test(notes)) return 'Integration Issue (Curve/CDR/Patterson)';
-      if (/update|upgrade|migration|new workstation|24h2|25h2|windows\s*11/.test(notes)) return 'Update/Upgrade Failure';
-      if (/driver|twain/.test(notes)) return 'Driver Problem';
-      if (/crash|freeze|frozen|hang|hanging|stuck|not responding/.test(notes)) return 'Crash/Freeze/Hang';
-      if (/odbc|sql|database|db error/.test(notes)) return 'Database/ODBC/SQL Error';
-      if (/service.*(not|fail|down|stop|start)|dienst startet nicht/.test(notes)) return 'Service Start/Runtime Issue';
-      if (/template|configuration|config|setting/.test(notes)) return 'Template/Configuration Issue';
-      if (/plug-?in version|version mismatch|version issue/.test(notes)) return 'Version/Plugin Mismatch';
-      return 'General Software Problem (Unspecified)';
-    }}
-
-    function mapHardwareTheme(row) {{
-      const secondary = normalizeCategory(row['Description Secondary']);
-      const notes = String(row.Notes || '').toLowerCase();
-      const hardwareClasses = new Set([
-        'Remote Failure',
-        'Sensor Failure',
-        'Physical Damage',
-        'Cable Issue',
-        'Connector Issue',
-        'Sensor Detection Failure (Persistent)',
-        'Sensor Detection Failure (Intermittent)',
-        'Remote Detection Failure (Persistent)',
-        'Remote Detection Failure (Intermittent)',
-        'Ambiguous Detection Failure (Sensor/Remote)',
-      ]);
-      if (!hardwareClasses.has(secondary)) return null;
-
-      if (/sensor.*not detect|sensor.*not recogn|cannot be registered|nicht erkannt|not in (?:device ?manager|devicemanager)/.test(notes)) return 'Sensor Not Detected (Persistent)';
-      if (/sensor.*intermittent|sensor.*disconnect|sensor.*drops|off and on/.test(notes)) return 'Sensor Connection Intermittent';
-      if (/(remote|interface|hub|module).*(not detect|not recogn|not accessible)/.test(notes)) return 'Remote/Interface Not Detected';
-      if (/no power|no lights|not powering|dead (?:interface|remote|hub|module)|stays red|not responding/.test(notes)) return 'Remote/Interface No Power or No Function';
-      if (/usb|port|communication|connector|module issue/.test(notes)) return 'USB/Port/Communication Issue';
-      if (/cable|kabel|wackelkontakt|loose connection|broken cable/.test(notes)) return 'Cable Fault / Loose Contact';
-      if (/physical damage|damaged|broken|cracked|corrosion|liquid damage|water damage/.test(notes)) return 'Physical Device Damage';
-      if (/remote disconnect|hub drops|intermittent.*remote|off and on light/.test(notes)) return 'Remote/Interface Intermittent Dropouts';
-      if (/defective sensor|sensor failure|sensor .* not working|autofiring sensor|self.?trigger/.test(notes)) return 'Sensor Defect / Failure';
-      return 'General Hardware/Recognition Problem (Unspecified)';
-    }}
-
-    function mapImagingTheme(row) {{
-      const secondary = normalizeCategory(row['Description Secondary']);
-      const notes = String(row.Notes || '').toLowerCase();
-      const imagingClasses = new Set(['Imaging Issue', 'Cannot Acquire Image', 'Image Quality', 'Exposure Issue']);
-      if (!imagingClasses.has(secondary)) return null;
-
-      if (/cannot capture|unable to capture|no capture|cannot take\s*imag|unable to take\s*imag|no acquisizione|acquisizione non possibile|non .*possibile acquisire/.test(notes)) return 'Cannot Acquire Image - No Capture';
-      if (/blurry|artefact|artifact|vertical lines|lignes? verticales|qualit[aà] immagini|image quality/.test(notes)) return 'Image Quality - Blurry/Artifact/Lines';
-      if (/white screen|lastre bianche|images? are white|black image|dark image/.test(notes)) return 'White/Black Image Output';
-      if (/exposure|trigger|self.?trigger|autofiring|radiation|x-?ray/.test(notes)) return 'Exposure Trigger Issue';
-      if (/slow image|slow acquisition|takes .*seconds|wait until|latency|lag/.test(notes)) return 'Slow Image Acquisition/Transfer';
-      if (/duplicate image|previous patient|wrong patient|mismatch/.test(notes)) return 'Duplicate/Wrong Image Display';
-      if (/not ready|ready mode|sensor not ready|does not get ready/.test(notes)) return 'Sensor Ready-State Imaging Issue';
-      if (/intermittent|drops|disconnect.*image|sometimes.*image/.test(notes)) return 'Intermittent Image Drop/Acquire';
-      if (/calib|calibration|template issue|kp p[üu]rfk[öo]rper|konstanzpr[üu]fung|abnahmepr[üu]fung/.test(notes)) return 'Calibration/Template Related Imaging Issue';
-      return 'General Imaging Issue (Unspecified)';
-    }}
-
     const softwareThemeDescriptions = {{
       'IOSS Performance / Slowness': 'Reduced IOSS performance with delayed workflow response times.',
       'SIDEXIS Issue': 'SIDEXIS-related functional or stability incident affecting operations.',
@@ -2172,14 +1662,8 @@ def render_html(report_data: dict[str, object]) -> str:
       const imagingMap = new Map();
 
       function classifyTop10MajorIssue(row) {{
-        const softwareTheme = mapSoftwareTheme(row);
-        const hardwareTheme = mapHardwareTheme(row);
-        const imagingTheme = mapImagingTheme(row);
-
-        if (softwareTheme) return {{ domain: 'software', theme: softwareTheme }};
-        if (hardwareTheme) return {{ domain: 'hardware', theme: hardwareTheme }};
-        if (imagingTheme) return {{ domain: 'imaging', theme: imagingTheme }};
-        return null;
+        if (!row.MajorIssueDomain) return null;
+        return {{ domain: row.MajorIssueDomain, theme: row.MajorIssueTheme }};
       }}
 
       function add(mapObj, key, value) {{
@@ -2342,6 +1826,10 @@ def _to_report_row(t: dict) -> dict:
         "Region": t.get("region", ""),
         "Notes": t.get("notes_text", ""),
         "Clarity": t.get("clarity", "unclear"),
+        "SparePartGroup": t.get("spare_part_group", ""),
+        "MajorIssueDomain": t.get("major_issue_domain", ""),
+        "MajorIssueTheme": t.get("major_issue_theme", ""),
+        "SolutionPath": t.get("solution_path", ""),
     }
 
 
