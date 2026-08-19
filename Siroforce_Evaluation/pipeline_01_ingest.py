@@ -26,6 +26,22 @@ def normalize_text(text: str) -> str:
     return " ".join(str(text).split()).lower()
 
 
+_EU_HUB_CODES = {
+    "AT", "BE", "BG", "CY", "CZ", "DE", "DK", "EE", "ES", "FI",
+    "FR", "GR", "HR", "HU", "IE", "IT", "LT", "LU", "LV", "MT",
+    "NL", "PL", "PT", "RO", "SE", "SI", "SK",
+}
+
+
+def classify_region(hub: str) -> str:
+    code = hub.upper().strip()
+    if code == "US":
+        return "US"
+    if code in _EU_HUB_CODES:
+        return "EU"
+    return "REST"
+
+
 def region_from_email(email: str) -> str:
     """Bestimmt die Region basierend auf E-Mail-Domain."""
     EU_EMAIL_TLDS = {
@@ -171,7 +187,7 @@ def ingest(
                 xl = excel_lookup.get(ticket_id)
                 if xl:
                     record_type = xl["Record Type"]
-                    region = xl["Region"]
+                    region = xl["Region"] or classify_region(xl["Support Hub (old)"])
                     support_hub = xl["Support Hub (old)"]
                     cat2 = xl.get("Category Level 2", "")
                     cat3 = xl.get("Category Level 3", "")
