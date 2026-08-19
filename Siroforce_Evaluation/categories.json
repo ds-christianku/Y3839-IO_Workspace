@@ -1,0 +1,85 @@
+{
+  "_comment": "Konfigurationsdatei fuer die Ticket-Klassifizierung. Keyword-Listen koennen hier angepasst werden ohne Python-Code zu aendern.",
+
+  "primary_categories": [
+    "Connectivity/Recognition",
+    "Hardware Defect/Physical Damage",
+    "Software/Firmware/Driver",
+    "Installation/Setup/Upgrade",
+    "Imaging/Acquisition/Exposure",
+    "Spare Parts/RMA/Logistics",
+    "Warranty/Part Number/Commercial",
+    "Info/Inquiry/How-to",
+    "Unknown/Other"
+  ],
+
+  "connectivity_subcategories": [
+    "Sensor Detection Failure (Persistent)",
+    "Sensor Detection Failure (Intermittent)",
+    "Remote Detection Failure (Persistent)",
+    "Remote Detection Failure (Intermittent)",
+    "Ambiguous Detection Failure (Sensor/Remote)",
+    "Unknown/Other"
+  ],
+
+  "clarity": {
+    "root_cause_keywords": [
+      "caused by", "because of", "result of", "identified as",
+      "confirmed as", "root cause", "failure was", "issue was", "problem was",
+      "found to be", "determined to be", "turned out",
+      "confirmed that", "point of failure",
+      "worn elastomer", "damaged elastomer", "defective elastomer",
+      "physical damage", "liquid damage", "water damage", "bodily fluid",
+      "broken cable", "bent pin", "cracked", "damaged cable", "cable damage",
+      "driver conflict", "software conflict", "incompatib",
+      "firmware issue", "firmware problem", "firmware conflict", "firmware update resolved",
+      "configuration error", "settings issue", "loose connector", "loose connection",
+      "out of box failure", "defective from factory",
+      "ursache", "verursacht", "aufgrund", "defekt durch", "beschaedigt durch"
+    ],
+    "negative_indicators": [
+      "no help", "didn't fix", "did not fix", "didn't resolve", "did not resolve",
+      "still not working", "still not connecting", "still not detecting",
+      "no improvement", "without resolution", "unresolved",
+      "suggest replacing", "recommend replacing", "recommended to replace", "recommend to replace",
+      "advising to replace", "suggest sensor replacement", "unknown cause",
+      "tried replacing", "tried swapping", "tried changing",
+      "completely dead", "functional (yes/no): no"
+    ],
+    "strong_resolution_keywords": [
+      "now stable", "now works", "works again", "issue resolved after", "resolved by",
+      "now interface is stable", "now the sensor is recognized", "sensor is recognized",
+      "functional (yes/no): yes", "functional test successful", "tests shot successful", "test shot successful",
+      "problem solved", "wieder erkannt", "funktioniert", "behoben"
+    ],
+    "action_keywords": [
+      "replace", "swap", "repair", "update", "install", "rma", "exchange",
+      "tauschen", "austausch", "erneuert", "resolved", "fixed", "upgraded",
+      "shipped", "sent", "new sensor", "new cable", "new remote", "new interface",
+      "reseat", "reseated", "reconnect", "reconnected", "cleaned", "clean"
+    ],
+    "specific_corrective_action_keywords": [
+      "reseat", "reseated", "reconnect", "reconnected", "replug", "unplug",
+      "cleaned", "clean contact", "cleaned contact", "tighten", "tightened", "retighten"
+    ],
+    "concrete_cause_observation_keywords": [
+      "loose", "wackelkontakt", "dirty contact", "contamination", "oxid", "oxidation",
+      "corrosion", "cable was loose", "connector loose", "contacts were dirty"
+    ],
+    "generic_replacement_only_terms": [
+      "part of the system must be replaced",
+      "replacement part has been recommended",
+      "please close complaint",
+      "closing ticket"
+    ],
+    "generic_exclusions": [
+      "please refer to customer communication",
+      "please refer to customer notes",
+      "refer to customer notes",
+      "see customer notes"
+    ],
+    "hardware_device_terms": [
+      "sensor", "remote", "interface", "hub", "module", "sensorbox"
+    ]
+  }
+}
