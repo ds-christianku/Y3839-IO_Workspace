@@ -22,9 +22,9 @@ import pipeline_03_render as stage3
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Ticket-Analyse Pipeline: CSV + Excel → JSON → Klassifizierung → HTML")
-    parser.add_argument("--input-dir",    default="../02_Input_Data_To_AI",                          help="Verzeichnis mit EXPORT_RH_*.csv")
+    parser.add_argument("--input-dir",    default="input",                                             help="Verzeichnis mit EXPORT_RH_*.csv")
     parser.add_argument("--pattern",      default="EXPORT_RH_*.csv",                                 help="Glob-Muster fuer CSV-Dateien")
-    parser.add_argument("--excel",        default="../02_Input_Data_To_AI/20260731_IO_Imaging_SFTickets.xlsx")
+    parser.add_argument("--excel",        default="input/20260731_IO_Imaging_SFTickets.xlsx")
     parser.add_argument("--sheet",        default="IO 24Month")
     parser.add_argument("--categories",   default="categories.json",                                 help="Keyword-Konfiguration")
     parser.add_argument("--raw-json",     default="output/tickets_raw.json",                         help="Zwischen-Output Stage 1")

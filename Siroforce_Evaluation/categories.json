@@ -22,6 +22,61 @@
     "Unknown/Other"
   ],
 
+  "hardware_subcategories": [
+    "Sensor Failure",
+    "Cable Issue",
+    "Connector Issue",
+    "Remote Failure",
+    "Physical Damage",
+    "Unknown/Other"
+  ],
+
+  "software_subcategories": [
+    "Driver",
+    "Firmware",
+    "Update/Version",
+    "Software",
+    "Unknown/Other"
+  ],
+
+  "installation_subcategories": [
+    "Install/Setup",
+    "Driver Install",
+    "Upgrade",
+    "Unknown/Other"
+  ],
+
+  "imaging_subcategories": [
+    "Cannot Acquire Image",
+    "Image Quality",
+    "Exposure Issue",
+    "Imaging Issue",
+    "Unknown/Other"
+  ],
+
+  "spareparts_subcategories": [
+    "RMA Request",
+    "Spare Part Request",
+    "Logistics",
+    "Unknown/Other"
+  ],
+
+  "warranty_subcategories": [
+    "Warranty",
+    "Part Number",
+    "Commercial Inquiry",
+    "Unknown/Other"
+  ],
+
+  "info_subcategories": [
+    "General Inquiry",
+    "Unknown/Other"
+  ],
+
+  "unknown_subcategories": [
+    "Other"
+  ],
+
   "clarity": {
     "root_cause_keywords": [
       "caused by", "because of", "result of", "identified as",
