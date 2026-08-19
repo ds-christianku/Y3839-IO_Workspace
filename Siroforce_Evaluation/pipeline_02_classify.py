@@ -516,6 +516,147 @@ def load_and_apply_categories(categories_path: Path) -> dict:
     return cfg
 
 
+_SENSOR_PREFIXES = frozenset([
+    "11", "12", "13", "14", "15", "16", "17", "18", "19",
+    "21", "22", "23", "24", "25", "26", "27", "28", "29",
+    "60", "61", "62", "63", "64", "65", "70", "71", "72",
+])
+
+
+def classify_spare_part_group(description: str, cat3: str = "", cat4: str = "") -> str:
+    desc = normalize_text(description).lower()
+    combined = " ".join([normalize_text(description), normalize_text(cat3), normalize_text(cat4)]).lower()
+    if re.search(r"cable|kabel", desc):
+        return "Sensor Cable"
+    if re.search(r"\b33\b", desc):
+        return "Sensor"
+    if any(tok[:2] in _SENSOR_PREFIXES for tok in re.findall(r"\b\d{2,}\b", desc)):
+        return "Sensor"
+    if re.search(r"\b\d{8}\b", desc):
+        return "Sensor"
+    if re.search(r"ptc\s*proc\s*rma", desc) and re.search(r"\b\d{7}\b", desc):
+        return "Remote"
+    if re.search(r"sensor\s*cable|sensorkabel|replaceable cable|cable issue|kabel", combined) and re.search(r"sensor|schick|xios", combined):
+        return "Sensor Cable"
+    if re.search(r"usb\s*a-?b|micro\s*b|usb\s*c|usb cable|usb\s*3\.0|usb\s*2\s*a\s*male|usb\s*cable", combined):
+        return "USB Cable"
+    if re.search(r"remote|interface|hub|usb module|box|control box", combined):
+        return "Remote"
+    if re.search(r"sensor|schick|xios", combined):
+        return "Sensor"
+    if re.search(r"\bxs\b|\bxl\b|\bus\b|\bxs\d+\b|\bxl\d+\b|\bus\d+\b", desc):
+        return "Sensor Cable"
+    return "Unassigned"
+
+
+def classify_major_issue(secondary: str, notes: str) -> tuple[str, str]:
+    """Returns (domain, theme) or ('', '') when the ticket doesn't match any known domain."""
+    n = notes.lower()
+    _SW  = {"Software", "Update/Version", "Upgrade", "Driver", "Driver Install"}
+    _HW  = {"Remote Failure", "Sensor Failure", "Physical Damage", "Cable Issue", "Connector Issue",
+            "Sensor Detection Failure (Persistent)", "Sensor Detection Failure (Intermittent)",
+            "Remote Detection Failure (Persistent)", "Remote Detection Failure (Intermittent)",
+            "Ambiguous Detection Failure (Sensor/Remote)"}
+    _IMG = {"Imaging Issue", "Cannot Acquire Image", "Image Quality", "Exposure Issue"}
+
+    if secondary in _SW:
+        if re.search(r"ioss|slow|slowness|latency|lag|performance|takes .{0,20}seconds|wait until", n): return "software", "IOSS Performance / Slowness"
+        if re.search(r"sidexis", n): return "software", "SIDEXIS Issue"
+        if re.search(r"curve|cdr\s?dicom|cdrdicom|patterson|integration", n): return "software", "Integration Issue (Curve/CDR/Patterson)"
+        if re.search(r"update|upgrade|migration|new workstation|24h2|25h2|windows\s*11", n): return "software", "Update/Upgrade Failure"
+        if re.search(r"driver|twain", n): return "software", "Driver Problem"
+        if re.search(r"crash|freeze|frozen|hang|hanging|stuck|not responding", n): return "software", "Crash/Freeze/Hang"
+        if re.search(r"odbc|sql|database|db error", n): return "software", "Database/ODBC/SQL Error"
+        if re.search(r"service.{0,20}(not|fail|down|stop|start)|dienst startet nicht", n): return "software", "Service Start/Runtime Issue"
+        if re.search(r"template|configuration|config|setting", n): return "software", "Template/Configuration Issue"
+        if re.search(r"plug-?in version|version mismatch|version issue", n): return "software", "Version/Plugin Mismatch"
+        return "software", "General Software Problem (Unspecified)"
+
+    if secondary in _HW:
+        if re.search(r"sensor.{0,40}not detect|sensor.{0,40}not recogn|cannot be registered|nicht erkannt|not in (?:device ?manager|devicemanager)", n): return "hardware", "Sensor Not Detected (Persistent)"
+        if re.search(r"sensor.{0,40}intermittent|sensor.{0,40}disconnect|sensor.{0,40}drops|off and on", n): return "hardware", "Sensor Connection Intermittent"
+        if re.search(r"(remote|interface|hub|module).{0,40}(not detect|not recogn|not accessible)", n): return "hardware", "Remote/Interface Not Detected"
+        if re.search(r"no power|no lights|not powering|dead (?:interface|remote|hub|module)|stays red|not responding", n): return "hardware", "Remote/Interface No Power or No Function"
+        if re.search(r"usb|port|communication|connector|module issue", n): return "hardware", "USB/Port/Communication Issue"
+        if re.search(r"cable|kabel|wackelkontakt|loose connection|broken cable", n): return "hardware", "Cable Fault / Loose Contact"
+        if re.search(r"physical damage|damaged|broken|cracked|corrosion|liquid damage|water damage", n): return "hardware", "Physical Device Damage"
+        if re.search(r"remote disconnect|hub drops|intermittent.{0,20}remote|off and on light", n): return "hardware", "Remote/Interface Intermittent Dropouts"
+        if re.search(r"defective sensor|sensor failure|sensor .{0,20} not working|autofiring sensor|self.?trigger", n): return "hardware", "Sensor Defect / Failure"
+        return "hardware", "General Hardware/Recognition Problem (Unspecified)"
+
+    if secondary in _IMG:
+        if re.search(r"cannot capture|unable to capture|no capture|cannot take\s*imag|unable to take\s*imag|no acquisizione|acquisizione non possibile|non .{0,20}possibile acquisire", n): return "imaging", "Cannot Acquire Image - No Capture"
+        if re.search(r"blurry|artefact|artifact|vertical lines|lignes? verticales|qualit[aà] immagini|image quality", n): return "imaging", "Image Quality - Blurry/Artifact/Lines"
+        if re.search(r"white screen|lastre bianche|images? are white|black image|dark image", n): return "imaging", "White/Black Image Output"
+        if re.search(r"exposure|trigger|self.?trigger|autofiring|radiation|x-?ray", n): return "imaging", "Exposure Trigger Issue"
+        if re.search(r"slow image|slow acquisition|takes .{0,20}seconds|wait until|latency|lag", n): return "imaging", "Slow Image Acquisition/Transfer"
+        if re.search(r"duplicate image|previous patient|wrong patient|mismatch", n): return "imaging", "Duplicate/Wrong Image Display"
+        if re.search(r"not ready|ready mode|sensor not ready|does not get ready", n): return "imaging", "Sensor Ready-State Imaging Issue"
+        if re.search(r"intermittent|drops|disconnect.{0,20}image|sometimes.{0,20}image", n): return "imaging", "Intermittent Image Drop/Acquire"
+        if re.search(r"calib|calibration|template issue|kp p[üu]rfk[öo]rper|konstanzpr[üu]fung|abnahmepr[üu]fung", n): return "imaging", "Calibration/Template Related Imaging Issue"
+        return "imaging", "General Imaging Issue (Unspecified)"
+
+    return "", ""
+
+
+def _extract_labeled_section(notes_text: str, section_name: str, stop_labels: list[str]) -> str:
+    src = notes_text
+    src_lc = src.lower()
+    pos = src_lc.rfind(section_name.lower())
+    if pos < 0:
+        return ""
+    start = pos + len(section_name)
+    while start < len(src) and src[start] in (":", " ", "\t", "\n", "\r"):
+        start += 1
+    end = len(src)
+    for stop in stop_labels:
+        p = src_lc.find(stop.lower(), start)
+        if 0 <= p < end:
+            end = p
+    cleaned = []
+    for line in src[start:end].split("\n"):
+        line = line.strip()
+        if not line or line.startswith("_____") or line.startswith("-----"):
+            continue
+        if re.match(r"\d{2}[./]\d{2}[./]\d{4}\s+\d{2}:\d{2}:\d{2}", line):
+            continue
+        cleaned.append(line)
+    return " ".join(cleaned).strip()
+
+
+def classify_solution_path(notes: str, description: str) -> str:
+    """Classifies the primary resolution path; meaningful only for clarity='clear' tickets."""
+    solution = _extract_labeled_section(
+        notes, "Solution Description",
+        ["Problem Description", "Resolution", "Internal Note", "Customer Communication"],
+    ) or notes
+    combined = f"{solution} {description}"
+    buckets = [
+        ("Cable-Sensor contact renewed",
+         r"re-?seat(?:ed|ing)?|replug(?:ged|ging)?|reconnect(?:ed|ing)?|neu\s+gesetzt|neu\s+eingesetzt|erneut\s+eingesteckt|tighten(?:ed|ing)?|retighten(?:ed|ing)?|tighten(?:ed)?\s+sensor\s+cable|sensor\s+cable\s+screws?|festgeschraubt|schrauben?\s+nachgezogen|schrauben?\s+festgezogen|elastomer\s+(?:was\s+)?(?:replace|replaced|changed|swapped)|replace(?:d|ment)?\s+(?:the\s+)?elastomer|changed\s+elastomer|elastomer\s+getauscht|elastomer\s+erneuert|elastomeric\s+swap|elastomeric\s+was\s+swapped|clean(?:ed|ing)?\s+(?:the\s+)?contacts?|contacts?\s+cleaned|clean\s+contact|cleaned\s+contact|kontakte?\s+gereinigt|kontakte?\s+gesaeubert|kontakte?\s+gesäubert|contact\s+surface\s+cleaned"),
+        ("Software or plugin reinstalled/updated",
+         r"uninstall(?:ed)?|reinstall(?:ed)?|install(?:ed)?|updated?|upgraded?|patch(?:ed)?|plug-?in|sidexis\s+4\s+sensor\s+plugin|c\+\+\s+2008|c\+\+\s+2012|driver\s+download|removed\s+.*driver|driver\s+removed|drivers?|filters?|safecomm|pre[ -]?reqs?|prereq|prerequisite|missing\s+component|corrupt\s+files"),
+        ("Service or application restarted",
+         r"restart(?:ed)?|restarted|start(?:ed)?\s+service|sirona intraoral service|ioss service|io sensor service|service restarted|power cycle(?:d)?|reboot(?:ed)?|restarted pc|neu gestartet"),
+        ("USB/port or workstation connection changed",
+         r"another port|different usb|move to another port|changed usb|swap(?:ped)? usb|usb port|another workstation|different workstation|other pc|other computer|moved to.*port|usb modul|usb module|spannungsversorgung|power supply|tried new pc"),
+        ("Configuration/settings corrected",
+         r"configuration|config|setting(?:s)?|template|calibration|registry|sql|odbc|database|permissions?|compatibility mode|device manager|assigned|mapping|setup|power management|power save|disabled power management|proper exposure times|exposure time|nomad|dis(?:a|b)ble?\s+core\s+isolation|core\s+isolation|turning\s+off\s+memory\s+integrity|memory\s+integrity"),
+        ("Firmware updated",
+         r"firmware\s+update(?:d)?|updated firmware|flash(?:ed)? firmware|downgraded firmware|upgraded firmware"),
+        ("Hardware replaced",
+         r"replace(?:d|ment)?\s+(?:the\s+)?(?:sensor|remote|interface|hub|module|usb box|usb module|cable)|new\s+(?:sensor|remote|interface|hub|module|cable)|swapped?\s+(?:sensor|remote|interface|hub|module|cable)|usb\s*box\s+getauscht|usb\s*box\s+austausch(?:en|t)?|rma|need\s+to\s+be\s+replaced|would\s+need\s+to\s+be\s+replaced|replacement\s+kit|\bpn\s+[a-z0-9-]+"),
+        ("Guidance/troubleshooting only",
+         r"advised|recommended|instructed|guided|walked\s+(?:them|customer|tech)|troubleshoot(?:ing)?|verify|checked|confirmed|pointed\s+it|explained|informed|technical bulletin|transferred the call|not trained|partners|relationship"),
+    ]
+    for label, pattern in buckets:
+        if re.search(pattern, combined, re.IGNORECASE):
+            return label
+    if re.search(r"i/?o\s+user\s+study|io\s+user\s+study|on\s+site:\s*i/?o\s+user\s+study", description, re.IGNORECASE):
+        return "Guidance/troubleshooting only"
+    return "Other resolved action"
+
+
 def classify_tickets(raw_tickets: list[dict]) -> tuple[list[dict], dict]:
     classified: list[dict] = []
     refined_total = 0
@@ -532,7 +673,11 @@ def classify_tickets(raw_tickets: list[dict]) -> tuple[list[dict], dict]:
             refined_total += 1
             refined_by_primary[bp] += 1
             refined_transitions[f"{bs} -> {s0}"] += 1
-        classified.append({**t, "desc_primary_raw": bp, "desc_secondary_raw": bs, "primary": p0, "secondary": s0, "clarity": classify_clarity(notes), "tickets": 1})
+        clarity = classify_clarity(notes)
+        domain, theme = classify_major_issue(s0, notes)
+        spare_grp = classify_spare_part_group(desc, t.get("category_level_3", ""), t.get("cat4", "")) if p0 == "Spare Parts/RMA/Logistics" else ""
+        sol_path  = classify_solution_path(notes, desc) if clarity == "clear" else ""
+        classified.append({**t, "desc_primary_raw": bp, "desc_secondary_raw": bs, "primary": p0, "secondary": s0, "clarity": clarity, "tickets": 1, "spare_part_group": spare_grp, "major_issue_domain": domain, "major_issue_theme": theme, "solution_path": sol_path})
     stats = {"total": len(classified), "notes_refined_total": refined_total, "refined_by_primary": dict(refined_by_primary.most_common()), "top_transitions": dict(refined_transitions.most_common(10))}
     return classified, stats
 

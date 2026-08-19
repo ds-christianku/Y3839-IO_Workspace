@@ -111,6 +111,8 @@ Bar chart and pie chart of all primary ticket categories. The pie chart supports
 **Description Analysis – Detail**  
 Drill-down view with subcategory filter and free-text search across ticket descriptions. Clicking a row in the top descriptions table shows all matching transactions. Clicking a transaction opens the Ticket Notes panel on the right.
 
+The **Transaction Number** field below the table allows searching for a specific ticket ID directly — independent of the category or description filters. Typing any part of a transaction number immediately shows all matching rows across the full dataset.
+
 **Spare Parts/RMA – Exchange Statistics**  
 Breakdown of spare part and RMA tickets by type (Sensor, Remote, Sensor Cable, USB Cable).
 
