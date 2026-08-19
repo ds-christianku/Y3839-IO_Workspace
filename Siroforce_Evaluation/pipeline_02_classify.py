@@ -513,14 +513,46 @@ def load_and_apply_categories(categories_path: Path) -> dict:
     for key, lst in _map.items():
         if key in clarity:
             lst[:] = clarity[key]
+
+    spare = cfg.get("spare_parts", {})
+    if "sensor_article_prefixes" in spare:
+        _SENSOR_PREFIXES_MUT.clear()
+        _SENSOR_PREFIXES_MUT.update(spare["sensor_article_prefixes"])
+
+    region_cfg = cfg.get("region", {})
+    if "eu_hub_codes" in region_cfg:
+        _EU_HUB_CODES_MUT.clear()
+        _EU_HUB_CODES_MUT.update(region_cfg["eu_hub_codes"])
+
+    domains = cfg.get("major_issue_domains", {})
+    if "software" in domains:
+        _MAJOR_ISSUE_SW.clear(); _MAJOR_ISSUE_SW.update(domains["software"])
+    if "hardware" in domains:
+        _MAJOR_ISSUE_HW.clear(); _MAJOR_ISSUE_HW.update(domains["hardware"])
+    if "imaging" in domains:
+        _MAJOR_ISSUE_IMG.clear(); _MAJOR_ISSUE_IMG.update(domains["imaging"])
+
     return cfg
 
 
-_SENSOR_PREFIXES = frozenset([
+_SENSOR_PREFIXES_MUT: set[str] = {
     "11", "12", "13", "14", "15", "16", "17", "18", "19",
     "21", "22", "23", "24", "25", "26", "27", "28", "29",
     "60", "61", "62", "63", "64", "65", "70", "71", "72",
-])
+}
+_EU_HUB_CODES_MUT: set[str] = {
+    "AT", "BE", "BG", "CY", "CZ", "DE", "DK", "EE", "ES", "FI",
+    "FR", "GR", "HR", "HU", "IE", "IT", "LT", "LU", "LV", "MT",
+    "NL", "PL", "PT", "RO", "SE", "SI", "SK",
+}
+_MAJOR_ISSUE_SW: set[str]  = {"Software", "Update/Version", "Upgrade", "Driver", "Driver Install"}
+_MAJOR_ISSUE_HW: set[str]  = {
+    "Remote Failure", "Sensor Failure", "Physical Damage", "Cable Issue", "Connector Issue",
+    "Sensor Detection Failure (Persistent)", "Sensor Detection Failure (Intermittent)",
+    "Remote Detection Failure (Persistent)", "Remote Detection Failure (Intermittent)",
+    "Ambiguous Detection Failure (Sensor/Remote)",
+}
+_MAJOR_ISSUE_IMG: set[str] = {"Imaging Issue", "Cannot Acquire Image", "Image Quality", "Exposure Issue"}
 
 
 def classify_spare_part_group(description: str, cat3: str = "", cat4: str = "") -> str:
@@ -530,7 +562,7 @@ def classify_spare_part_group(description: str, cat3: str = "", cat4: str = "") 
         return "Sensor Cable"
     if re.search(r"\b33\b", desc):
         return "Sensor"
-    if any(tok[:2] in _SENSOR_PREFIXES for tok in re.findall(r"\b\d{2,}\b", desc)):
+    if any(tok[:2] in _SENSOR_PREFIXES_MUT for tok in re.findall(r"\b\d{2,}\b", desc)):
         return "Sensor"
     if re.search(r"\b\d{8}\b", desc):
         return "Sensor"
@@ -552,14 +584,7 @@ def classify_spare_part_group(description: str, cat3: str = "", cat4: str = "") 
 def classify_major_issue(secondary: str, notes: str) -> tuple[str, str]:
     """Returns (domain, theme) or ('', '') when the ticket doesn't match any known domain."""
     n = notes.lower()
-    _SW  = {"Software", "Update/Version", "Upgrade", "Driver", "Driver Install"}
-    _HW  = {"Remote Failure", "Sensor Failure", "Physical Damage", "Cable Issue", "Connector Issue",
-            "Sensor Detection Failure (Persistent)", "Sensor Detection Failure (Intermittent)",
-            "Remote Detection Failure (Persistent)", "Remote Detection Failure (Intermittent)",
-            "Ambiguous Detection Failure (Sensor/Remote)"}
-    _IMG = {"Imaging Issue", "Cannot Acquire Image", "Image Quality", "Exposure Issue"}
-
-    if secondary in _SW:
+    if secondary in _MAJOR_ISSUE_SW:
         if re.search(r"ioss|slow|slowness|latency|lag|performance|takes .{0,20}seconds|wait until", n): return "software", "IOSS Performance / Slowness"
         if re.search(r"sidexis", n): return "software", "SIDEXIS Issue"
         if re.search(r"curve|cdr\s?dicom|cdrdicom|patterson|integration", n): return "software", "Integration Issue (Curve/CDR/Patterson)"
@@ -572,7 +597,7 @@ def classify_major_issue(secondary: str, notes: str) -> tuple[str, str]:
         if re.search(r"plug-?in version|version mismatch|version issue", n): return "software", "Version/Plugin Mismatch"
         return "software", "General Software Problem (Unspecified)"
 
-    if secondary in _HW:
+    if secondary in _MAJOR_ISSUE_HW:
         if re.search(r"sensor.{0,40}not detect|sensor.{0,40}not recogn|cannot be registered|nicht erkannt|not in (?:device ?manager|devicemanager)", n): return "hardware", "Sensor Not Detected (Persistent)"
         if re.search(r"sensor.{0,40}intermittent|sensor.{0,40}disconnect|sensor.{0,40}drops|off and on", n): return "hardware", "Sensor Connection Intermittent"
         if re.search(r"(remote|interface|hub|module).{0,40}(not detect|not recogn|not accessible)", n): return "hardware", "Remote/Interface Not Detected"
@@ -584,7 +609,7 @@ def classify_major_issue(secondary: str, notes: str) -> tuple[str, str]:
         if re.search(r"defective sensor|sensor failure|sensor .{0,20} not working|autofiring sensor|self.?trigger", n): return "hardware", "Sensor Defect / Failure"
         return "hardware", "General Hardware/Recognition Problem (Unspecified)"
 
-    if secondary in _IMG:
+    if secondary in _MAJOR_ISSUE_IMG:
         if re.search(r"cannot capture|unable to capture|no capture|cannot take\s*imag|unable to take\s*imag|no acquisizione|acquisizione non possibile|non .{0,20}possibile acquisire", n): return "imaging", "Cannot Acquire Image - No Capture"
         if re.search(r"blurry|artefact|artifact|vertical lines|lignes? verticales|qualit[aà] immagini|image quality", n): return "imaging", "Image Quality - Blurry/Artifact/Lines"
         if re.search(r"white screen|lastre bianche|images? are white|black image|dark image", n): return "imaging", "White/Black Image Output"

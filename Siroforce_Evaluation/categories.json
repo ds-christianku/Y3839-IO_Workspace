@@ -1,81 +1,125 @@
 {
   "_comment": "Konfigurationsdatei fuer die Ticket-Klassifizierung. Keyword-Listen koennen hier angepasst werden ohne Python-Code zu aendern.",
 
-  "primary_categories": [
-    "Connectivity/Recognition",
-    "Hardware Defect/Physical Damage",
-    "Software/Firmware/Driver",
-    "Installation/Setup/Upgrade",
-    "Imaging/Acquisition/Exposure",
-    "Spare Parts/RMA/Logistics",
-    "Warranty/Part Number/Commercial",
-    "Info/Inquiry/How-to",
-    "Unknown/Other"
-  ],
+  "primary_categories": {
+    "_comment": "Oberkategorien fuer die Ticket-Klassifizierung. Reihenfolge bestimmt die Anzeigereihenfolge im Report.",
+    "Connectivity/Recognition": "Sensor oder Interface wird vom System nicht erkannt oder verliert die Verbindung.",
+    "Hardware Defect/Physical Damage": "Physischer Defekt an Sensor, Kabel, Connector oder Remote/Interface.",
+    "Software/Firmware/Driver": "Probleme mit Treiber, Firmware, IOSS, SIDEXIS oder anderer Software.",
+    "Installation/Setup/Upgrade": "Erstinstallation, Einrichtung oder System-Upgrade.",
+    "Imaging/Acquisition/Exposure": "Probleme bei der Bildaufnahme, Bildqualität oder Belichtung.",
+    "Spare Parts/RMA/Logistics": "Ersatzteilbestellung, RMA-Rueckgabe oder Versandanfragen.",
+    "Warranty/Part Number/Commercial": "Garantiefragen, Artikelnummern-Anfragen oder kommerzielle Themen.",
+    "Info/Inquiry/How-to": "Allgemeine Informationsanfragen, Rueckrufbitten oder Bedienungsfragen.",
+    "Unknown/Other": "Tickets die keiner anderen Kategorie zugeordnet werden konnten."
+  },
 
-  "connectivity_subcategories": [
-    "Sensor Detection Failure (Persistent)",
-    "Sensor Detection Failure (Intermittent)",
-    "Remote Detection Failure (Persistent)",
-    "Remote Detection Failure (Intermittent)",
-    "Ambiguous Detection Failure (Sensor/Remote)",
-    "Unknown/Other"
-  ],
+  "connectivity_subcategories": {
+    "_comment": "Subkategorien fuer Connectivity/Recognition. Unterscheidung nach betroffener Komponente (Sensor vs. Remote/Interface) und Fehlertyp (persistent vs. intermittierend).",
+    "Sensor Detection Failure (Persistent)": "Sensor wird dauerhaft nicht erkannt, keine Verbindung herstellbar.",
+    "Sensor Detection Failure (Intermittent)": "Sensor verliert die Verbindung gelegentlich oder arbeitet unzuverlaessig.",
+    "Remote Detection Failure (Persistent)": "Interface/Remote/Hub wird dauerhaft nicht erkannt.",
+    "Remote Detection Failure (Intermittent)": "Interface/Remote/Hub hat gelegentliche Verbindungsabbrueche.",
+    "Ambiguous Detection Failure (Sensor/Remote)": "Unklare Situation: sowohl Sensor als auch Remote koennen betroffen sein.",
+    "Unknown/Other": "Connectivity-Problem ohne ausreichende Information zur genaueren Einordnung."
+  },
 
-  "hardware_subcategories": [
-    "Sensor Failure",
-    "Cable Issue",
-    "Connector Issue",
-    "Remote Failure",
-    "Physical Damage",
-    "Unknown/Other"
-  ],
+  "hardware_subcategories": {
+    "_comment": "Subkategorien fuer Hardware Defect/Physical Damage.",
+    "Sensor Failure": "Defekter Sensor (z.B. toter Sensor, Selbstausloesung, kein Bild).",
+    "Cable Issue": "Defektes oder gebrochenes Sensorkabel.",
+    "Connector Issue": "Defekter Stecker oder Verbindungspunkt.",
+    "Remote Failure": "Defektes Interface, Remote oder USB-Modul (kein Strom, keine Funktion).",
+    "Physical Damage": "Aeusserliche Beschaedigung durch Sturz, Fluessigkeit oder Korrosion.",
+    "Unknown/Other": "Hardware-Defekt ohne genauere Ursachenbestimmung."
+  },
 
-  "software_subcategories": [
-    "Driver",
-    "Firmware",
-    "Update/Version",
-    "Software",
-    "Unknown/Other"
-  ],
+  "software_subcategories": {
+    "_comment": "Subkategorien fuer Software/Firmware/Driver.",
+    "Driver": "TWAIN-Treiber oder Geraetetreiber fehlerhaft oder nicht installiert.",
+    "Firmware": "Firmware-Update oder Firmware-Problem am Remote/Interface.",
+    "Update/Version": "Regressionsproblem nach Software-Update oder Versionskonflikt.",
+    "Software": "Allgemeine Softwareprobleme (IOSS, SIDEXIS, Integration, Konfiguration).",
+    "Unknown/Other": "Software-Problem ohne genauere Einordnung."
+  },
 
-  "installation_subcategories": [
-    "Install/Setup",
-    "Driver Install",
-    "Upgrade",
-    "Unknown/Other"
-  ],
+  "installation_subcategories": {
+    "_comment": "Subkategorien fuer Installation/Setup/Upgrade.",
+    "Install/Setup": "Erstinstallation oder Systemeinrichtung.",
+    "Driver Install": "Treiber-Installation als Teil der Einrichtung.",
+    "Upgrade": "Software- oder Systemupgrade auf eine neue Version.",
+    "Unknown/Other": "Installations-/Setup-Problem ohne genauere Einordnung."
+  },
 
-  "imaging_subcategories": [
-    "Cannot Acquire Image",
-    "Image Quality",
-    "Exposure Issue",
-    "Imaging Issue",
-    "Unknown/Other"
-  ],
+  "imaging_subcategories": {
+    "_comment": "Subkategorien fuer Imaging/Acquisition/Exposure.",
+    "Cannot Acquire Image": "Bildaufnahme schlaegt komplett fehl, kein Bild wird erzeugt.",
+    "Image Quality": "Bild wird aufgenommen, zeigt aber Artefakte, Unschaerfe oder Linien.",
+    "Exposure Issue": "Problem mit dem Belichtungstrigger oder der Strahlungssteuerung.",
+    "Imaging Issue": "Allgemeines Bildgebungsproblem ohne spezifischere Einordnung.",
+    "Unknown/Other": "Imaging-Problem ohne genauere Klassifizierung."
+  },
 
-  "spareparts_subcategories": [
-    "RMA Request",
-    "Spare Part Request",
-    "Logistics",
-    "Unknown/Other"
-  ],
+  "spareparts_subcategories": {
+    "_comment": "Subkategorien fuer Spare Parts/RMA/Logistics.",
+    "RMA Request": "Ruecksendeanfrage fuer defektes Geraet.",
+    "Spare Part Request": "Bestellung von Ersatzteilen (Sensor, Kabel, Remote).",
+    "Logistics": "Versand-, Liefer- oder Ruecksendungsstatus.",
+    "Unknown/Other": "Ersatzteil-/Logistikthema ohne spezifische Einordnung."
+  },
 
-  "warranty_subcategories": [
-    "Warranty",
-    "Part Number",
-    "Commercial Inquiry",
-    "Unknown/Other"
-  ],
+  "warranty_subcategories": {
+    "_comment": "Subkategorien fuer Warranty/Part Number/Commercial.",
+    "Warranty": "Garantieanfragen oder -ansprueche.",
+    "Part Number": "Anfragen zu Artikelnummern oder Produktidentifikation.",
+    "Commercial Inquiry": "Kommerzielle Anfragen (Preise, Vertraege, etc.).",
+    "Unknown/Other": "Kommerzielles Thema ohne spezifische Einordnung."
+  },
 
-  "info_subcategories": [
-    "General Inquiry",
-    "Unknown/Other"
-  ],
+  "info_subcategories": {
+    "_comment": "Subkategorien fuer Info/Inquiry/How-to.",
+    "General Inquiry": "Allgemeine Informations- oder Bedienungsanfragen.",
+    "Unknown/Other": "Informationsanfrage ohne genauere Einordnung."
+  },
 
-  "unknown_subcategories": [
-    "Other"
-  ],
+  "unknown_subcategories": {
+    "_comment": "Fallback-Subkategorie fuer nicht klassifizierbare Tickets.",
+    "Other": "Ticket konnte keiner bekannten Kategorie zugeordnet werden."
+  },
+
+  "spare_parts": {
+    "_comment": "sensor_article_prefixes: erste 2 Stellen der Artikelnummer → Sensor-Klassifizierung",
+    "sensor_article_prefixes": [
+      "11", "12", "13", "14", "15", "16", "17", "18", "19",
+      "21", "22", "23", "24", "25", "26", "27", "28", "29",
+      "60", "61", "62", "63", "64", "65", "70", "71", "72"
+    ]
+  },
+
+  "region": {
+    "_comment": "eu_hub_codes: Support-Hub-Codes die als EU klassifiziert werden",
+    "eu_hub_codes": [
+      "AT", "BE", "BG", "CY", "CZ", "DE", "DK", "EE", "ES", "FI",
+      "FR", "GR", "HR", "HU", "IE", "IT", "LT", "LU", "LV", "MT",
+      "NL", "PL", "PT", "RO", "SE", "SI", "SK"
+    ]
+  },
+
+  "major_issue_domains": {
+    "_comment": "Zuordnung von Subkategorien zu Software-/Hardware-/Imaging-Domain fuer TOP-10-Analyse",
+    "software": [
+      "Software", "Update/Version", "Upgrade", "Driver", "Driver Install"
+    ],
+    "hardware": [
+      "Remote Failure", "Sensor Failure", "Physical Damage", "Cable Issue", "Connector Issue",
+      "Sensor Detection Failure (Persistent)", "Sensor Detection Failure (Intermittent)",
+      "Remote Detection Failure (Persistent)", "Remote Detection Failure (Intermittent)",
+      "Ambiguous Detection Failure (Sensor/Remote)"
+    ],
+    "imaging": [
+      "Imaging Issue", "Cannot Acquire Image", "Image Quality", "Exposure Issue"
+    ]
+  },
 
   "clarity": {
     "root_cause_keywords": [

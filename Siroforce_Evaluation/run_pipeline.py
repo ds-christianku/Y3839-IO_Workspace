@@ -67,7 +67,8 @@ def main() -> None:
 
         cat_path = Path(args.categories)
         if cat_path.exists():
-            stage2.load_and_apply_categories(cat_path)
+            cfg = stage2.load_and_apply_categories(cat_path)
+            stage1.apply_region_config(cfg)
             print(f"Keyword-Konfiguration geladen: {cat_path}")
 
         classified, stats = stage2.classify_tickets(raw_tickets)

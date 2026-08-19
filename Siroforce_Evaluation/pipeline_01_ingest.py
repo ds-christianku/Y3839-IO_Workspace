@@ -1,4 +1,4 @@
-﻿"""Stage 1: Liest CSV-Exporte + Excel-Lookup und speichert gemergte Rohdaten als JSON.
+"""Stage 1: Liest CSV-Exporte + Excel-Lookup und speichert gemergte Rohdaten als JSON.
 
 Ausgabe: output/tickets_raw.json
   Jedes Ticket enthaelt alle Felder aus CSV und Excel, aber noch keine Klassifizierung.
@@ -26,11 +26,19 @@ def normalize_text(text: str) -> str:
     return " ".join(str(text).split()).lower()
 
 
-_EU_HUB_CODES = {
+# mutable so categories.json can override at runtime
+_EU_HUB_CODES: set[str] = {
     "AT", "BE", "BG", "CY", "CZ", "DE", "DK", "EE", "ES", "FI",
     "FR", "GR", "HR", "HU", "IE", "IT", "LT", "LU", "LV", "MT",
     "NL", "PL", "PT", "RO", "SE", "SI", "SK",
 }
+
+
+def apply_region_config(cfg: dict) -> None:
+    eu = cfg.get("region", {}).get("eu_hub_codes")
+    if eu:
+        _EU_HUB_CODES.clear()
+        _EU_HUB_CODES.update(eu)
 
 
 def classify_region(hub: str) -> str:
