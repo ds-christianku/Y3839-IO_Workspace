@@ -7,17 +7,16 @@ from __future__ import annotations
 import argparse
 import datetime as dt
 import json
-import sys
 import re
 from collections import Counter, defaultdict
 
 def normalize_text(value: object) -> str:
-  if value is None:
-    return ""
-  text = str(value).strip()
-  if text == "#":
-    return ""
-  return re.sub(r"\s+", " ", text)
+    if value is None:
+        return ""
+    text = str(value).strip()
+    if text == "#":
+        return ""
+    return re.sub(r"\s+", " ", text)
 
 
 def counter_to_sorted_rows(counter: Counter, top_n: int | None = None) -> list[list[object]]:
@@ -70,6 +69,7 @@ def build_report_data(rows: list[dict[str, object]], file_name: str, generated_a
             "Support Hub (old)": str(r["Support Hub (old)"]),
             "Tickets": int(r["Tickets"]),
             "Region": str(r["Region"]),
+            "Language": str(r.get("Language", "")),
             "Notes": str(r.get("Notes", "")),
             "Clarity": str(r.get("Clarity", "")),
             "SparePartGroup": str(r.get("SparePartGroup", "")),
@@ -1824,6 +1824,7 @@ def _to_report_row(t: dict) -> dict:
         "Support Hub (old)": t.get("support_hub", ""),
         "Tickets": t.get("tickets", 1),
         "Region": t.get("region", ""),
+        "Language": t.get("language", ""),
         "Notes": t.get("notes_text", ""),
         "Clarity": t.get("clarity", "unclear"),
         "SparePartGroup": t.get("spare_part_group", ""),

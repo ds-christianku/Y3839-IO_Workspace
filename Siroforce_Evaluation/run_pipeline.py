@@ -10,11 +10,9 @@ from __future__ import annotations
 
 import argparse
 import datetime as dt
-import sys
+import json
 from pathlib import Path
 
-import os
-sys.path.insert(0, os.getcwd())
 import pipeline_01_ingest as stage1
 import pipeline_02_classify as stage2
 import pipeline_03_render as stage3
@@ -49,7 +47,6 @@ def main() -> None:
             raise FileNotFoundError(f"Keine CSV-Dateien in: {args.input_dir}/{args.pattern}")
         print(f"CSV-Dateien gefunden: {len(csv_files)}")
         tickets = stage1.ingest(csv_files, Path(args.excel), args.sheet)
-        import json
         raw_path.parent.mkdir(parents=True, exist_ok=True)
         raw_path.write_text(json.dumps(tickets, ensure_ascii=False, indent=2), encoding="utf-8")
         print(f"→ Gespeichert: {raw_path}  ({len(tickets)} Tickets)")
@@ -62,7 +59,6 @@ def main() -> None:
         print(f"\n{'='*60}")
         print("[Stage 2] Klassifizierung: tickets_raw.json → tickets_classified.json")
         print(f"{'='*60}")
-        import json
         raw_tickets = json.loads(raw_path.read_text(encoding="utf-8"))
 
         cat_path = Path(args.categories)

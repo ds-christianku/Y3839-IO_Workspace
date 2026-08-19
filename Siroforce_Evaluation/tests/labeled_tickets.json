@@ -1,0 +1,162 @@
+[
+  {
+    "_id": "T001",
+    "_comment": "Sensor nicht erkannt → Notes zeigen Kabeldefekt → Cable Issue",
+    "description": "sensor not showing in system cannot be registered",
+    "notes": "Problem Description:\nSensor is not showing up in device manager. Customer tried different USB ports.\nSolution Description:\nReplaced sensor cable. Sensor now recognized.",
+    "expected_primary": "Hardware Defect/Physical Damage",
+    "expected_secondary": "Cable Issue"
+  },
+  {
+    "_id": "T002",
+    "_comment": "Interface kein Strom → Hardware Defect / Remote Failure",
+    "description": "interface not powering on no lights",
+    "notes": "Problem Description:\nInterface has no lights, no power at all.\nSolution Description:\nReplaced interface unit via RMA.",
+    "expected_primary": "Hardware Defect/Physical Damage",
+    "expected_secondary": "Remote Failure"
+  },
+  {
+    "_id": "T003",
+    "_comment": "Kabeldefekt aus Notes",
+    "description": "sensor connection issue",
+    "notes": "Problem Description:\nSensor intermittently disconnecting.\nSolution Description:\nSensor cable was confirmed as the point of failure. Replaced sensor cable, sensor is now stable.",
+    "expected_primary": "Hardware Defect/Physical Damage",
+    "expected_secondary": "Cable Issue"
+  },
+  {
+    "_id": "T004",
+    "_comment": "Toter Sensor aus Notes",
+    "description": "schick sensor issue",
+    "notes": "Problem Description:\nSensor stopped working entirely.\nSolution Description:\nDead sensor confirmed. Replacement sensor shipped to customer.",
+    "expected_primary": "Hardware Defect/Physical Damage",
+    "expected_secondary": "Sensor Failure"
+  },
+  {
+    "_id": "T005",
+    "_comment": "Treiber-Problem → Software",
+    "description": "sensor not connecting after windows update",
+    "notes": "Problem Description:\nSensor not detected after Windows 11 upgrade.\nSolution Description:\nReinstalled IOSS driver. Sensor now recognized and functional.",
+    "expected_primary": "Software/Firmware/Driver",
+    "expected_secondary": "Driver"
+  },
+  {
+    "_id": "T006",
+    "_comment": "RMA-Anfrage",
+    "description": "ptc proc rma 1234567",
+    "notes": "",
+    "expected_primary": "Spare Parts/RMA/Logistics",
+    "expected_secondary": "RMA Request"
+  },
+  {
+    "_id": "T007",
+    "_comment": "Bildaufnahme nicht möglich",
+    "description": "cannot capture image sensor not capturing",
+    "notes": "Problem Description:\nSensor does not capture images when X-ray is taken.\nSolution Description:\nConfiguration corrected in SIDEXIS. Test shot successful.",
+    "expected_primary": "Imaging/Acquisition/Exposure",
+    "expected_secondary": "Cannot Acquire Image"
+  },
+  {
+    "_id": "T008",
+    "_comment": "Intermittierende Verbindung Sensor",
+    "description": "sensor intermittently disconnects off and on connection unstable",
+    "notes": "Problem Description:\nSensor disconnects intermittently during workflow.\nSolution Description:\nReseated sensor connector. Now stable.",
+    "expected_primary": "Connectivity/Recognition",
+    "expected_secondary": "Sensor Detection Failure (Intermittent)"
+  },
+  {
+    "_id": "T009",
+    "_comment": "SIDEXIS Softwareproblem",
+    "description": "sidexis integration issue curve dental",
+    "notes": "Problem Description:\nSIDEXIS 4 not communicating with Curve Dental.\nSolution Description:\nReconfigured SIDEXIS integration settings. Issue resolved.",
+    "expected_primary": "Software/Firmware/Driver",
+    "expected_secondary": "Software"
+  },
+  {
+    "_id": "T010",
+    "_comment": "Erstinstallation",
+    "description": "new workstation setup installation",
+    "notes": "",
+    "expected_primary": "Installation/Setup/Upgrade",
+    "expected_secondary": "Install/Setup"
+  },
+  {
+    "_id": "T011",
+    "_comment": "Garantieanfrage",
+    "description": "warranty claim sensor defective",
+    "notes": "",
+    "expected_primary": "Warranty/Part Number/Commercial",
+    "expected_secondary": "Warranty"
+  },
+  {
+    "_id": "T012",
+    "_comment": "Bildqualität schlecht",
+    "description": "sensor blurry images vertical lines artifact",
+    "notes": "Problem Description:\nImages show vertical lines and blurring.\nSolution Description:\nSensor replaced under warranty.",
+    "expected_primary": "Imaging/Acquisition/Exposure",
+    "expected_secondary": "Image Quality"
+  },
+  {
+    "_id": "T013",
+    "_comment": "Interface intermittierend (Remote Intermittent)",
+    "description": "remote disconnect hub drops at times",
+    "notes": "Problem Description:\nInterface loses connection sporadically.\nSolution Description:\nTried different USB port. Interface now stable.",
+    "expected_primary": "Connectivity/Recognition",
+    "expected_secondary": "Remote Detection Failure (Intermittent)"
+  },
+  {
+    "_id": "T014",
+    "_comment": "Ersatzteil-Anfrage",
+    "description": "spare part request sensor cable replacement",
+    "notes": "",
+    "expected_primary": "Spare Parts/RMA/Logistics",
+    "expected_secondary": "Spare Part Request"
+  },
+  {
+    "_id": "T015",
+    "_comment": "Deutschsprachig: Sensor nicht erkannt",
+    "description": "sensor wird nicht erkannt im gerätemanager",
+    "notes": "Problem Description:\nSensor nicht im Gerätemanager sichtbar.\nSolution Description:\nSensorkabel getauscht. Sensor wird jetzt wieder erkannt.",
+    "expected_primary": "Connectivity/Recognition",
+    "expected_secondary": "Sensor Detection Failure (Persistent)"
+  },
+  {
+    "_id": "T016",
+    "_comment": "Französisch: Verbindungsproblem",
+    "description": "pb deconnexion capteur intermittent",
+    "notes": "",
+    "expected_primary": "Connectivity/Recognition",
+    "expected_secondary": "Sensor Detection Failure (Intermittent)"
+  },
+  {
+    "_id": "T017",
+    "_comment": "Allgemeine Anfrage / Rückruf",
+    "description": "call back request customer inquiry",
+    "notes": "",
+    "expected_primary": "Info/Inquiry/How-to",
+    "expected_secondary": "General Inquiry"
+  },
+  {
+    "_id": "T018",
+    "_comment": "Windows 11 Kompatibilitätsproblem → Software/Update",
+    "description": "sidexis 4 windows 11 24h2 compatibility issue",
+    "notes": "",
+    "expected_primary": "Software/Firmware/Driver",
+    "expected_secondary": "Update/Version"
+  },
+  {
+    "_id": "T019",
+    "_comment": "Physischer Schaden",
+    "description": "sensor damaged broken housing dropped",
+    "notes": "",
+    "expected_primary": "Hardware Defect/Physical Damage",
+    "expected_secondary": "Physical Damage"
+  },
+  {
+    "_id": "T020",
+    "_comment": "Ambiguous: Weder Sensor noch Interface klar",
+    "description": "sensor communication issue with ae interface",
+    "notes": "",
+    "expected_primary": "Connectivity/Recognition",
+    "expected_secondary": "Ambiguous Detection Failure (Sensor/Remote)"
+  }
+]

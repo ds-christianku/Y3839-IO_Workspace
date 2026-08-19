@@ -520,9 +520,7 @@ def load_and_apply_categories(categories_path: Path) -> dict:
         _SENSOR_PREFIXES_MUT.update(spare["sensor_article_prefixes"])
 
     region_cfg = cfg.get("region", {})
-    if "eu_hub_codes" in region_cfg:
-        _EU_HUB_CODES_MUT.clear()
-        _EU_HUB_CODES_MUT.update(region_cfg["eu_hub_codes"])
+    # eu_hub_codes applied to pipeline_01_ingest via apply_region_config()
 
     domains = cfg.get("major_issue_domains", {})
     if "software" in domains:
@@ -539,11 +537,6 @@ _SENSOR_PREFIXES_MUT: set[str] = {
     "11", "12", "13", "14", "15", "16", "17", "18", "19",
     "21", "22", "23", "24", "25", "26", "27", "28", "29",
     "60", "61", "62", "63", "64", "65", "70", "71", "72",
-}
-_EU_HUB_CODES_MUT: set[str] = {
-    "AT", "BE", "BG", "CY", "CZ", "DE", "DK", "EE", "ES", "FI",
-    "FR", "GR", "HR", "HU", "IE", "IT", "LT", "LU", "LV", "MT",
-    "NL", "PL", "PT", "RO", "SE", "SI", "SK",
 }
 _MAJOR_ISSUE_SW: set[str]  = {"Software", "Update/Version", "Upgrade", "Driver", "Driver Install"}
 _MAJOR_ISSUE_HW: set[str]  = {
@@ -690,7 +683,7 @@ def classify_tickets(raw_tickets: list[dict]) -> tuple[list[dict], dict]:
     for t in raw_tickets:
         desc  = t["description_text"]
         notes = t["notes_text"]
-        cat4  = t.get("cat4", "")
+        cat4  = t.get("category_level_4", "")
         p0, s0 = classify_description(desc, cat4=cat4)
         bp, bs = p0, s0
         p0, s0 = refine_subcategory_with_notes(p0, s0, notes, description=desc)
@@ -700,7 +693,7 @@ def classify_tickets(raw_tickets: list[dict]) -> tuple[list[dict], dict]:
             refined_transitions[f"{bs} -> {s0}"] += 1
         clarity = classify_clarity(notes)
         domain, theme = classify_major_issue(s0, notes)
-        spare_grp = classify_spare_part_group(desc, t.get("category_level_3", ""), t.get("cat4", "")) if p0 == "Spare Parts/RMA/Logistics" else ""
+        spare_grp = classify_spare_part_group(desc, t.get("category_level_3", ""), t.get("category_level_4", "")) if p0 == "Spare Parts/RMA/Logistics" else ""
         sol_path  = classify_solution_path(notes, desc) if clarity == "clear" else ""
         classified.append({**t, "desc_primary_raw": bp, "desc_secondary_raw": bs, "primary": p0, "secondary": s0, "clarity": clarity, "tickets": 1, "spare_part_group": spare_grp, "major_issue_domain": domain, "major_issue_theme": theme, "solution_path": sol_path})
     stats = {"total": len(classified), "notes_refined_total": refined_total, "refined_by_primary": dict(refined_by_primary.most_common()), "top_transitions": dict(refined_transitions.most_common(10))}

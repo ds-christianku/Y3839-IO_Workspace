@@ -18,6 +18,23 @@ try:
 except ImportError:
     HAS_OPENPYXL = False
 
+try:
+    from langdetect import detect as _ld_detect
+    from langdetect import DetectorFactory as _LDF
+    _LDF.seed = 0  # deterministic results
+    HAS_LANGDETECT = True
+except ImportError:
+    HAS_LANGDETECT = False
+
+
+def detect_language(text: str) -> str:
+    if not HAS_LANGDETECT or len(text) < 30:
+        return ""
+    try:
+        return _ld_detect(text)
+    except Exception:
+        return ""
+
 
 def normalize_text(text: str) -> str:
     """Normalisiert Text: whitespace bereinigen, strip."""
@@ -50,18 +67,16 @@ def classify_region(hub: str) -> str:
     return "REST"
 
 
+_EU_EMAIL_TLDS = {
+    ".de", ".fr", ".it", ".es", ".nl", ".be", ".at", ".ch", ".pl", ".pt",
+    ".se", ".dk", ".fi", ".no", ".cz", ".hu", ".ro", ".gr", ".sk", ".hr",
+    ".bg", ".lt", ".lv", ".ee", ".si", ".lu", ".ie", ".uk", ".co.uk",
+}
+
+
 def region_from_email(email: str) -> str:
-    """Bestimmt die Region basierend auf E-Mail-Domain."""
-    EU_EMAIL_TLDS = {
-        ".de", ".fr", ".it", ".es", ".nl", ".be", ".at", ".ch", ".pl", ".pt",
-        ".se", ".dk", ".fi", ".no", ".cz", ".hu", ".ro", ".gr", ".sk", ".hr",
-        ".bg", ".lt", ".lv", ".ee", ".si", ".lu", ".ie", ".uk", ".co.uk",
-    }
     e = email.lower().strip()
-    for tld in EU_EMAIL_TLDS:
-        if e.endswith(tld):
-            return "EU"
-    return "REST"
+    return "EU" if any(e.endswith(tld) for tld in _EU_EMAIL_TLDS) else "REST"
 
 
 _FW_VERSION_RE = re.compile(r"\b(\d+\.\d+(?:\.\d+)?)\b")
@@ -209,15 +224,16 @@ def ingest(
                     cat2 = cat3 = cat4 = ""
                     firmware = extract_firmware_from_notes(notes_text)
 
+                lang_src = notes_text if len(notes_text) > len(description_text) else description_text
                 tickets.append({
                     "ticket_id": ticket_id,
                     "created_at": parse_created_at(created_raw),
                     "record_type_group": classify_record_type_group(record_type),
                     "region": region,
+                    "language": detect_language(lang_src),
                     "category_level_2": cat2,
                     "category_level_3": cat3,
                     "category_level_4": cat4,
-                    "cat4": cat4,
                     "firmware": firmware,
                     "support_hub": support_hub,
                     "description_text": description_text,
@@ -234,7 +250,7 @@ def ingest(
 
 def main():
     parser = argparse.ArgumentParser(description="Stage 1: Ingest CSV + Excel")
-    parser.add_argument("--input-dir", type=Path, default=Path("../02_Input_Data_To_AI"),
+    parser.add_argument("--input-dir", type=Path, default=Path("input"),
                         help="Input directory mit CSV exports")
     parser.add_argument("--pattern", type=str, default="EXPORT_RH_*.csv",
                         help="CSV pattern zum Filtern (Glob)")
