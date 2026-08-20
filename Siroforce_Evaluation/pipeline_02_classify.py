@@ -396,19 +396,47 @@ _SW_UPDATE        = re.compile(r"update|upgrade|version|sidexis|firmware")
 _SW_RESOLVED      = re.compile(r"now able to acquire|can now acquire|test shot.*good|functional \(yes/no\): yes|issue resolved|resolved|tested and functional")
 
 
+# Kategorien, bei denen Hardware-/Software-Signale aus Notes nicht sinnvoll sind
+_NOTES_HW_SKIP = frozenset([
+    "Spare Parts/RMA/Logistics",
+    "Info/Inquiry/How-to",
+    "Warranty/Part Number/Commercial",
+    "Software/Firmware/Driver",
+])
+_NOTES_SW_ELIGIBLE = frozenset([
+    "Connectivity/Recognition",
+    "Unknown/Other",
+    "Imaging/Acquisition/Exposure",
+    "Installation/Setup/Upgrade",
+    "Hardware Defect/Physical Damage",
+])
+
+
 def refine_subcategory_with_notes(primary: str, secondary: str, notes: str, description: str = "") -> tuple[str, str]:
     notes_lc = (notes or "").lower().strip()
 
-    # 1) Kabeldefekt aus Notes
-    if primary in ("Connectivity/Recognition", "Hardware Defect/Physical Damage") and len(notes_lc) >= 20:
+    # ── Stufe 0: Notes-Klassifizierung fuer Unknown/Other ────────────────────
+    if primary == "Unknown/Other" and len(notes_lc) >= 80:
+        prob_text = _extract_labeled_section(
+            notes, "Problem Description",
+            ["Solution Description", "Internal Note", "Customer Communication"],
+        )
+        # nur auswerten wenn ein echter "Problem Description:"-Abschnitt vorhanden ist
+        if prob_text and len(prob_text) >= 40:
+            notes_p, notes_s = classify_description(prob_text)
+            if notes_p != "Unknown/Other":
+                primary, secondary = notes_p, notes_s
+
+    # ── Stufe 1: Kabeldefekt aus Notes (alle relevanten Kategorien) ───────────
+    if primary not in _NOTES_HW_SKIP and len(notes_lc) >= 20:
         if _HW_CABLE_OK.search(notes_lc) and not _HW_CABLE_NOT.search(notes_lc):
             return "Hardware Defect/Physical Damage", "Cable Issue"
 
     if primary == "Hardware Defect/Physical Damage":
         return primary, secondary
 
-    # 2) Defekter Sensor aus Notes
-    if primary == "Connectivity/Recognition" and len(notes_lc) >= 10:
+    # ── Stufe 2: Defekter Sensor aus Notes (alle relevanten Kategorien) ──────
+    if primary not in _NOTES_HW_SKIP and len(notes_lc) >= 10:
         if _HW_SENSOR_DEAD.search(notes_lc):
             if not re.search(r"\bdead sensor\b|sensor is dead|we have a dead sensor", notes_lc):
                 if _C_GENERIC_TPL.search(notes_lc):
@@ -421,8 +449,8 @@ def refine_subcategory_with_notes(primary: str, secondary: str, notes: str, desc
     if primary == "Hardware Defect/Physical Damage":
         return primary, secondary
 
-    # 3) Software aus Notes
-    if primary == "Connectivity/Recognition" and len(notes_lc) >= 30:
+    # ── Stufe 3: Software aus Notes (erweiterte Kategorien) ──────────────────
+    if primary in _NOTES_SW_ELIGIBLE and len(notes_lc) >= 30:
         if not _SW_EXCLUDE.search(notes_lc) and _SW_ACTION.search(notes_lc):
             hw_sig = _HW_SENSOR_DEAD.search(notes_lc) or _HW_SENSOR_REPL.search(notes_lc) or _HW_SENSOR_TRBL.search(notes_lc)
             if not hw_sig:
@@ -436,7 +464,7 @@ def refine_subcategory_with_notes(primary: str, secondary: str, notes: str, desc
     if primary != "Connectivity/Recognition":
         return primary, secondary
 
-    # 4) Connectivity-Subkategorie aus Notes verfeinern
+    # ── Stufe 4: Connectivity-Subkategorie verfeinern ────────────────────────
     return primary, _refine_connectivity(secondary, notes, description=description)
 
 
@@ -695,7 +723,9 @@ def classify_tickets(raw_tickets: list[dict]) -> tuple[list[dict], dict]:
         domain, theme = classify_major_issue(s0, notes)
         spare_grp = classify_spare_part_group(desc, t.get("category_level_3", ""), t.get("category_level_4", "")) if p0 == "Spare Parts/RMA/Logistics" else ""
         sol_path  = classify_solution_path(notes, desc) if clarity == "clear" else ""
-        classified.append({**t, "desc_primary_raw": bp, "desc_secondary_raw": bs, "primary": p0, "secondary": s0, "clarity": clarity, "tickets": 1, "spare_part_group": spare_grp, "major_issue_domain": domain, "major_issue_theme": theme, "solution_path": sol_path})
+        prob_desc = _extract_labeled_section(notes, "Problem Description",
+                        ["Solution Description", "Internal Note", "Customer Communication"])
+        classified.append({**t, "desc_primary_raw": bp, "desc_secondary_raw": bs, "primary": p0, "secondary": s0, "clarity": clarity, "tickets": 1, "spare_part_group": spare_grp, "major_issue_domain": domain, "major_issue_theme": theme, "solution_path": sol_path, "problem_description": prob_desc})
     stats = {"total": len(classified), "notes_refined_total": refined_total, "refined_by_primary": dict(refined_by_primary.most_common()), "top_transitions": dict(refined_transitions.most_common(10))}
     return classified, stats
 

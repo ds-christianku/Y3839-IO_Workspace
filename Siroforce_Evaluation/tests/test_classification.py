@@ -8,6 +8,10 @@ Verwendung:
 Jeder Testfall in labeled_tickets.json benoetigt:
   description, notes, expected_primary, expected_secondary
 
+Testfall-Gruppen (getrennte Ausgabe):
+  T001..T999  → Synthetische Testfaelle (handgepflegte Beispiele)
+  REAL-...    → Echte Tickets aus tickets_classified.json
+
 Rueckgabewert: Exit-Code 0 = alle Tests bestanden, 1 = mind. ein Fehler.
 """
 from __future__ import annotations
@@ -17,98 +21,108 @@ import json
 import sys
 from pathlib import Path
 
-# Sicherstellen dass pipeline_02_classify importierbar ist
 sys.path.insert(0, str(Path(__file__).parent.parent))
 import pipeline_02_classify as classify
+
+
+def _classify(case: dict) -> tuple[bool, dict]:
+    p, s = classify.classify_description(case["description"])
+    p, s = classify.refine_subcategory_with_notes(p, s, case["notes"], description=case["description"])
+    exp_p = case["expected_primary"]
+    exp_s = case["expected_secondary"]
+    ok = (p == exp_p) and (s == exp_s)
+    return ok, {
+        "id":            case.get("_id", "?"),
+        "desc":          case["description"][:60],
+        "got_primary":   p,
+        "got_secondary": s,
+        "exp_primary":   exp_p,
+        "exp_secondary": exp_s,
+    }
+
+
+def run_group(label: str, cases: list[dict], verbose: bool) -> tuple[int, int]:
+    """Läuft eine Gruppe durch und gibt (passed, failed) zurück."""
+    passed = failed = 0
+    errors: list[dict] = []
+
+    print(f"\n{'─'*60}")
+    print(f"  {label}  ({len(cases)} Faelle)")
+    print(f"{'─'*60}")
+
+    for case in cases:
+        ok, info = _classify(case)
+        if ok:
+            passed += 1
+            if verbose:
+                print(f"  ✓  {info['id']}: {info['got_primary']} / {info['got_secondary']}")
+        else:
+            failed += 1
+            errors.append(info)
+            if verbose:
+                print(f"  ✗  {info['id']}: got  '{info['got_primary']}' / '{info['got_secondary']}'")
+                print(f"               want '{info['exp_primary']}' / '{info['exp_secondary']}'")
+
+    pct = f"{passed/(passed+failed)*100:.0f}%" if (passed + failed) else "–"
+    print(f"\n  Ergebnis: {passed}/{passed+failed} bestanden  ({pct})")
+
+    if errors:
+        print(f"\n  Fehler ({len(errors)}):")
+        for e in errors:
+            p_ok = "✓" if e["got_primary"]   == e["exp_primary"]   else "✗"
+            s_ok = "✓" if e["got_secondary"] == e["exp_secondary"] else "✗"
+            print(f"    [{e['id']}]  {e['desc']!r}")
+            print(f"      Primary:   {p_ok} got='{e['got_primary']}'  want='{e['exp_primary']}'")
+            print(f"      Secondary: {s_ok} got='{e['got_secondary']}'  want='{e['exp_secondary']}'")
+
+    return passed, failed
 
 
 def run_tests(test_path: Path, verbose: bool = False) -> int:
     cases = json.loads(test_path.read_text(encoding="utf-8"))
 
-    passed = 0
-    failed = 0
-    errors: list[dict] = []
+    synthetic = [c for c in cases if str(c.get("_id", "")).startswith("T")]
+    real      = [c for c in cases if str(c.get("_id", "")).startswith("REAL")]
+    other     = [c for c in cases if c not in synthetic and c not in real]
 
-    for case in cases:
-        tid       = case.get("_id", "?")
-        desc      = case["description"]
-        notes     = case["notes"]
-        exp_p     = case["expected_primary"]
-        exp_s     = case["expected_secondary"]
+    total_passed = total_failed = 0
 
-        # Description-Klassifizierung
-        p, s = classify.classify_description(desc)
-        # Notes-Refinement
-        p, s = classify.refine_subcategory_with_notes(p, s, notes, description=desc)
+    if synthetic:
+        p, f = run_group("Synthetische Testfaelle", synthetic, verbose)
+        total_passed += p; total_failed += f
 
-        ok_p = (p == exp_p)
-        ok_s = (s == exp_s)
-        ok   = ok_p and ok_s
+    if real:
+        p, f = run_group("Connectivity/Recognition Test", real, verbose)
+        total_passed += p; total_failed += f
 
-        if ok:
-            passed += 1
-            if verbose:
-                print(f"  ✓  {tid}: {p} / {s}")
-        else:
-            failed += 1
-            errors.append({
-                "id": tid,
-                "desc": desc[:60],
-                "got_primary": p,
-                "got_secondary": s,
-                "exp_primary": exp_p,
-                "exp_secondary": exp_s,
-            })
-            if verbose:
-                print(f"  ✗  {tid}: got  '{p}' / '{s}'")
-                print(f"           want '{exp_p}' / '{exp_s}'")
+    if other:
+        p, f = run_group("Sonstige Testfaelle", other, verbose)
+        total_passed += p; total_failed += f
 
-    total = passed + failed
+    total = total_passed + total_failed
+    pct   = f"{total_passed/total*100:.0f}%" if total else "–"
     print(f"\n{'='*60}")
-    print(f"Klassifizierungstest: {passed}/{total} bestanden", end="")
-    if total:
-        print(f"  ({passed/total*100:.0f}%)")
-    else:
-        print()
+    print(f"GESAMT: {total_passed}/{total} bestanden  ({pct})")
+    print(f"{'='*60}")
 
-    if errors:
-        print(f"\nFehlgeschlagene Tests ({len(errors)}):")
-        for e in errors:
-            p_mark = "✓" if e["got_primary"]   == e["exp_primary"]   else "✗"
-            s_mark = "✓" if e["got_secondary"] == e["exp_secondary"] else "✗"
-            print(f"  [{e['id']}] {e['desc']!r}")
-            print(f"    Primary:   {p_mark} got='{e['got_primary']}'  want='{e['exp_primary']}'")
-            print(f"    Secondary: {s_mark} got='{e['got_secondary']}'  want='{e['exp_secondary']}'")
-    print("=" * 60)
-
-    return 0 if failed == 0 else 1
+    return 0 if total_failed == 0 else 1
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Klassifizierungstest fuer Ticket-Pipeline")
-    parser.add_argument(
-        "--file", type=Path,
-        default=Path(__file__).parent / "labeled_tickets.json",
-        help="Pfad zur JSON-Testdatei",
-    )
-    parser.add_argument(
-        "--verbose", "-v", action="store_true",
-        help="Alle Testergebnisse ausgeben, nicht nur Fehler",
-    )
-    parser.add_argument(
-        "--categories", type=Path,
-        default=Path(__file__).parent.parent / "categories.json",
-        help="categories.json laden (optional)",
-    )
+    parser.add_argument("--file", type=Path,
+                        default=Path(__file__).parent / "labeled_tickets.json")
+    parser.add_argument("--verbose", "-v", action="store_true")
+    parser.add_argument("--categories", type=Path,
+                        default=Path(__file__).parent.parent / "categories.json")
     args = parser.parse_args()
 
     if args.categories.exists():
         classify.load_and_apply_categories(args.categories)
-        print(f"Konfiguration geladen: {args.categories}")
+        print(f"Konfiguration geladen: {args.categories.name}")
 
-    print(f"Testdatei: {args.file}  ({sum(1 for _ in json.loads(args.file.read_text(encoding='utf-8')))} Faelle)\n")
-    if args.verbose:
-        print("Ergebnisse:")
+    total = len(json.loads(args.file.read_text(encoding="utf-8")))
+    print(f"Testdatei: {args.file.name}  ({total} Faelle)")
 
     sys.exit(run_tests(args.file, verbose=args.verbose))
 
