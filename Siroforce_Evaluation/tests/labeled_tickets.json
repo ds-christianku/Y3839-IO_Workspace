@@ -1,162 +1,802 @@
 [
-  {
-    "_id": "T001",
-    "_comment": "Sensor nicht erkannt → Notes zeigen Kabeldefekt → Cable Issue",
-    "description": "sensor not showing in system cannot be registered",
-    "notes": "Problem Description:\nSensor is not showing up in device manager. Customer tried different USB ports.\nSolution Description:\nReplaced sensor cable. Sensor now recognized.",
-    "expected_primary": "Hardware Defect/Physical Damage",
-    "expected_secondary": "Cable Issue"
-  },
-  {
-    "_id": "T002",
-    "_comment": "Interface kein Strom → Hardware Defect / Remote Failure",
-    "description": "interface not powering on no lights",
-    "notes": "Problem Description:\nInterface has no lights, no power at all.\nSolution Description:\nReplaced interface unit via RMA.",
-    "expected_primary": "Hardware Defect/Physical Damage",
-    "expected_secondary": "Remote Failure"
-  },
-  {
-    "_id": "T003",
-    "_comment": "Kabeldefekt aus Notes",
-    "description": "sensor connection issue",
-    "notes": "Problem Description:\nSensor intermittently disconnecting.\nSolution Description:\nSensor cable was confirmed as the point of failure. Replaced sensor cable, sensor is now stable.",
-    "expected_primary": "Hardware Defect/Physical Damage",
-    "expected_secondary": "Cable Issue"
-  },
-  {
-    "_id": "T004",
-    "_comment": "Toter Sensor aus Notes",
-    "description": "schick sensor issue",
-    "notes": "Problem Description:\nSensor stopped working entirely.\nSolution Description:\nDead sensor confirmed. Replacement sensor shipped to customer.",
-    "expected_primary": "Hardware Defect/Physical Damage",
-    "expected_secondary": "Sensor Failure"
-  },
-  {
-    "_id": "T005",
-    "_comment": "Treiber-Problem → Software",
-    "description": "sensor not connecting after windows update",
-    "notes": "Problem Description:\nSensor not detected after Windows 11 upgrade.\nSolution Description:\nReinstalled IOSS driver. Sensor now recognized and functional.",
-    "expected_primary": "Software/Firmware/Driver",
-    "expected_secondary": "Driver"
-  },
-  {
-    "_id": "T006",
-    "_comment": "RMA-Anfrage",
-    "description": "ptc proc rma 1234567",
-    "notes": "",
-    "expected_primary": "Spare Parts/RMA/Logistics",
-    "expected_secondary": "RMA Request"
-  },
-  {
-    "_id": "T007",
-    "_comment": "Bildaufnahme nicht möglich",
-    "description": "cannot capture image sensor not capturing",
-    "notes": "Problem Description:\nSensor does not capture images when X-ray is taken.\nSolution Description:\nConfiguration corrected in SIDEXIS. Test shot successful.",
-    "expected_primary": "Imaging/Acquisition/Exposure",
-    "expected_secondary": "Cannot Acquire Image"
-  },
-  {
-    "_id": "T008",
-    "_comment": "Intermittierende Verbindung Sensor",
-    "description": "sensor intermittently disconnects off and on connection unstable",
-    "notes": "Problem Description:\nSensor disconnects intermittently during workflow.\nSolution Description:\nReseated sensor connector. Now stable.",
-    "expected_primary": "Connectivity/Recognition",
-    "expected_secondary": "Sensor Detection Failure (Intermittent)"
-  },
-  {
-    "_id": "T009",
-    "_comment": "SIDEXIS Softwareproblem",
-    "description": "sidexis integration issue curve dental",
-    "notes": "Problem Description:\nSIDEXIS 4 not communicating with Curve Dental.\nSolution Description:\nReconfigured SIDEXIS integration settings. Issue resolved.",
-    "expected_primary": "Software/Firmware/Driver",
-    "expected_secondary": "Software"
-  },
-  {
-    "_id": "T010",
-    "_comment": "Erstinstallation",
-    "description": "new workstation setup installation",
-    "notes": "",
-    "expected_primary": "Installation/Setup/Upgrade",
-    "expected_secondary": "Install/Setup"
-  },
-  {
-    "_id": "T011",
-    "_comment": "Garantieanfrage",
-    "description": "warranty claim sensor defective",
-    "notes": "",
-    "expected_primary": "Warranty/Part Number/Commercial",
-    "expected_secondary": "Warranty"
-  },
-  {
-    "_id": "T012",
-    "_comment": "Bildqualität schlecht",
-    "description": "sensor blurry images vertical lines artifact",
-    "notes": "Problem Description:\nImages show vertical lines and blurring.\nSolution Description:\nSensor replaced under warranty.",
-    "expected_primary": "Imaging/Acquisition/Exposure",
-    "expected_secondary": "Image Quality"
-  },
-  {
-    "_id": "T013",
-    "_comment": "Interface intermittierend (Remote Intermittent)",
-    "description": "remote disconnect hub drops at times",
-    "notes": "Problem Description:\nInterface loses connection sporadically.\nSolution Description:\nTried different USB port. Interface now stable.",
-    "expected_primary": "Connectivity/Recognition",
-    "expected_secondary": "Remote Detection Failure (Intermittent)"
-  },
-  {
-    "_id": "T014",
-    "_comment": "Ersatzteil-Anfrage",
-    "description": "spare part request sensor cable replacement",
-    "notes": "",
-    "expected_primary": "Spare Parts/RMA/Logistics",
-    "expected_secondary": "Spare Part Request"
-  },
-  {
-    "_id": "T015",
-    "_comment": "Deutschsprachig: Sensor nicht erkannt",
-    "description": "sensor wird nicht erkannt im gerätemanager",
-    "notes": "Problem Description:\nSensor nicht im Gerätemanager sichtbar.\nSolution Description:\nSensorkabel getauscht. Sensor wird jetzt wieder erkannt.",
-    "expected_primary": "Connectivity/Recognition",
-    "expected_secondary": "Sensor Detection Failure (Persistent)"
-  },
-  {
-    "_id": "T016",
-    "_comment": "Französisch: Verbindungsproblem",
-    "description": "pb deconnexion capteur intermittent",
-    "notes": "",
-    "expected_primary": "Connectivity/Recognition",
-    "expected_secondary": "Sensor Detection Failure (Intermittent)"
-  },
-  {
-    "_id": "T017",
-    "_comment": "Allgemeine Anfrage / Rückruf",
-    "description": "call back request customer inquiry",
-    "notes": "",
-    "expected_primary": "Info/Inquiry/How-to",
-    "expected_secondary": "General Inquiry"
-  },
-  {
-    "_id": "T018",
-    "_comment": "Windows 11 Kompatibilitätsproblem → Software/Update",
-    "description": "sidexis 4 windows 11 24h2 compatibility issue",
-    "notes": "",
-    "expected_primary": "Software/Firmware/Driver",
-    "expected_secondary": "Update/Version"
-  },
-  {
-    "_id": "T019",
-    "_comment": "Physischer Schaden",
-    "description": "sensor damaged broken housing dropped",
-    "notes": "",
-    "expected_primary": "Hardware Defect/Physical Damage",
-    "expected_secondary": "Physical Damage"
-  },
-  {
-    "_id": "T020",
-    "_comment": "Ambiguous: Weder Sensor noch Interface klar",
-    "description": "sensor communication issue with ae interface",
-    "notes": "",
-    "expected_primary": "Connectivity/Recognition",
-    "expected_secondary": "Ambiguous Detection Failure (Sensor/Remote)"
-  }
+    {
+        "_id":  "T001",
+        "_comment":  "Sensor nicht erkannt → Notes zeigen Kabeldefekt → Cable Issue",
+        "description":  "sensor not showing in system cannot be registered",
+        "notes":  "Problem Description:\nSensor is not showing up in device manager. Customer tried different USB ports.\nSolution Description:\nReplaced sensor cable. Sensor now recognized.",
+        "expected_primary":  "Hardware Defect/Physical Damage",
+        "expected_secondary":  "Cable Issue"
+    },
+    {
+        "_id":  "T002",
+        "_comment":  "Interface kein Strom → Hardware Defect / Remote Failure",
+        "description":  "interface not powering on no lights",
+        "notes":  "Problem Description:\nInterface has no lights, no power at all.\nSolution Description:\nReplaced interface unit via RMA.",
+        "expected_primary":  "Hardware Defect/Physical Damage",
+        "expected_secondary":  "Remote Failure"
+    },
+    {
+        "_id":  "T003",
+        "_comment":  "Kabeldefekt aus Notes",
+        "description":  "sensor connection issue",
+        "notes":  "Problem Description:\nSensor intermittently disconnecting.\nSolution Description:\nSensor cable was confirmed as the point of failure. Replaced sensor cable, sensor is now stable.",
+        "expected_primary":  "Hardware Defect/Physical Damage",
+        "expected_secondary":  "Cable Issue"
+    },
+    {
+        "_id":  "T004",
+        "_comment":  "Toter Sensor aus Notes",
+        "description":  "schick sensor issue",
+        "notes":  "Problem Description:\nSensor stopped working entirely.\nSolution Description:\nDead sensor confirmed. Replacement sensor shipped to customer.",
+        "expected_primary":  "Hardware Defect/Physical Damage",
+        "expected_secondary":  "Sensor Failure"
+    },
+    {
+        "_id":  "T005",
+        "_comment":  "Treiber-Problem → Software",
+        "description":  "sensor not connecting after windows update",
+        "notes":  "Problem Description:\nSensor not detected after Windows 11 upgrade.\nSolution Description:\nReinstalled IOSS driver. Sensor now recognized and functional.",
+        "expected_primary":  "Software/Firmware/Driver",
+        "expected_secondary":  "Driver"
+    },
+    {
+        "_id":  "T006",
+        "_comment":  "RMA-Anfrage",
+        "description":  "ptc proc rma 1234567",
+        "notes":  "",
+        "expected_primary":  "Spare Parts/RMA/Logistics",
+        "expected_secondary":  "RMA Request"
+    },
+    {
+        "_id":  "T007",
+        "_comment":  "Bildaufnahme nicht möglich",
+        "description":  "cannot capture image sensor not capturing",
+        "notes":  "Problem Description:\nSensor does not capture images when X-ray is taken.\nSolution Description:\nConfiguration corrected in SIDEXIS. Test shot successful.",
+        "expected_primary":  "Imaging/Acquisition/Exposure",
+        "expected_secondary":  "Cannot Acquire Image"
+    },
+    {
+        "_id":  "T008",
+        "_comment":  "Intermittierende Verbindung Sensor",
+        "description":  "sensor intermittently disconnects off and on connection unstable",
+        "notes":  "Problem Description:\nSensor disconnects intermittently during workflow.\nSolution Description:\nReseated sensor connector. Now stable.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Intermittent)"
+    },
+    {
+        "_id":  "T009",
+        "_comment":  "SIDEXIS Softwareproblem",
+        "description":  "sidexis integration issue curve dental",
+        "notes":  "Problem Description:\nSIDEXIS 4 not communicating with Curve Dental.\nSolution Description:\nReconfigured SIDEXIS integration settings. Issue resolved.",
+        "expected_primary":  "Software/Firmware/Driver",
+        "expected_secondary":  "Software"
+    },
+    {
+        "_id":  "T010",
+        "_comment":  "Erstinstallation",
+        "description":  "new workstation setup installation",
+        "notes":  "",
+        "expected_primary":  "Installation/Setup/Upgrade",
+        "expected_secondary":  "Install/Setup"
+    },
+    {
+        "_id":  "T011",
+        "_comment":  "Garantieanfrage",
+        "description":  "warranty claim sensor defective",
+        "notes":  "",
+        "expected_primary":  "Warranty/Part Number/Commercial",
+        "expected_secondary":  "Warranty"
+    },
+    {
+        "_id":  "T012",
+        "_comment":  "Bildqualität schlecht",
+        "description":  "sensor blurry images vertical lines artifact",
+        "notes":  "Problem Description:\nImages show vertical lines and blurring.\nSolution Description:\nSensor replaced under warranty.",
+        "expected_primary":  "Imaging/Acquisition/Exposure",
+        "expected_secondary":  "Image Quality"
+    },
+    {
+        "_id":  "T013",
+        "_comment":  "Interface intermittierend (Remote Intermittent)",
+        "description":  "remote disconnect hub drops at times",
+        "notes":  "Problem Description:\nInterface loses connection sporadically.\nSolution Description:\nTried different USB port. Interface now stable.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Remote Detection Failure (Intermittent)"
+    },
+    {
+        "_id":  "T014",
+        "_comment":  "Ersatzteil-Anfrage",
+        "description":  "spare part request sensor cable replacement",
+        "notes":  "",
+        "expected_primary":  "Spare Parts/RMA/Logistics",
+        "expected_secondary":  "Spare Part Request"
+    },
+    {
+        "_id":  "T015",
+        "_comment":  "Deutschsprachig: Sensor nicht erkannt",
+        "description":  "sensor wird nicht erkannt im gerätemanager",
+        "notes":  "Problem Description:\nSensor nicht im Gerätemanager sichtbar.\nSolution Description:\nSensorkabel getauscht. Sensor wird jetzt wieder erkannt.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T016",
+        "_comment":  "Französisch: Verbindungsproblem",
+        "description":  "pb deconnexion capteur intermittent",
+        "notes":  "",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Intermittent)"
+    },
+    {
+        "_id":  "T017",
+        "_comment":  "Allgemeine Anfrage / Rückruf",
+        "description":  "call back request customer inquiry",
+        "notes":  "",
+        "expected_primary":  "Info/Inquiry/How-to",
+        "expected_secondary":  "General Inquiry"
+    },
+    {
+        "_id":  "T018",
+        "_comment":  "Windows 11 Kompatibilitätsproblem → Software/Update",
+        "description":  "sidexis 4 windows 11 24h2 compatibility issue",
+        "notes":  "",
+        "expected_primary":  "Software/Firmware/Driver",
+        "expected_secondary":  "Update/Version"
+    },
+    {
+        "_id":  "T019",
+        "_comment":  "Physischer Schaden",
+        "description":  "sensor damaged broken housing dropped",
+        "notes":  "",
+        "expected_primary":  "Hardware Defect/Physical Damage",
+        "expected_secondary":  "Physical Damage"
+    },
+    {
+        "_id":  "T020",
+        "_comment":  "Ambiguous: Weder Sensor noch Interface klar",
+        "description":  "sensor communication issue with ae interface",
+        "notes":  "",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Ambiguous Detection Failure (Sensor/Remote)"
+    },
+    {
+        "_id":  "T021",
+        "_comment":  "Synthetic training case T021",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T022",
+        "_comment":  "Synthetic training case T022",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T023",
+        "_comment":  "Synthetic training case T023",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T024",
+        "_comment":  "Synthetic training case T024",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T025",
+        "_comment":  "Synthetic training case T025",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T026",
+        "_comment":  "Synthetic training case T026",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T027",
+        "_comment":  "Synthetic training case T027",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T028",
+        "_comment":  "Synthetic training case T028",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T029",
+        "_comment":  "Synthetic training case T029",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T030",
+        "_comment":  "Synthetic training case T030",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T031",
+        "_comment":  "Synthetic training case T031",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T032",
+        "_comment":  "Synthetic training case T032",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T033",
+        "_comment":  "Synthetic training case T033",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T034",
+        "_comment":  "Synthetic training case T034",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T035",
+        "_comment":  "Synthetic training case T035",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T036",
+        "_comment":  "Synthetic training case T036",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T037",
+        "_comment":  "Synthetic training case T037",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T038",
+        "_comment":  "Synthetic training case T038",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T039",
+        "_comment":  "Synthetic training case T039",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T040",
+        "_comment":  "Synthetic training case T040",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T041",
+        "_comment":  "Synthetic training case T041",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T042",
+        "_comment":  "Synthetic training case T042",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T043",
+        "_comment":  "Synthetic training case T043",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T044",
+        "_comment":  "Synthetic training case T044",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T045",
+        "_comment":  "Synthetic training case T045",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T046",
+        "_comment":  "Synthetic training case T046",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T047",
+        "_comment":  "Synthetic training case T047",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T048",
+        "_comment":  "Synthetic training case T048",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T049",
+        "_comment":  "Synthetic training case T049",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T050",
+        "_comment":  "Synthetic training case T050",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T051",
+        "_comment":  "Synthetic training case T051",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T052",
+        "_comment":  "Synthetic training case T052",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T053",
+        "_comment":  "Synthetic training case T053",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T054",
+        "_comment":  "Synthetic training case T054",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T055",
+        "_comment":  "Synthetic training case T055",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T056",
+        "_comment":  "Synthetic training case T056",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T057",
+        "_comment":  "Synthetic training case T057",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T058",
+        "_comment":  "Synthetic training case T058",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T059",
+        "_comment":  "Synthetic training case T059",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T060",
+        "_comment":  "Synthetic training case T060",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T061",
+        "_comment":  "Synthetic training case T061",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T062",
+        "_comment":  "Synthetic training case T062",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T063",
+        "_comment":  "Synthetic training case T063",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T064",
+        "_comment":  "Synthetic training case T064",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T065",
+        "_comment":  "Synthetic training case T065",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T066",
+        "_comment":  "Synthetic training case T066",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T067",
+        "_comment":  "Synthetic training case T067",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T068",
+        "_comment":  "Synthetic training case T068",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T069",
+        "_comment":  "Synthetic training case T069",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T070",
+        "_comment":  "Synthetic training case T070",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T071",
+        "_comment":  "Synthetic training case T071",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T072",
+        "_comment":  "Synthetic training case T072",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T073",
+        "_comment":  "Synthetic training case T073",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T074",
+        "_comment":  "Synthetic training case T074",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T075",
+        "_comment":  "Synthetic training case T075",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T076",
+        "_comment":  "Synthetic training case T076",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T077",
+        "_comment":  "Synthetic training case T077",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T078",
+        "_comment":  "Synthetic training case T078",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T079",
+        "_comment":  "Synthetic training case T079",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T080",
+        "_comment":  "Synthetic training case T080",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T081",
+        "_comment":  "Synthetic training case T081",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T082",
+        "_comment":  "Synthetic training case T082",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T083",
+        "_comment":  "Synthetic training case T083",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T084",
+        "_comment":  "Synthetic training case T084",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T085",
+        "_comment":  "Synthetic training case T085",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T086",
+        "_comment":  "Synthetic training case T086",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T087",
+        "_comment":  "Synthetic training case T087",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T088",
+        "_comment":  "Synthetic training case T088",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T089",
+        "_comment":  "Synthetic training case T089",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T090",
+        "_comment":  "Synthetic training case T090",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T091",
+        "_comment":  "Synthetic training case T091",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T092",
+        "_comment":  "Synthetic training case T092",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T093",
+        "_comment":  "Synthetic training case T093",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T094",
+        "_comment":  "Synthetic training case T094",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T095",
+        "_comment":  "Synthetic training case T095",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T096",
+        "_comment":  "Synthetic training case T096",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T097",
+        "_comment":  "Synthetic training case T097",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T098",
+        "_comment":  "Synthetic training case T098",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T099",
+        "_comment":  "Synthetic training case T099",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    },
+    {
+        "_id":  "T100",
+        "_comment":  "Synthetic training case T100",
+        "description":  "sensor not detected connection issue",
+        "notes":  "Problem Description:\nSensor not detected on startup.\nSolution Description:\nChecked USB port and verified status.",
+        "expected_primary":  "Connectivity/Recognition",
+        "expected_secondary":  "Sensor Detection Failure (Persistent)"
+    }
 ]

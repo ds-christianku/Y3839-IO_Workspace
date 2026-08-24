@@ -1,8 +1,9 @@
-"""Stage 3: Liest tickets_classified.json und generiert den HTML-Report.
+﻿"""Stage 3: Liest tickets_classified.json und generiert den HTML-Report.
 
 Wandelt das klassifizierte JSON in das Report-Format um und ruft render_html auf.
 """
 from __future__ import annotations
+from pathlib import Path
 
 import argparse
 import datetime as dt
@@ -529,7 +530,7 @@ def render_html(report_data: dict[str, object]) -> str:
             <select id="descSecondaryFilterCopy"></select>
             <span class="toolbar-break" aria-hidden="true"></span>
             <label for="descSearchInput">Ticket Search</label>
-            <input id="descSearchInput" type="text" placeholder="Search in ticket descriptions…" style="padding:0.25rem 0.5rem;border:1px solid #ccc;border-radius:4px;font-size:0.85rem;min-width:200px;" />
+            <input id="descSearchInput" type="text" placeholder="Search in ticket descriptionsâ€¦" style="padding:0.25rem 0.5rem;border:1px solid #ccc;border-radius:4px;font-size:0.85rem;min-width:200px;" />
             <span class="toolbar-break" aria-hidden="true"></span>
             <span class="muted" id="descMetaCopy"></span>
           </div>
@@ -841,7 +842,7 @@ def render_html(report_data: dict[str, object]) -> str:
       const oldestDate = getMinDate(rows);
       const newestDate = getMaxDate(rows);
       if (!oldestDate || !newestDate) return 'Overall';
-      return `${{formatDateDe(oldestDate)}} → ${{formatDateDe(newestDate)}}`;
+      return `${{formatDateDe(oldestDate)}} â†’ ${{formatDateDe(newestDate)}}`;
     }}
 
     function addMonths(date, monthsDelta) {{
@@ -1194,12 +1195,12 @@ def render_html(report_data: dict[str, object]) -> str:
       if (panel) panel.style.display = '';
       if (meta) meta.textContent = `Base: ${{nf.format(total)}} tickets with Notes`;
       const rows = [
-        ['✓ Ticket with clearness', clear],
-        ['✗ Ticket without clearness', unclear],
+        ['âœ“ Ticket with clearness', clear],
+        ['âœ— Ticket without clearness', unclear],
       ];
       body.innerHTML = rows.map(([name, value]) => {{
         const share = ((value / total) * 100).toFixed(1);
-        const color = name.startsWith('✓') ? 'color:#2e7d32;font-weight:600;' : 'color:#c62828;font-weight:600;';
+        const color = name.startsWith('âœ“') ? 'color:#2e7d32;font-weight:600;' : 'color:#c62828;font-weight:600;';
         return `<tr><td style="${{color}}">${{esc(name)}}</td><td>${{nf.format(value)}}</td><td>${{share}}%</td></tr>`;
       }}).join('');
 
@@ -1559,7 +1560,7 @@ def render_html(report_data: dict[str, object]) -> str:
         hintEl.innerHTML = `Transaction Number: <strong>${{esc(transactionFilterEl.value.trim())}}</strong> | Rows: ${{nf.format(visibleRows.length)}}`;
         bodyEl.innerHTML = visibleRows.length
           ? visibleRows.map(item => item.notes
-              ? `<tr style="cursor:pointer;" onclick="showNotes('${{esc(item.transaction)}}', this)" data-notes="${{esc(item.notes)}}"><td>${{esc(item.createdAt)}}</td><td>${{esc(item.transaction)}}</td><td>${{esc(item.category3)}}</td><td>${{esc(item.category4)}}</td><td>${{esc(item.descPrimary)}}</td><td>${{esc(item.descSecondary)}}</td><td>${{esc(item.contactPerson)}}</td><td style="text-align:center;font-size:1rem;">${{item.clarity === 'clear' ? '✓' : item.clarity === 'unclear' ? '✗' : ''}}</td><td>${{esc(item.region)}}</td></tr>`
+              ? `<tr style="cursor:pointer;" onclick="showNotes('${{esc(item.transaction)}}', this)" data-notes="${{esc(item.notes)}}"><td>${{esc(item.createdAt)}}</td><td>${{esc(item.transaction)}}</td><td>${{esc(item.category3)}}</td><td>${{esc(item.category4)}}</td><td>${{esc(item.descPrimary)}}</td><td>${{esc(item.descSecondary)}}</td><td>${{esc(item.contactPerson)}}</td><td style="text-align:center;font-size:1rem;">${{item.clarity === 'clear' ? 'âœ“' : item.clarity === 'unclear' ? 'âœ—' : ''}}</td><td>${{esc(item.region)}}</td></tr>`
               : `<tr><td>${{esc(item.createdAt)}}</td><td>${{esc(item.transaction)}}</td><td>${{esc(item.category3)}}</td><td>${{esc(item.category4)}}</td><td>${{esc(item.descPrimary)}}</td><td>${{esc(item.descSecondary)}}</td><td>${{esc(item.contactPerson)}}</td><td></td><td>${{esc(item.region)}}</td></tr>`
             ).join('')
           : '<tr><td colspan="9" class="muted">No matching transactions found.</td></tr>';
@@ -1577,7 +1578,7 @@ def render_html(report_data: dict[str, object]) -> str:
       hintEl.innerHTML = `Description: <strong>${{esc(currentSelectedDescription)}}</strong> | Rows: ${{nf.format(currentDescriptionDetailRows.length)}}`;
       bodyEl.innerHTML = currentDescriptionDetailRows.length
         ? currentDescriptionDetailRows.map(item => item.notes
-            ? `<tr style="cursor:pointer;" onclick="showNotes('${{esc(item.transaction)}}', this)" data-notes="${{esc(item.notes)}}"><td>${{esc(item.createdAt)}}</td><td>${{esc(item.transaction)}}</td><td>${{esc(item.category3)}}</td><td>${{esc(item.category4)}}</td><td>${{esc(item.descPrimary)}}</td><td>${{esc(item.descSecondary)}}</td><td>${{esc(item.contactPerson)}}</td><td style="text-align:center;font-size:1rem;">${{item.clarity === 'clear' ? '✓' : item.clarity === 'unclear' ? '✗' : ''}}</td><td>${{esc(item.region)}}</td></tr>`
+            ? `<tr style="cursor:pointer;" onclick="showNotes('${{esc(item.transaction)}}', this)" data-notes="${{esc(item.notes)}}"><td>${{esc(item.createdAt)}}</td><td>${{esc(item.transaction)}}</td><td>${{esc(item.category3)}}</td><td>${{esc(item.category4)}}</td><td>${{esc(item.descPrimary)}}</td><td>${{esc(item.descSecondary)}}</td><td>${{esc(item.contactPerson)}}</td><td style="text-align:center;font-size:1rem;">${{item.clarity === 'clear' ? 'âœ“' : item.clarity === 'unclear' ? 'âœ—' : ''}}</td><td>${{esc(item.region)}}</td></tr>`
             : `<tr><td>${{esc(item.createdAt)}}</td><td>${{esc(item.transaction)}}</td><td>${{esc(item.category3)}}</td><td>${{esc(item.category4)}}</td><td>${{esc(item.descPrimary)}}</td><td>${{esc(item.descSecondary)}}</td><td>${{esc(item.contactPerson)}}</td><td></td><td>${{esc(item.region)}}</td></tr>`
           ).join('')
         : '<tr><td colspan="9" class="muted">No matching transactions found.</td></tr>';
@@ -1862,17 +1863,18 @@ def render(classified_path: Path, output_html: Path) -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Stage 3: tickets_classified.json → HTML-Report")
+    parser = argparse.ArgumentParser(description="Stage 3: tickets_classified.json â†’ HTML-Report")
     parser.add_argument("--input", default="output/tickets_classified.json")
     parser.add_argument("--output", default="Ticket_Report_CSV.html")
     args = parser.parse_args()
 
     classified_path = Path(args.input)
     if not classified_path.exists():
-        raise FileNotFoundError(f"Klassifizierte Daten nicht gefunden: {classified_path}  →  Erst Stage 2 ausfuehren.")
+        raise FileNotFoundError(f"Klassifizierte Daten nicht gefunden: {classified_path}  â†’  Erst Stage 2 ausfuehren.")
 
     render(classified_path, Path(args.output))
 
 
 if __name__ == "__main__":
     main()
+

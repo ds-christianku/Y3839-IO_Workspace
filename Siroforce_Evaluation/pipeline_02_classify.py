@@ -111,9 +111,11 @@ def classify_description(description: str, cat4: str = "") -> tuple[str, str]:
     if re.search(r"admin password|sensor supp+ort|frage zur anordung", value):
         return "Info/Inquiry/How-to", "General Inquiry"
 
-    if re.search(r"sidexis 4|win(?:dows)? 11|24h2|25h2|device manager", value):
+    if re.search(r"legacy drivers?|driver help|driver question|schick\s+driver|requesting legacy drivers|old drivers?|drivers?\s+eol|driver updates?|driver support|5\.16 drivers?|ioss\s*3(?:\.2)?\s+driver|driver\s*/\s*ioss\s*3(?:\.2)?|missing driver", value):
+        return "Software/Firmware/Driver", "Driver"
+    if re.search(r"sidexis 4|win(?:dows)? 11|24h2|25h2|device manager", value) and not re.search(r"not detect(?:ed)?|not recogniz(?:ed|ing)?|cannot be registered|sensor not detected|sensor not reading|will not connect|not connecting|connection issue|no connection|disconnect|not reachable|not ready|no sensor info|interface|remote|hub", value):
         return "Software/Firmware/Driver", "Update/Version"
-    if re.search(r"sidexis|cdr dicom|cdrdicom|curve dental|curve capture|curve integration|patterson integration|ioss\s*3|s4sp", value):
+    if re.search(r"sidexis|cdr dicom|cdrdicom|curve dental|curve capture|curve integration|patterson integration|ioss\s*3|s4sp", value) and not re.search(r"not detect(?:ed)?|not recogniz(?:ed|ing)?|cannot be registered|sensor not detected|sensor not reading|will not connect|not connecting|connection issue|no connection|disconnect|not reachable|not ready|no sensor info|interface|remote|hub", value):
         return "Software/Firmware/Driver", "Software"
     if re.search(r"server migration|other: extreme slowness after ioss insta|schick template issue|odbc error|schick integration|ioss.*curve", value):
         return "Software/Firmware/Driver", "Software"
@@ -287,6 +289,7 @@ _C_USB_TERMS    = re.compile(r"usb port|different usb|another usb|swap usb|chang
 _C_USB_PROD_CTX = re.compile(r"usb interface|schick\s*\d+(?:\.\d+)?\s*usb\s*interface|\brma\b")
 _C_WEAK_CONN    = re.compile(r"not working|does not work|doesn't work|will not work|won't work|unable to use")
 _C_INTERMIT     = re.compile(r"intermittent|disconnect(?:ed|ing|ion)?|drops?|off and on|sporadic|sometimes works|occasionally")
+_C_PERSISTENT_CONN = re.compile(r"constantly\s+disconnect(?:ed|ing|ion)?|always\s+disconnect(?:ed|ing|ion)?|every\s+time\s+disconnect(?:ed|ing|ion)?|permanent(?:ly)?\s+disconnect(?:ed|ing|ion)?")
 _C_GENERIC_TPL  = re.compile(r"cannot be determined from the information provided|related to software or connectivity related within the office|part of the system must be replaced|replacement part has been recommended|require further troubleshooting at the dealer|please refer to customer communication|diagnosed and determined to be related to computer software, system compatibility or system connectivity|non-serious determination by chu eds")
 _C_SENSOR_DISC  = re.compile(r"(?:sensor|capteur|sensore).{0,60}(?:disconnect(?:ed|ing|ion)?|loose|reseat|not connect(?:ing)?|not pick(?:ed)?\s*up)|(?:disconnect(?:ed|ing|ion)?|loose|reseat|not connect(?:ing)?).{0,60}(?:sensor|capteur|sensore)")
 _C_IFACE_DISC   = re.compile(r"(?:interface|remote|hub|module|usb[-\s]*box|sensorbox|wandbox).{0,60}(?:disconnect(?:ed|ing|ion)?|not connect(?:ing)?|drops?|lose connection)|(?:disconnect(?:ed|ing|ion)?|not connect(?:ing)?|drops?|lose connection).{0,60}(?:interface|remote|hub|module|usb[-\s]*box|sensorbox|wandbox)")
@@ -344,6 +347,9 @@ def _refine_connectivity(secondary: str, notes: str, description: str = "") -> s
     hnd  = bool(_C_NOT_DET.search(notes_lc))
     hcon = bool(_C_CONN_TERMS.search(notes_lc))
     hint = bool(_C_INTERMIT.search(notes_lc))
+    persistent_conn = bool(_C_PERSISTENT_CONN.search(notes_lc))
+    if persistent_conn:
+        hint = False
     hwk  = bool(_C_WEAK_CONN.search(notes_lc))
     snd  = bool(_C_SENSOR_ND_DIR.search(notes_lc))
     ind  = bool(_C_IFACE_ND_DIR.search(notes_lc))
@@ -386,7 +392,11 @@ def _refine_connectivity(secondary: str, notes: str, description: str = "") -> s
 
 _HW_SENSOR_DEAD   = re.compile(r"\bdead sensor\b|we have a dead sensor|sensor is dead|defective sensor|sensor failure")
 _HW_CABLE_OK      = re.compile(r"sensor cable.*(?:point of failure|not functioning|defective|broken|damaged|didn[' \\s]*t work|didnt? work)|(?:point of failure|not functioning|defective|broken|damaged).*sensor cable|replace(?:d|ment)?\s+sensor cable|sensor cable.*replac(?:ed|ement)?|cable.*(?:was|is).*(?:the\s+)?point of failure|confirmed.*cable.*(?:defect|fail|broken|damaged)|sensor cable didn[' \\s]*t work|kabel defekt|sensorkabel.*defekt|defektes sensorkabel")
-_HW_CABLE_NOT     = re.compile(r"even if.*cable.*(?:was\s+)?(?:changed|replaced|swapped)|even after.*cable.*(?:changed|replaced|swapped)|cable.*(?:changed|replaced|swapped).*still\s+(?:undetected|not detect|not recogniz|not work|not connect)|still\s+(?:undetected|not detect|not recogniz).*cable.*(?:changed|replaced|swapped)|replaced?\s+sensor\s+cable.*suggest\s+replac.*sensor|after.*(?:replac|swap|chang).*cable.*sensor.*still\s+(?:not|un)")
+_HW_CABLE_NOT     = re.compile(r"even if.*cable.*(?:was\s+)?(?:changed|replaced|swapped)|even after.*cable.*(?:changed|replaced|swapped)|cable.*(?:changed|replaced|swapped).*still\s+(?:undetected|not detect|not recogniz|not work|not connect)|still\s+(?:undetected|not detect|not recogniz).*cable.*(?:changed|replaced|swapped)|replaced?\s+sensor\s+cable.*suggest\s+replac.*sensor|after.*(?:replac|swap|chang).*cable.*sensor.*still\s+(?:not|un)|replaced?\s+sensor\s+cable[\s\S]{0,220}(?:worked|work(ed)?)[\s\S]{0,220}still\s+(?:not\s+connect|will\s+not\s+connect)|replaced?\s+sensor\s+cable[\s\S]{0,260}(?:worked|work(ed)?)[\s\S]{0,260}(?:interface|remote|hub)[\s\S]{0,120}(?:still\s+)?(?:not\s+connect|will\s+not\s+connect)")
+_HW_CABLE_ROOT_CAUSE = re.compile(r"point of failure|confirmed.*cable.*(?:defect|fail|broken|damaged)|kabel defekt|sensorkabel.*defekt|defektes sensorkabel|sensor cable.*(?:defective|broken|damaged|not functioning)")
+_HW_CABLE_ACTION  = re.compile(r"replace(?:d|ment)?\s+sensor\s+cable|sensor\s+cable.*replac(?:ed|ement)?|swapp?ed\s+sensor\s+cable|changed\s+sensor\s+cable")
+_HW_CONN_STILL_FAIL = re.compile(r"still\s+(?:not\s+connect|will\s+not\s+connect|not\s+work|undetected|not\s+detect|not\s+recogniz)|interface\s+will\s+not\s+connect|remote\s+will\s+not\s+connect|hub\s+will\s+not\s+connect")
+_HW_CABLE_RESOLVED = re.compile(r"now\s+stable|working\s+now|now\s+working|sensor\s+now\s+recognized|issue\s+resolved|functional\s*\(yes/no\):\s*yes|test\s+shot.*good|tested\s+and\s+functional")
 _HW_SENSOR_REPL   = re.compile(r"suggest replacing(?: the)? sensors?|recommend replacing(?: the)? sensors?|replace sensors? out of warranty|new sensor rma|sensor rma")
 _HW_SENSOR_TRBL   = re.compile(r"replaced? cables? and elastomers?|replaced? (?:sensor\s+)?cable and elastomer|cleaned contacts?|still having issue with connection|still no function|no help|other sensors? in the same setup.*worked|took multiple shots.*not get triggered")
 _SW_ACTION        = re.compile(r"(?:install(?:ed|ing)?|reinstall(?:ed|ing)?|update(?:d|ing)?|upgrade(?:d|ing)?|rollback|removed?|uninstall(?:ed|ing)?).{0,24}(?:driver|ioss|sidexis|plugin|twain|software|firmware)|(?:driver|ioss|sidexis|plugin|twain|software|firmware).{0,24}(?:install(?:ed|ing)?|reinstall(?:ed|ing)?|update(?:d|ing)?|upgrade(?:d|ing)?|rollback|removed?|uninstall(?:ed|ing)?)")
@@ -394,21 +404,94 @@ _SW_EXCLUDE       = re.compile(r"related to software or connectivity related wit
 _SW_DRIVER        = re.compile(r"driver|ioss|twain|plugin")
 _SW_UPDATE        = re.compile(r"update|upgrade|version|sidexis|firmware")
 _SW_RESOLVED      = re.compile(r"now able to acquire|can now acquire|test shot.*good|functional \(yes/no\): yes|issue resolved|resolved|tested and functional")
+_SW_DRIVER_FOCUS  = re.compile(r"legacy drivers?|driver help|driver question|schick\s+driver|drivers?\s+eol|requesting legacy drivers|montati driver|driver support|elite driver|5\.16\s+drivers?|driver questions?|missing driver|installed the .*driver|install.*elite driver|legacy drive install|old drivers|driver that accepts ioss|legacy drivers not supported|tech notices of eol")
+_SW_SOFTWARE_FOCUS = re.compile(r"cdr\s?dicom|cdrdicom|curve|eaglesoft|dexis|open dental|xvweb|xvcapture|sensor plugin|working properly now|working fine now|connection to sidexis is unavailable|sidexis.*plugin|curve capture|connected fine after this|tested in sidexis working fine now|working in eaglesoft|capture in dexis|stopped services|deleted the old sensor instances|deleted old sensor instances|old sensor instances")
+_SW_SETUP_FOCUS   = re.compile(r"plugin nicht installiert|intra\s+plugin\s+nicht\s+installiert|help installing sidexis|help installing.*configuring the sensors|configuring the sensors|installed sidexis on|setup sidexis connector|setup open dental bridge|just bought their schick sensors|needs sidexis")
+_SW_PLUGIN_HELP_FOCUS = re.compile(r"needed help installing sensor plugin|help installing sensor plugin|sidexis 4 sensor plugin")
+_SW_UPDATE_FOCUS  = re.compile(r"windows\s*11|24h2|25h2|updated?\s+(?:firmware|ioss|sidexis|software|plugin)|upgrade(?:d|ing)?|version mismatch|convert\s+to\s+sidexis|migrat(?:e|ion)|firmware\s+to\s+\d|update to curve|convert\s+to\s+curve|moving to curve|move to curve|update to ioss|update to dexis")
+_SW_CONNECTIVITY_BLOCK = re.compile(r"sensor isn.?t|not seeing sensor|unable to take images|no capture|flashes green|sensor not detected|will not connect|not connecting")
+_SW_CONFIG_FOCUS  = re.compile(r"<serviceconsumer|<repositoryroot|s4version=|axeos|attached logs and pictures|xml version")
+_SW_DRIVER_REBUILD = re.compile(r"removed?\s+all|wiped?\s+the\s+folders?|only\s+installed\s+ioss\s*\d(?:\.\d+)?|reinstalled?\s+ioss\s*\d(?:\.\d+)?|uninstalled?\s+.*(?:driver|cdr|ioss).{0,40}installed?\s+ioss")
+_SW_STACK_FOCUS = re.compile(r"\bc\+\+\b|msxml|twain|cdr\s*twain|ae\s*usb|legacy\s+software|ioss\s*\d(?:\.\d+)?|plugin|firmware|software")
+_SW_SOFT_ACTION_FOCUS = re.compile(r"install(?:ed|ing)?|reinstall(?:ed|ing)?|uninstall(?:ed|ing)?|remove(?:d)?|wipe(?:d)?|update(?:d|ing)?|upgrade(?:d|ing)?|patch(?:ed|ing)?|correct(?:ed|ion)?|reboot(?:ed|ing)?|restart(?:ed|ing)?|stopp(?:ed|ing)?\s+services?|delet(?:ed|ing)")
+_SW_RESULT_FOCUS = re.compile(r"working(?:\s+now)?|functional|test\s*shot|ready\s+for\s+exposure|connected\s+fine|now\s+able|captur(?:e|ing)")
+_SW_PLUGIN_INSTALL_HELP = re.compile(r"help\s+installing\s+(?:sensor\s+)?plugin|needed\s+help\s+installing\s+(?:sensor\s+)?plugin|install(?:ed|ing)?\s+(?:the\s+)?(?:sidexis\s*4\s*)?sensor\s*plugin")
+_SW_DRIVER_TECH_FOCUS = re.compile(r"legacy\s+drivers?|old\s+drivers?|\bdrivers?\b|\b5\.16\b|cdr\s*twain|twain|ae\s*usb|driver\s+question|missing\s+driver")
+_SW_UPDATE_REMEDIATION_FOCUS = re.compile(r"updated?\s+firmware|firmware\s+to\s+\d|software\s+.*(?:correct(?:ed|ion)|updated?)|rebooted\s+the\s+workstation|power\s+save\s+issue")
+_SW_GENERIC_SECTION_FOCUS = re.compile(r"please\s+refer\s+to|closing\s+ticket|close\s+ticket|no\s+response\s+from\s+customer")
+
+
+# Kategorien, bei denen Hardware-/Software-Signale aus Notes nicht sinnvoll sind
+_NOTES_HW_SKIP = frozenset([
+    "Spare Parts/RMA/Logistics",
+    "Info/Inquiry/How-to",
+    "Warranty/Part Number/Commercial",
+    "Software/Firmware/Driver",
+])
+_NOTES_SW_ELIGIBLE = frozenset([
+    "Connectivity/Recognition",
+    "Unknown/Other",
+    "Imaging/Acquisition/Exposure",
+    "Installation/Setup/Upgrade",
+    "Hardware Defect/Physical Damage",
+])
 
 
 def refine_subcategory_with_notes(primary: str, secondary: str, notes: str, description: str = "") -> tuple[str, str]:
     notes_lc = (notes or "").lower().strip()
+    # Fokus auf operative Inhalte: Solution + Troubleshooting (statt generischer QA-/Closure-Texte)
+    sol_text = _extract_best_labeled_section(
+        notes,
+        "Solution Description",
+        ["Problem Description", "Internal Note", "Customer Communication", "Customer Note", "Log", "Note"],
+    )
+    trb_text = _extract_best_labeled_section(
+        notes,
+        "Troubleshooting Details",
+        ["Functional", "Follow Up", "Solution Description", "Problem Description", "Internal Note", "Customer Communication", "Customer Note", "Log", "Note"],
+    )
+    if not trb_text:
+        trb_text = _extract_best_labeled_section(
+            notes,
+            "Troubleshooting Description",
+            ["Functional", "Follow Up", "Solution Description", "Problem Description", "Internal Note", "Customer Communication", "Customer Note", "Log", "Note"],
+        )
+    notes_focus = normalize_text(f"{sol_text} {trb_text}").lower().strip()
+    # Bei generischen Abschluss-Texten auf Volltext zurückfallen, damit relevante aeltere Note-Eintraege erhalten bleiben.
+    if len(notes_focus) < 16 or _SW_GENERIC_SECTION_FOCUS.search(notes_focus):
+        notes_sw_scope = notes_lc
+    else:
+        notes_sw_scope = notes_focus
 
-    # 1) Kabeldefekt aus Notes
-    if primary in ("Connectivity/Recognition", "Hardware Defect/Physical Damage") and len(notes_lc) >= 20:
-        if _HW_CABLE_OK.search(notes_lc) and not _HW_CABLE_NOT.search(notes_lc):
-            return "Hardware Defect/Physical Damage", "Cable Issue"
+    # ── Stufe 0: Notes-Klassifizierung fuer Unknown/Other ────────────────────
+    if primary == "Unknown/Other" and len(notes_lc) >= 80:
+        prob_text = _extract_labeled_section(
+            notes, "Problem Description",
+            ["Solution Description", "Internal Note", "Customer Communication"],
+        )
+        # nur auswerten wenn ein echter "Problem Description:"-Abschnitt vorhanden ist
+        if prob_text and len(prob_text) >= 40:
+            notes_p, notes_s = classify_description(prob_text)
+            if notes_p != "Unknown/Other":
+                primary, secondary = notes_p, notes_s
+
+    # ── Stufe 1: Kabeldefekt aus Notes (alle relevanten Kategorien) ───────────
+    if primary not in _NOTES_HW_SKIP and len(notes_lc) >= 20:
+        cable_hit = bool(_HW_CABLE_OK.search(notes_lc))
+        if cable_hit:
+            cable_root = bool(_HW_CABLE_ROOT_CAUSE.search(notes_lc))
+            cable_action = bool(_HW_CABLE_ACTION.search(notes_lc))
+            unresolved = bool(_HW_CABLE_NOT.search(notes_lc)) or bool(cable_action and _HW_CONN_STILL_FAIL.search(notes_lc))
+            resolved = bool(_HW_CABLE_RESOLVED.search(notes_lc))
+            # Cable Issue only if cable is confirmed as root cause or cable action clearly resolved the issue.
+            if not unresolved and (cable_root or (cable_action and resolved)):
+                return "Hardware Defect/Physical Damage", "Cable Issue"
 
     if primary == "Hardware Defect/Physical Damage":
         return primary, secondary
 
-    # 2) Defekter Sensor aus Notes
-    if primary == "Connectivity/Recognition" and len(notes_lc) >= 10:
+    # ── Stufe 2: Defekter Sensor aus Notes (alle relevanten Kategorien) ──────
+    if primary not in _NOTES_HW_SKIP and len(notes_lc) >= 10:
         if _HW_SENSOR_DEAD.search(notes_lc):
             if not re.search(r"\bdead sensor\b|sensor is dead|we have a dead sensor", notes_lc):
                 if _C_GENERIC_TPL.search(notes_lc):
@@ -421,22 +504,64 @@ def refine_subcategory_with_notes(primary: str, secondary: str, notes: str, desc
     if primary == "Hardware Defect/Physical Damage":
         return primary, secondary
 
-    # 3) Software aus Notes
-    if primary == "Connectivity/Recognition" and len(notes_lc) >= 30:
-        if not _SW_EXCLUDE.search(notes_lc) and _SW_ACTION.search(notes_lc):
-            hw_sig = _HW_SENSOR_DEAD.search(notes_lc) or _HW_SENSOR_REPL.search(notes_lc) or _HW_SENSOR_TRBL.search(notes_lc)
-            if not hw_sig:
-                if _SW_DRIVER.search(notes_lc):
+    # ── Stufe 3: Software aus Notes (erweiterte Kategorien) ──────────────────
+    if len(notes_lc) >= 30:
+        desc_driver_focus = bool(re.search(r"driver|legacy drivers?|missing driver|schick\s+driver", (description or "").lower()))
+        desc_update_focus = bool(re.search(r"update to curve|convert to sidexis|cdrdicom to sidexis|migration|migrate", (description or "").lower()))
+        hw_sig = _HW_SENSOR_DEAD.search(notes_lc) or _HW_SENSOR_REPL.search(notes_lc) or _HW_SENSOR_TRBL.search(notes_lc)
+        sw_action = bool(_SW_ACTION.search(notes_sw_scope))
+        sw_excluded = bool(_SW_EXCLUDE.search(notes_lc))
+        driver_focus = bool(_SW_DRIVER_FOCUS.search(notes_sw_scope))
+        software_focus = bool(_SW_SOFTWARE_FOCUS.search(notes_sw_scope))
+        setup_focus = bool(_SW_SETUP_FOCUS.search(notes_sw_scope))
+        plugin_help_focus = bool(_SW_PLUGIN_HELP_FOCUS.search(notes_sw_scope))
+        update_focus = bool(_SW_UPDATE_FOCUS.search(notes_sw_scope))
+        connectivity_block = bool(_C_NOT_DET.search(notes_sw_scope) or _C_SENSOR_ND_DIR.search(notes_sw_scope) or _C_IFACE_ND_DIR.search(notes_sw_scope) or _SW_CONNECTIVITY_BLOCK.search(notes_sw_scope))
+        driver_rebuild_focus = bool(_SW_DRIVER_REBUILD.search(notes_sw_scope))
+        sw_stack_focus = bool(_SW_STACK_FOCUS.search(notes_sw_scope))
+        sw_action_focus = bool(_SW_SOFT_ACTION_FOCUS.search(notes_sw_scope))
+        sw_result_focus = bool(_SW_RESULT_FOCUS.search(notes_sw_scope))
+        plugin_install_help = bool(_SW_PLUGIN_INSTALL_HELP.search(notes_sw_scope))
+        driver_tech_focus = bool(_SW_DRIVER_TECH_FOCUS.search(notes_sw_scope))
+        update_remediation_focus = bool(_SW_UPDATE_REMEDIATION_FOCUS.search(notes_sw_scope))
+        strong_sw_resolution_focus = (sw_stack_focus and sw_action_focus and sw_result_focus) or plugin_install_help
+        connectivity_driver_exception = (
+            primary == "Connectivity/Recognition"
+            and not hw_sig
+            and driver_rebuild_focus
+        )
+        connectivity_software_exception = (
+            primary == "Connectivity/Recognition"
+            and not hw_sig
+            and (
+                strong_sw_resolution_focus
+                or (update_focus and sw_action_focus)
+                or (software_focus and sw_result_focus and sw_action_focus)
+                or plugin_install_help
+            )
+        )
+        if not hw_sig and setup_focus and not connectivity_block:
+            return "Installation/Setup/Upgrade", "Install/Setup"
+
+        if primary in (_NOTES_SW_ELIGIBLE | frozenset(["Software/Firmware/Driver", "Connectivity/Recognition"])):
+            has_sw_signal = (sw_action or driver_focus or software_focus or update_focus or plugin_help_focus)
+            can_apply_sw_override = (
+                (primary == "Connectivity/Recognition" and connectivity_driver_exception)
+                or (primary == "Connectivity/Recognition" and connectivity_software_exception)
+                or (primary != "Connectivity/Recognition" and not connectivity_block)
+            )
+            can_ignore_sw_excluded = primary == "Software/Firmware/Driver" and (driver_focus or driver_tech_focus or update_focus or update_remediation_focus or software_focus)
+            if has_sw_signal and (not sw_excluded or can_ignore_sw_excluded or connectivity_software_exception) and not hw_sig and can_apply_sw_override:
+                if driver_focus or desc_driver_focus or driver_rebuild_focus or driver_tech_focus:
                     return "Software/Firmware/Driver", "Driver"
-                if _SW_UPDATE.search(notes_lc):
+                if update_focus or desc_update_focus or update_remediation_focus:
                     return "Software/Firmware/Driver", "Update/Version"
-                if _SW_RESOLVED.search(notes_lc):
-                    return "Software/Firmware/Driver", "Software"
+                return "Software/Firmware/Driver", "Software"
 
     if primary != "Connectivity/Recognition":
         return primary, secondary
 
-    # 4) Connectivity-Subkategorie aus Notes verfeinern
+    # ── Stufe 4: Connectivity-Subkategorie verfeinern ────────────────────────
     return primary, _refine_connectivity(secondary, notes, description=description)
 
 
@@ -445,7 +570,7 @@ def refine_subcategory_with_notes(primary: str, secondary: str, notes: str, desc
 # ══════════════════════════════════════════════════════════════════════════════
 
 _ACTION_KEYWORDS: list[str] = ["replace","swap","repair","update","install","rma","exchange","tauschen","austausch","erneuert","resolved","fixed","upgraded","shipped","sent","new sensor","new cable","new remote","new interface","reseat","reseated","reconnect","reconnected","cleaned","clean"]
-_STRONG_RESOLUTION_KEYWORDS: list[str] = ["now stable","now works","works again","issue resolved after","resolved by","now interface is stable","now the sensor is recognized","sensor is recognized","functional (yes/no): yes","functional test successful","tests shot successful","test shot successful","problem solved","wieder erkannt","funktioniert","behoben"]
+_STRONG_RESOLUTION_KEYWORDS: list[str] = ["now stable","now works","works again","issue resolved after","resolved by","now interface is stable","now the sensor is recognized","sensor is recognized","functional (yes/no): yes","tests shot successful","test shot successful","problem solved","wieder erkannt","funktioniert","behoben"]
 _SPECIFIC_CORRECTIVE_ACTION_KEYWORDS: list[str] = ["reseat","reseated","reconnect","reconnected","replug","unplug","cleaned","clean contact","cleaned contact","tighten","tightened","retighten"]
 _CONCRETE_CAUSE_OBSERVATION_KEYWORDS: list[str] = ["loose","wackelkontakt","dirty contact","contamination","oxid","oxidation","corrosion","cable was loose","connector loose","contacts were dirty"]
 _GENERIC_REPLACEMENT_ONLY_TERMS: list[str] = ["part of the system must be replaced","replacement part has been recommended","please close complaint","closing ticket"]
@@ -453,6 +578,12 @@ _ROOT_CAUSE_KEYWORDS: list[str] = ["caused by","because of","result of","identif
 _NEGATIVE_INDICATORS: list[str] = ["no help","didn't fix","did not fix","didn't resolve","did not resolve","still not working","still not connecting","still not detecting","no improvement","without resolution","unresolved","suggest replacing","recommend replacing","recommended to replace","recommend to replace","advising to replace","suggest sensor replacement","unknown cause","tried replacing","tried swapping","tried changing","completely dead","functional (yes/no): no"]
 _GENERIC_EXCLUSIONS: list[str] = ["please refer to customer communication","please refer to customer notes","refer to customer notes","see customer notes"]
 _DEVICE_TERMS: list[str] = ["sensor","remote","interface","hub","module","sensorbox"]
+_SOFTWARE_CONTEXT_TERMS: list[str] = ["sidexis","ioss","driver","drivers","plugin","curve","dexis","eaglesoft","cdr dicom","cdrdicom","xvweb","xvcapture","open dental"]
+_SOFTWARE_ADVISORY_TERMS: list[str] = ["inquiry","wants to know","wanted to know","explained","advised","told him","told her","provided website","self help site","help site","tech notices","office will contact","will call back","call back","billing","not billed","unable to do so as admin","they are aware we cannot support","support site","documentation"]
+_SOFTWARE_HELP_ONLY_TERMS: list[str] = ["help installing","driver question","questions","inquiry","self help site","provided website","will have the admin try","will call back","office will contact","informed of billing","not billed","call back", "needs assistance"]
+_SOFTWARE_CONCRETE_EVIDENCE_TERMS: list[str] = ["3 separate computers","only when using","running legacy schick drivers","capture in ","working in eaglesoft","connected fine after this","tested in sidexis working fine now","version ","workstation", "computer name", "room"]
+_SOFTWARE_DIAGNOSTIC_EVIDENCE_TERMS: list[str] = ["3 separate computers","only when using","running legacy schick drivers","orange color-coded","3 full kits","capture in xldent","legacy schick drivers"]
+_SOFTWARE_EOL_ADVISORY_TERMS: list[str] = ["drivers are eol","driver eol","legacy drivers not supported","old drivers not supported","tech notices of eol"]
 
 
 def classify_clarity(notes: str) -> str:
@@ -465,6 +596,17 @@ def classify_clarity(notes: str) -> str:
     sol_text = notes[sol_idx + len("solution description"):].strip()
     sol_text_clean = re.sub(r"\d{2}[./]\d{2}[./]\d{4}.*?\n", "", sol_text).strip()
     sol_low = sol_text_clean.lower()
+    follow_up_match = re.search(r"functional test successful\s*/\s*follow up\s*:(.*)", sol_low, re.DOTALL)
+    follow_up_body = follow_up_match.group(1).strip() if follow_up_match else ""
+    follow_up_body = re.sub(r"_{2,}|\blog\b\s*$|\bnote\b\s*$", "", follow_up_body).strip()
+    follow_up_has_real_success = bool(re.search(
+        r"working|works|resolved|successful|good|stable|recognized|capturing|ready for exposure|test shot",
+        follow_up_body,
+    ))
+    follow_up_is_admin_only = bool(follow_up_body) and not follow_up_has_real_success and bool(re.search(
+        r"call back|contact|billing|website|self help|support site|documentation|inform|inquiry|will call|needs admin|schedule|ticket number",
+        follow_up_body,
+    ))
     if any(excl in sol_low for excl in _GENERIC_EXCLUSIONS):
         return "unclear"
     if len(sol_text_clean) < 25:
@@ -476,11 +618,19 @@ def classify_clarity(notes: str) -> str:
     has_root_cause = any(kw in low for kw in _ROOT_CAUSE_KEYWORDS)
     has_negative   = any(kw in sol_low for kw in _NEGATIVE_INDICATORS)
     has_action     = any(kw in low for kw in _ACTION_KEYWORDS)
-    has_strong_res = any(kw in sol_low for kw in _STRONG_RESOLUTION_KEYWORDS)
+    has_strong_res = any(kw in sol_low for kw in _STRONG_RESOLUTION_KEYWORDS) or follow_up_has_real_success
+    has_functional_yes = "functional (yes/no): yes" in sol_low
     has_spec_corr  = any(kw in low for kw in _SPECIFIC_CORRECTIVE_ACTION_KEYWORDS)
     has_concrete   = any(kw in low for kw in _CONCRETE_CAUSE_OBSERVATION_KEYWORDS)
     has_gen_repl   = any(kw in low for kw in _GENERIC_REPLACEMENT_ONLY_TERMS)
-    if involves_device:
+    has_sw_context = any(kw in low for kw in _SOFTWARE_CONTEXT_TERMS)
+    has_sw_advisory = any(kw in low for kw in _SOFTWARE_ADVISORY_TERMS)
+    has_sw_help_only = any(kw in low for kw in _SOFTWARE_HELP_ONLY_TERMS)
+    has_sw_concrete_evidence = any(kw in low for kw in _SOFTWARE_CONCRETE_EVIDENCE_TERMS)
+    has_sw_diagnostic_evidence = any(kw in low for kw in _SOFTWARE_DIAGNOSTIC_EVIDENCE_TERMS)
+    has_sw_eol_advisory = any(kw in low for kw in _SOFTWARE_EOL_ADVISORY_TERMS)
+    software_device_context = involves_device and has_sw_context and not has_root_cause and not has_concrete and not has_gen_repl
+    if involves_device and not software_device_context:
         if has_negative:
             return "unclear"
         if has_root_cause:
@@ -491,6 +641,29 @@ def classify_clarity(notes: str) -> str:
             return "clear"
         if has_gen_repl and not has_root_cause:
             return "unclear"
+        return "unclear"
+    if has_sw_context and has_sw_advisory and not has_root_cause and not has_strong_res:
+        return "unclear"
+    if has_sw_context:
+        # Software tickets are only clear when they document either a concrete cause
+        # or a demonstrably successful fix, not just advisory/support actions.
+        non_trivial_resolution = has_strong_res and not has_functional_yes
+        if has_negative:
+            return "unclear"
+        if follow_up_is_admin_only:
+            return "unclear"
+        if has_sw_eol_advisory and not has_root_cause and not non_trivial_resolution:
+            return "unclear"
+        if has_sw_help_only and not has_sw_diagnostic_evidence and not has_root_cause and not has_strong_res and not has_sw_concrete_evidence:
+            return "unclear"
+        if has_sw_help_only and not has_sw_diagnostic_evidence and not has_root_cause and not non_trivial_resolution:
+            return "unclear"
+        if has_sw_diagnostic_evidence and (has_action or has_sw_advisory):
+            return "clear"
+        if has_root_cause:
+            return "clear"
+        if non_trivial_resolution and (has_action or has_spec_corr or has_concrete):
+            return "clear"
         return "unclear"
     return "clear" if ((has_action or has_strong_res) and not has_negative) else "unclear"
 
@@ -642,6 +815,56 @@ def _extract_labeled_section(notes_text: str, section_name: str, stop_labels: li
     return " ".join(cleaned).strip()
 
 
+def _extract_all_labeled_sections(notes_text: str, section_name: str, stop_labels: list[str]) -> list[str]:
+    src = notes_text or ""
+    src_lc = src.lower()
+    needle = section_name.lower()
+    sections: list[str] = []
+    pos = src_lc.find(needle)
+    while pos >= 0:
+        start = pos + len(section_name)
+        while start < len(src) and src[start] in (":", " ", "\t", "\n", "\r"):
+            start += 1
+        end = len(src)
+        for stop in stop_labels:
+            p = src_lc.find(stop.lower(), start)
+            if 0 <= p < end:
+                end = p
+        cleaned = []
+        for line in src[start:end].split("\n"):
+            line = line.strip()
+            if not line or line.startswith("_____") or line.startswith("-----"):
+                continue
+            if re.match(r"\d{2}[./]\d{2}[./]\d{4}\s+\d{2}:\d{2}:\d{2}", line):
+                continue
+            cleaned.append(line)
+        section = " ".join(cleaned).strip()
+        if section:
+            sections.append(section)
+        pos = src_lc.find(needle, pos + len(needle))
+    return sections
+
+
+def _extract_best_labeled_section(notes_text: str, section_name: str, stop_labels: list[str]) -> str:
+    sections = _extract_all_labeled_sections(notes_text, section_name, stop_labels)
+    if not sections:
+        return ""
+
+    def _score(txt: str) -> int:
+        t = txt.lower()
+        score = len(t)
+        if re.search(r"driver|ioss|plugin|sidexis|firmware|twain|cdr|curve|c\+\+|msxml", t):
+            score += 220
+        if re.search(r"install|reinstall|uninstall|remove|update|patch|reboot|restart|working|functional|test shot|ready for exposure|connected fine", t):
+            score += 180
+        if re.search(r"please refer to customer communication|close ticket|closing ticket", t):
+            score -= 250
+        return score
+
+    sections.sort(key=_score, reverse=True)
+    return sections[0]
+
+
 def classify_solution_path(notes: str, description: str) -> str:
     """Classifies the primary resolution path; meaningful only for clarity='clear' tickets."""
     solution = _extract_labeled_section(
@@ -695,7 +918,9 @@ def classify_tickets(raw_tickets: list[dict]) -> tuple[list[dict], dict]:
         domain, theme = classify_major_issue(s0, notes)
         spare_grp = classify_spare_part_group(desc, t.get("category_level_3", ""), t.get("category_level_4", "")) if p0 == "Spare Parts/RMA/Logistics" else ""
         sol_path  = classify_solution_path(notes, desc) if clarity == "clear" else ""
-        classified.append({**t, "desc_primary_raw": bp, "desc_secondary_raw": bs, "primary": p0, "secondary": s0, "clarity": clarity, "tickets": 1, "spare_part_group": spare_grp, "major_issue_domain": domain, "major_issue_theme": theme, "solution_path": sol_path})
+        prob_desc = _extract_labeled_section(notes, "Problem Description",
+                        ["Solution Description", "Internal Note", "Customer Communication"])
+        classified.append({**t, "desc_primary_raw": bp, "desc_secondary_raw": bs, "primary": p0, "secondary": s0, "clarity": clarity, "tickets": 1, "spare_part_group": spare_grp, "major_issue_domain": domain, "major_issue_theme": theme, "solution_path": sol_path, "problem_description": prob_desc})
     stats = {"total": len(classified), "notes_refined_total": refined_total, "refined_by_primary": dict(refined_by_primary.most_common()), "top_transitions": dict(refined_transitions.most_common(10))}
     return classified, stats
 
