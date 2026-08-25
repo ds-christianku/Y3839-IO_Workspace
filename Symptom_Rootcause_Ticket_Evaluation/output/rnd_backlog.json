@@ -1,0 +1,12 @@
+[
+  {
+    "title": "Transfer Device Logs to PC",
+    "status": "backlog",
+    "description": "Device logs are transferred to the PC to facilitate debugging of the entire system."
+  },
+  {
+    "title": "Reduce complexity of system",
+    "status": "backlog",
+    "description": "Complex system design for a standard task (image transfer from USB device)"
+  }
+]

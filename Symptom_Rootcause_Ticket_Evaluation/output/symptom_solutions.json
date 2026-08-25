@@ -1,0 +1,42 @@
+{
+  "Intermittent Connectivity": {
+    "status": "under_construction",
+    "solution": "Improve cable management guidelines (clip usage); SW fix for reconnection stability; driver conflict resolution between CDR/IOSS."
+  },
+  "Images not transferred": {
+    "status": "under_construction",
+    "solution": "Increase DMA buffer allocation; FPGA reset protection in SW; validate USB module quality."
+  },
+  "Loosening Screws": {
+    "status": "under_construction",
+    "solution": "Updated IFU with torque specifications; new screw locking procedure for cable exchange."
+  },
+  "White Images": {
+    "status": "under_construction",
+    "solution": "SW fix to disable sensor arming between acquisitions; EMC shielding evaluation for field influence."
+  },
+  "Overexposed images": {
+    "status": "under_construction",
+    "solution": "X-ray generator compatibility list update; acquisition SW validation for dose settings."
+  },
+  "Previous (Patient) Image": {
+    "status": "under_construction",
+    "solution": "SW fix to clear image cache on session start; error handling for incomplete image handover."
+  },
+  "Interface Update Issues": {
+    "status": "under_construction",
+    "solution": "Updater tool robustness improvements; driver cleanup procedure after IOSS/CDR reinstall."
+  },
+  "Inconstant ready-for-exposure signaling (SW vs. Interface)": {
+    "status": "under_construction",
+    "solution": "SW timing fix for ready-for-exposure signal; 3rd party SW integration guideline update."
+  },
+  "3rd Party Slowness (NAM)": {
+    "status": "under_construction",
+    "solution": "Performance profiling with Eaglesoft/Dentrix; network infrastructure recommendations for dental practices."
+  },
+  "No Power / \"Dying Boxes\" (USB module)": {
+    "status": "under_construction",
+    "solution": "ESD protection improvements on USB3 remote PCB; USB-B interface reinforcement; replacement program. Power supply design review; replacement unit program for affected USB3 remotes."
+  }
+}
