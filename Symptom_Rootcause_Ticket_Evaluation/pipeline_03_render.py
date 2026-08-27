@@ -240,6 +240,11 @@ def run():
     solutions_map  = json.loads(solutions_path.read_text(encoding="utf-8")) if solutions_path.exists() else {}
     backlog_path   = BASE_DIR / "output" / "rnd_backlog.json"
     backlog_items  = json.loads(backlog_path.read_text(encoding="utf-8")) if backlog_path.exists() else []
+    # Show when jira_issues.json was last updated (= last Jira import)
+    jira_import_date = ""
+    if jira_issues_path.exists():
+        import os as _os
+        jira_import_date = datetime.fromtimestamp(_os.path.getmtime(jira_issues_path)).strftime("%Y-%m-%d %H:%M")
     jira_assigned_keys: set = set()
     for sym in jira_data.get("symptoms", []):
         for rc in sym.get("root_causes_jira", []):
@@ -398,6 +403,33 @@ def run():
                     "ai_summary": jira_summaries.get(_k, ""),
                 }
     jira_bugs_js = _json.dumps(jira_bugs_for_js, ensure_ascii=False)
+    # Build ticket→symptom/RC index for search
+    ticket_index: dict = {}
+    for _sym in jira_data.get("symptoms", []):
+        for _rc in _sym.get("root_causes_jira", []):
+            for _t in _rc.get("jira_tickets", []):
+                _k = _t["key"]
+                ticket_index.setdefault(_k, []).append({
+                    "symptom": _sym["name"],
+                    "rc": _rc["text"],
+                    "status": _t.get("status", ""),
+                    "priority": _t.get("priority", ""),
+                    "url": _t.get("url", ""),
+                    "summary": _t.get("summary", ""),
+                })
+    # Also add unassigned bugs to the index
+    for _k in jira_bugs_for_js:
+        if _k not in ticket_index:
+            _b = jira_bugs_for_js[_k]
+            ticket_index[_k] = [{
+                "symptom": "Not Assigned",
+                "rc": "–",
+                "status": _b.get("status", ""),
+                "priority": _b.get("priority", ""),
+                "url": _b.get("url", ""),
+                "summary": _b.get("summary", ""),
+            }]
+    ticket_index_js = _json.dumps(ticket_index, ensure_ascii=False)
     # Flatten multi-category strings for dropdown
     ai_categories = sorted({c.strip() for s in symptoms for c in s.get('ai_category','').split(',') if c.strip()})
     ai_options = "".join(f'<option value="{c}">{c}</option>' for c in ai_categories)
@@ -411,6 +443,53 @@ def run():
     } for s in sorted_symptoms], ensure_ascii=False)
 
     mapped = sum(s["total"] for s in symptoms)
+
+    # Build unmatched-ticket category breakdown from Siroforce classified tickets
+    _unmatched_section = ""
+    _classified_path = BASE_DIR.parent / "Siroforce_Evaluation" / "output" / "tickets_classified.json"
+    if _classified_path.exists():
+        with open(_classified_path, encoding="utf-8") as f:
+            _classified = json.load(f)
+        _matched_ids = {tid for s in symptoms for tid in s.get("ticket_ids", [])}
+        _unmatched_tickets = [
+            t for t in _classified.get("tickets", [])
+            if t.get("ticket_id") not in _matched_ids
+        ]
+        _unmatched_total = len(_unmatched_tickets)
+        from collections import Counter as _Counter
+        _cat_counts = _Counter(t.get("primary", "Unknown/Other") for t in _unmatched_tickets)
+        _cat_rows = ""
+        _prio_colors_cat = [
+            "#c0392b", "#e67e22", "#2980b9", "#27ae60",
+            "#8e44ad", "#1a6b8a", "#7f8c8d", "#2c3e50", "#d35400",
+        ]
+        for _i, (_cat, _cnt) in enumerate(sorted(_cat_counts.items(), key=lambda x: -x[1])):
+            _pct = round(_cnt / total * 100, 1) if total else 0
+            _pct_unmatched = round(_cnt / _unmatched_total * 100, 1) if _unmatched_total else 0
+            _bar_w = int(_cnt / max(_cat_counts.values()) * 180)
+            _col = _prio_colors_cat[_i % len(_prio_colors_cat)]
+            _cat_rows += (
+                f'<tr>'
+                f'<td style="padding:7px 10px;font-weight:500">{_cat}</td>'
+                f'<td style="padding:7px 10px;text-align:right;font-variant-numeric:tabular-nums;font-weight:600">{_cnt:,}</td>'
+                f'<td style="padding:7px 10px;text-align:right;font-variant-numeric:tabular-nums">{_pct} %</td>'
+                f'</tr>'
+            )
+        _unmatched_section = f"""
+  <section style="margin-bottom:28px">
+    <h2 style="font-size:1.1em;margin-bottom:4px;color:var(--accent)">Unmatched Tickets — Category Breakdown</h2>
+    <p style="font-size:0.83em;color:#888;margin-bottom:14px">{_unmatched_total:,} tickets ({round(_unmatched_total/total*100,1) if total else 0}% of {total:,} total) could not be assigned to any tracked symptom.</p>
+    <table>
+      <thead>
+        <tr>
+          <th>Category</th>
+          <th style="text-align:right">Total</th>
+          <th style="text-align:right">% Total</th>
+        </tr>
+      </thead>
+      <tbody>{_cat_rows}</tbody>
+    </table>
+  </section>"""
 
     # Build R&D backlog section
     _status_styles = {
@@ -550,6 +629,22 @@ def run():
     #bug-modal-inner .close-btn {{ position:absolute;top:14px;right:18px;background:none;border:none;font-size:1.5em;cursor:pointer;color:#888;line-height:1 }}
     #bug-modal-inner .close-btn:hover {{ color:#c0392b }}
     table tr[onclick]:hover td {{ background:#fff8e8 !important }}
+    /* Ticket search */
+    #ticket-search-box {{ background:var(--card);border:1px solid var(--border);border-radius:8px;
+                          padding:16px 24px;margin-bottom:24px; }}
+    #ticket-search-box h3 {{ font-size:0.95em;font-weight:600;margin-bottom:10px;color:var(--accent); }}
+    #ticket-search-input {{ border:1px solid var(--border);border-radius:6px;padding:7px 12px;
+                            font-size:0.92em;width:280px;transition:border .15s; }}
+    #ticket-search-input:focus {{ outline:2px solid var(--accent);border-color:var(--accent); }}
+    #ticket-search-results {{ margin-top:12px;font-size:0.88em; }}
+    .ts-result {{ border:1px solid #ffc107;background:#fffbea;border-radius:6px;
+                  padding:10px 14px;margin-bottom:8px; }}
+    .ts-result-header {{ font-weight:600;color:#856404;margin-bottom:4px; }}
+    .ts-result-row {{ display:flex;gap:24px;flex-wrap:wrap;margin-top:4px;font-size:0.85em;color:#444; }}
+    .ts-label {{ font-weight:600;color:#666; }}
+    .ts-badge {{ display:inline-block;border-radius:3px;padding:1px 6px;font-size:0.8em;
+                 font-weight:600;background:#e2e8f0;color:#333;margin-left:4px; }}
+    .ts-not-found {{ color:#888;font-style:italic; }}
   </style>
 </head>
 <body>
@@ -557,7 +652,7 @@ def run():
   <div style="display:flex;align-items:center;justify-content:space-between;gap:24px">
     <div style="flex:1">
       <h1>Symptom Root Cause — Ticket Trend Evaluation</h1>
-      <div class="meta">Generated: {generated} &nbsp;|&nbsp; Source: tickets_raw.json</div>
+      <div class="meta">Generated: {generated} &nbsp;|&nbsp; Source: tickets_raw.json{f' &nbsp;|&nbsp; Jira Import: {jira_import_date}' if jira_import_date else ''}</div>
       <!-- Filter bar inside header -->
       <div style="margin-top:18px;display:flex;flex-direction:column;gap:10px;font-size:0.92em">
         <div style="display:flex;align-items:center;gap:12px">
@@ -627,6 +722,14 @@ def run():
     </div>
   </div>
 
+  <!-- Ticket Search -->
+  <div id="ticket-search-box">
+    <h3>&#128269; Jira Ticket Search</h3>
+    <input id="ticket-search-input" type="text" placeholder="e.g. Y3839-734 or 570, 538"
+           oninput="ticketSearch(this.value)" autocomplete="off" spellcheck="false" />
+    <div id="ticket-search-results"></div>
+  </div>
+
   <!-- Overall Summary -->
     <section id="summary">
     <h2>Siroforce Symptoms Evaluation</h2>
@@ -648,6 +751,7 @@ def run():
   </section>
 
   <!-- Symptoms and Root Causes -->
+  {_unmatched_section}
   <section>
     <h2 style="font-size:1.1em;margin-bottom:12px;color:var(--accent)">Symptoms and Root Causes</h2>
     <!-- Jira coverage bar -->
@@ -840,7 +944,45 @@ function toggleJira(id) {{
 }}
 
 const JIRA_BUGS = {jira_bugs_js};
+const TICKET_INDEX = {ticket_index_js};
 const PRIO_COL = {{Urgent:'#c0392b',High:'#e67e22',Medium:'#2980b9',Low:'#7f8c8d',Lowest:'#95a5a6'}};
+
+function ticketSearch(val) {{
+  const container = document.getElementById('ticket-search-results');
+  const keys = val.split(/[\s,;]+/).map(k => {{
+    k = k.trim().toUpperCase();
+    if (/^\d+$/.test(k)) k = 'Y3839-' + k;
+    else if (/^Y3839-?(\d+)$/.test(k)) k = k.replace(/^Y3839-?/, 'Y3839-');
+    return k;
+  }}).filter(Boolean);
+  if (!keys.length) {{ container.innerHTML = ''; return; }}
+  let html = '';
+  for (const key of keys) {{
+    const hits = TICKET_INDEX[key];
+    const bug  = JIRA_BUGS[key];
+    if (!hits && !bug) {{
+      html += '<div class="ts-result"><div class="ts-not-found">❌ ' + key + ' — not found in any symptom or open bug list</div></div>';
+      continue;
+    }}
+    const entries = hits || [{{symptom:'Not Assigned',rc:'–',status:bug.status,priority:bug.priority,url:bug.url,summary:bug.summary}}];
+    const pcol = PRIO_COL[entries[0].priority] || '#444';
+    html += '<div class="ts-result">'
+      + '<div class="ts-result-header">'
+      + '<a href="' + (entries[0].url||'#') + '" target="_blank" style="color:#856404;text-decoration:none">' + key + '</a>'
+      + '<span class="ts-badge" style="background:' + pcol + ';color:white">' + (entries[0].priority||'') + '</span>'
+      + '<span class="ts-badge">' + (entries[0].status||'') + '</span>'
+      + '</div>'
+      + '<div style="font-size:0.83em;color:#444;margin-bottom:6px">' + (entries[0].summary||'') + '</div>';
+    for (const e of entries) {{
+      html += '<div class="ts-result-row">'
+        + '<span><span class="ts-label">Symptom:</span> ' + e.symptom + '</span>'
+        + '<span><span class="ts-label">Root Cause:</span> ' + e.rc + '</span>'
+        + '</div>';
+    }}
+    html += '</div>';
+  }}
+  container.innerHTML = html || '<div class="ts-not-found">No results.</div>';
+}}
 
 function showBugDetail(key) {{
   const d = JIRA_BUGS[key];

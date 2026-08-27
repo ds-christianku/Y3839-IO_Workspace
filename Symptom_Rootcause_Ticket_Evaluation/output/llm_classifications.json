@@ -1,0 +1,342 @@
+{
+  "Y3839-309": {
+    "symptom": null,
+    "rc": null,
+    "raw": "KEIN_MATCH"
+  },
+  "Y3839-305": {
+    "symptom": "Intermittent Connectivity",
+    "rc": "Missing error handling in SW/FW [SW]",
+    "raw": "SYMPTOM: Intermittent Connectivity\nROOT_CAUSE: Missing error handling in SW/FW [SW]"
+  },
+  "Y3839-506": {
+    "symptom": "Interface Update Issues",
+    "rc": "Missing error handling in SW/FW [SW]",
+    "raw": "SYMPTOM: Interface Update Issues\nROOT_CAUSE: Missing error handling in SW/FW"
+  },
+  "Y3839-511": {
+    "symptom": null,
+    "rc": null,
+    "raw": "KEIN_MATCH"
+  },
+  "Y3839-524": {
+    "symptom": "Inconstant ready-for-exposure signaling (SW vs. Interface)",
+    "rc": "Others currently unknown",
+    "raw": "SYMPTOM: Inconstant ready-for-exposure signaling (SW vs. Interface)\nROOT_CAUSE: Others currently unknown"
+  },
+  "Y3839-711": {
+    "symptom": "Interface Update Issues",
+    "rc": "Missing error handling in SW/FW [SW]",
+    "raw": "SYMPTOM: Interface Update Issues\nROOT_CAUSE: Missing error handling in SW/FW"
+  },
+  "Y3839-673": {
+    "symptom": "Interface Update Issues",
+    "rc": "Driver conflicts after IOSS/CDR reinstall [SW]",
+    "raw": "SYMPTOM: Interface Update Issues\nROOT_CAUSE: Driver conflicts after IOSS/CDR reinstall [SW]"
+  },
+  "Y3839-698": {
+    "symptom": "Inconstant ready-for-exposure signaling (SW vs. Interface)",
+    "rc": "SW timing issue [SW]",
+    "raw": "SYMPTOM: Inconstant ready-for-exposure signaling (SW vs. Interface)\nROOT_CAUSE: SW timing issue [SW]"
+  },
+  "Y3839-690": {
+    "symptom": "Interface Update Issues",
+    "rc": "Missing error handling in SW/FW [SW]",
+    "raw": "SYMPTOM: Interface Update Issues\nROOT_CAUSE: Missing error handling in SW/FW [SW]"
+  },
+  "Y3839-689": {
+    "symptom": "Interface Update Issues",
+    "rc": "Missing error handling in SW/FW [SW]",
+    "raw": "SYMPTOM: Interface Update Issues\nROOT_CAUSE: Missing error handling in SW/FW"
+  },
+  "Y3839-663": {
+    "symptom": "Intermittent Connectivity",
+    "rc": "Insufficient power-supply [HW]",
+    "raw": "SYMPTOM: Intermittent Connectivity\nROOT_CAUSE: Insufficient power-supply [HW]"
+  },
+  "Y3839-662": {
+    "symptom": "Previous (Patient) Image",
+    "rc": "Missing error handling in SW/FW [SW]",
+    "raw": "SYMPTOM: Previous (Patient) Image\nROOT_CAUSE: Missing error handling in SW/FW [SW]"
+  },
+  "Y3839-661": {
+    "symptom": "Interface Update Issues",
+    "rc": "Missing error handling in SW/FW [SW]",
+    "raw": "SYMPTOM: Interface Update Issues\nROOT_CAUSE: Missing error handling in SW/FW [SW]"
+  },
+  "Y3839-533": {
+    "symptom": "Inconstant ready-for-exposure signaling (SW vs. Interface)",
+    "rc": "SW timing issue [SW]",
+    "raw": "SYMPTOM: Inconstant ready-for-exposure signaling (SW vs. Interface)\nROOT_CAUSE: SW timing issue [SW]"
+  },
+  "Y3839-522": {
+    "symptom": "Intermittent Connectivity",
+    "rc": "IOSS bugs [SW]",
+    "raw": "SYMPTOM: Intermittent Connectivity\nROOT_CAUSE: IOSS bugs [SW]"
+  },
+  "Y3839-546": {
+    "symptom": "Inconstant ready-for-exposure signaling (SW vs. Interface)",
+    "rc": "SW timing issue [SW]",
+    "raw": "SYMPTOM: Inconstant ready-for-exposure signaling (SW vs. Interface)\nROOT_CAUSE: SW timing issue [SW]"
+  },
+  "Y3839-567": {
+    "symptom": "Inconstant ready-for-exposure signaling (SW vs. Interface)",
+    "rc": "SW timing issue [SW]",
+    "raw": "SYMPTOM: Inconstant ready-for-exposure signaling (SW vs. Interface)\nROOT_CAUSE: SW timing issue [SW]"
+  },
+  "Y3839-549": {
+    "symptom": "Loosening Screws",
+    "rc": "Incorrect torque used during sensor cable exchange [HW]",
+    "raw": "SYMPTOM: Loosening Screws\nROOT_CAUSE: Incorrect torque used during sensor cable exchange [HW]"
+  },
+  "Y3839-545": {
+    "symptom": "Inconstant ready-for-exposure signaling (SW vs. Interface)",
+    "rc": "SW timing issue [SW]",
+    "raw": "SYMPTOM: Inconstant ready-for-exposure signaling (SW vs. Interface)\nROOT_CAUSE: SW timing issue [SW]"
+  },
+  "Y3839-510": {
+    "symptom": "Interface Update Issues",
+    "rc": "Missing error handling in SW/FW [SW]",
+    "raw": "SYMPTOM: Interface Update Issues\nROOT_CAUSE: Missing error handling in SW/FW"
+  },
+  "Y3839-426": {
+    "symptom": null,
+    "rc": null,
+    "raw": "KEIN_MATCH"
+  },
+  "Y3839-383": {
+    "symptom": "Intermittent Connectivity",
+    "rc": "Loose micro-B USB interface (no cable clip used) [HW]",
+    "raw": "SYMPTOM: Intermittent Connectivity\nROOT_CAUSE: Loose micro-B USB interface (no cable clip used) [HW]"
+  },
+  "Y3839-373": {
+    "symptom": "Intermittent Connectivity",
+    "rc": "Missing error handling in SW/FW [SW]",
+    "raw": "SYMPTOM: Intermittent Connectivity\nROOT_CAUSE: Missing error handling in SW/FW [SW]"
+  },
+  "Y3839-611": {
+    "symptom": "Interface Update Issues",
+    "rc": "Missing error handling in SW/FW [SW]",
+    "raw": "SYMPTOM: Interface Update Issues\nROOT_CAUSE: Missing error handling in SW/FW [SW]"
+  },
+  "Y3839-639": {
+    "symptom": "Inconstant ready-for-exposure signaling (SW vs. Interface)",
+    "rc": "Workflow sequence not correctly used by 3rd party SW [SW]",
+    "raw": "SYMPTOM: Inconstant ready-for-exposure signaling (SW vs. Interface)\nROOT_CAUSE: Workflow sequence not correctly used by 3rd party SW [SW]"
+  },
+  "Y3839-631": {
+    "symptom": "Inconstant ready-for-exposure signaling (SW vs. Interface)",
+    "rc": "Workflow sequence not correctly used by 3rd party SW [SW]",
+    "raw": "SYMPTOM: Inconstant ready-for-exposure signaling (SW vs. Interface)\nROOT_CAUSE: Workflow sequence not correctly used by 3rd party SW [SW]"
+  },
+  "Y3839-625": {
+    "symptom": "Interface Update Issues",
+    "rc": "Missing error handling in SW/FW [SW]",
+    "raw": "SYMPTOM: Interface Update Issues\nROOT_CAUSE: Missing error handling in SW/FW"
+  },
+  "Y3839-706": {
+    "symptom": "Inconstant ready-for-exposure signaling (SW vs. Interface)",
+    "rc": "SW timing issue [SW]",
+    "raw": "SYMPTOM: Inconstant ready-for-exposure signaling (SW vs. Interface)\nROOT_CAUSE: SW timing issue [SW]"
+  },
+  "Y3839-599": {
+    "symptom": "Intermittent Connectivity",
+    "rc": "Reconnection of sensor not stable [SW]",
+    "raw": "SYMPTOM: Intermittent Connectivity\nROOT_CAUSE: Reconnection of sensor not stable [SW]"
+  },
+  "Y3839-596": {
+    "symptom": "White Images",
+    "rc": "Sensor triggers by the influence of an electric field [HW]",
+    "raw": "SYMPTOM: White Images\nROOT_CAUSE: Sensor triggers by the influence of an electric field [HW]"
+  },
+  "Y3839-307": {
+    "symptom": "Interface Update Issues",
+    "rc": "Missing error handling in SW/FW [SW]",
+    "raw": "SYMPTOM: Interface Update Issues\nROOT_CAUSE: Missing error handling in SW/FW"
+  },
+  "Y3839-234": {
+    "symptom": "No Power / \"Dying Boxes\" (USB module)",
+    "rc": "USB3 remote hardware failure [HW]",
+    "raw": "SYMPTOM: No Power / \"Dying Boxes\" (USB module)\nROOT_CAUSE: USB3 remote hardware failure [HW]"
+  },
+  "Y3839-265": {
+    "symptom": "Intermittent Connectivity",
+    "rc": "Loose USB3 remote/sensor interface [HW]",
+    "raw": "SYMPTOM: Intermittent Connectivity\nROOT_CAUSE: Loose USB3 remote/sensor interface [HW]"
+  },
+  "Y3839-231": {
+    "symptom": "Intermittent Connectivity",
+    "rc": "Reconnection of sensor not stable [SW]",
+    "raw": "SYMPTOM: Intermittent Connectivity\nROOT_CAUSE: Reconnection of sensor not stable [SW]"
+  },
+  "Y3839-705": {
+    "symptom": null,
+    "rc": null,
+    "raw": "KEIN_MATCH"
+  },
+  "Y3839-598": {
+    "symptom": "Intermittent Connectivity",
+    "rc": "Driver conflicts (CDR vs IOSS) [SW]",
+    "raw": "SYMPTOM: Intermittent Connectivity\nROOT_CAUSE: Driver conflicts (CDR vs IOSS) [SW]"
+  },
+  "Y3839-573": {
+    "symptom": "Inconstant ready-for-exposure signaling (SW vs. Interface)",
+    "rc": "Workflow sequence not correctly used by 3rd party SW [SW]",
+    "raw": "SYMPTOM: Inconstant ready-for-exposure signaling (SW vs. Interface)\nROOT_CAUSE: Workflow sequence not correctly used by 3rd party SW [SW]"
+  },
+  "Y3839-583": {
+    "symptom": "Inconstant ready-for-exposure signaling (SW vs. Interface)",
+    "rc": "Workflow sequence not correctly used by 3rd party SW [SW]",
+    "raw": "SYMPTOM: Inconstant ready-for-exposure signaling (SW vs. Interface)\nROOT_CAUSE: Workflow sequence not correctly used by 3rd party SW"
+  },
+  "Y3839-638": {
+    "symptom": "Inconstant ready-for-exposure signaling (SW vs. Interface)",
+    "rc": "Workflow sequence not correctly used by 3rd party SW [SW]",
+    "raw": "SYMPTOM: Inconstant ready-for-exposure signaling (SW vs. Interface)\nROOT_CAUSE: Workflow sequence not correctly used by 3rd party SW [SW]"
+  },
+  "Y3839-718": {
+    "symptom": "Intermittent Connectivity",
+    "rc": "Calibration file not transferred correctly [SW]",
+    "raw": "SYMPTOM: Intermittent Connectivity\nROOT_CAUSE: Calibration file not transferred correctly [SW]"
+  },
+  "Y3839-541": {
+    "symptom": "Previous (Patient) Image",
+    "rc": "Workflow robustness [SW]",
+    "raw": "SYMPTOM: Previous (Patient) Image\nROOT_CAUSE: Workflow robustness [SW]"
+  },
+  "Y3839-575": {
+    "symptom": "Intermittent Connectivity",
+    "rc": "Reconnection of sensor not stable [SW]",
+    "raw": "SYMPTOM: Intermittent Connectivity\nROOT_CAUSE: Reconnection of sensor not stable [SW]"
+  },
+  "Y3839-422": {
+    "symptom": null,
+    "rc": null,
+    "raw": "KEIN_MATCH"
+  },
+  "Y3839-710": {
+    "symptom": "Interface Update Issues",
+    "rc": "Driver conflicts after IOSS/CDR reinstall [SW]",
+    "raw": "SYMPTOM: Interface Update Issues\nROOT_CAUSE: Driver conflicts after IOSS/CDR reinstall [SW]"
+  },
+  "Y3839-594": {
+    "symptom": "Intermittent Connectivity",
+    "rc": "Missing error handling in SW/FW [SW]",
+    "raw": "SYMPTOM: Intermittent Connectivity\nROOT_CAUSE: Missing error handling in SW/FW [SW]"
+  },
+  "Y3839-691": {
+    "symptom": "Intermittent Connectivity",
+    "rc": "Reconnection of sensor not stable [SW]",
+    "raw": "SYMPTOM: Intermittent Connectivity\nROOT_CAUSE: Reconnection of sensor not stable [SW]"
+  },
+  "Y3839-526": {
+    "symptom": "Intermittent Connectivity",
+    "rc": "Reconnection of sensor not stable [SW]",
+    "raw": "SYMPTOM: Intermittent Connectivity\nROOT_CAUSE: Reconnection of sensor not stable [SW]"
+  },
+  "Y3839-657": {
+    "symptom": "Intermittent Connectivity",
+    "rc": "Reconnection of sensor not stable [SW]",
+    "raw": "SYMPTOM: Intermittent Connectivity\nROOT_CAUSE: Reconnection of sensor not stable [SW]"
+  },
+  "Y3839-733": {
+    "symptom": "Inconstant ready-for-exposure signaling (SW vs. Interface)",
+    "rc": "Workflow sequence not correctly used by 3rd party SW [SW]",
+    "raw": "SYMPTOM: Inconstant ready-for-exposure signaling (SW vs. Interface)\nROOT_CAUSE: Workflow sequence not correctly used by 3rd party SW [SW]"
+  },
+  "Y3839-571": {
+    "symptom": "Inconstant ready-for-exposure signaling (SW vs. Interface)",
+    "rc": "Workflow sequence not correctly used by 3rd party SW [SW]",
+    "raw": "SYMPTOM: Inconstant ready-for-exposure signaling (SW vs. Interface)\nROOT_CAUSE: Workflow sequence not correctly used by 3rd party SW [SW]"
+  },
+  "Y3839-732": {
+    "symptom": "Intermittent Connectivity",
+    "rc": "Missing error handling in SW/FW [SW]",
+    "raw": "SYMPTOM: Intermittent Connectivity\nROOT_CAUSE: Missing error handling in SW/FW [SW]"
+  },
+  "Y3839-736": {
+    "symptom": "Inconstant ready-for-exposure signaling (SW vs. Interface)",
+    "rc": "Workflow sequence not correctly used by 3rd party SW [SW]",
+    "raw": "SYMPTOM: Inconstant ready-for-exposure signaling (SW vs. Interface)\nROOT_CAUSE: Workflow sequence not correctly used by 3rd party SW [SW]"
+  },
+  "Y3839-521": {
+    "symptom": "Intermittent Connectivity",
+    "rc": "Missing error handling in SW/FW [SW]",
+    "raw": "SYMPTOM: Intermittent Connectivity\nROOT_CAUSE: Missing error handling in SW/FW [SW]"
+  },
+  "Y3839-520": {
+    "symptom": "Images not transferred",
+    "rc": "Missing error handling in SW/FW [SW]",
+    "raw": "SYMPTOM: Images not transferred\nROOT_CAUSE: Missing error handling in SW/FW [SW]"
+  },
+  "Y3839-547": {
+    "symptom": "Images not transferred",
+    "rc": "Software timing error [SW]",
+    "raw": "SYMPTOM: Images not transferred\nROOT_CAUSE: Software timing error [SW]"
+  },
+  "Y3839-384": {
+    "symptom": "Images not transferred",
+    "rc": "SW allocates too small buffer size [SW]",
+    "raw": "SYMPTOM: Images not transferred\nROOT_CAUSE: SW allocates too small buffer size [SW]"
+  },
+  "Y3839-537": {
+    "symptom": "Intermittent Connectivity",
+    "rc": "Missing error handling in SW/FW [SW]",
+    "raw": "SYMPTOM: Intermittent Connectivity\nROOT_CAUSE: Missing error handling in SW/FW [SW]"
+  },
+  "Y3839-304": {
+    "symptom": "Inconstant ready-for-exposure signaling (SW vs. Interface)",
+    "rc": "SW timing issue [SW]",
+    "raw": "SYMPTOM: Inconstant ready-for-exposure signaling (SW vs. Interface)\nROOT_CAUSE: SW timing issue [SW]"
+  },
+  "Y3839-570": {
+    "symptom": "Images not transferred",
+    "rc": "Missing error handling in SW/FW [SW]",
+    "raw": "SYMPTOM: Images not transferred\nROOT_CAUSE: Missing error handling in SW/FW [SW]"
+  },
+  "Y3839-282": {
+    "symptom": "Images not transferred",
+    "rc": "Missing error handling in SW/FW [SW]",
+    "raw": "SYMPTOM: Images not transferred\nROOT_CAUSE: Missing error handling in SW/FW"
+  },
+  "Y3839-471": {
+    "symptom": "Intermittent Connectivity",
+    "rc": "Missing error handling in SW/FW [SW]",
+    "raw": "SYMPTOM: Intermittent Connectivity\nROOT_CAUSE: Missing error handling in SW/FW"
+  },
+  "Y3839-479": {
+    "symptom": "Intermittent Connectivity",
+    "rc": "Missing error handling in SW/FW [SW]",
+    "raw": "SYMPTOM: Intermittent Connectivity\nROOT_CAUSE: Missing error handling in SW/FW [SW]"
+  },
+  "Y3839-734": {
+    "symptom": "Intermittent Connectivity",
+    "rc": "Driver conflicts (CDR vs IOSS) [SW]",
+    "raw": "SYMPTOM: Intermittent Connectivity\nROOT_CAUSE: Driver conflicts (CDR vs IOSS) [SW]"
+  },
+  "Y3839-523": {
+    "symptom": "Previous (Patient) Image",
+    "rc": "Missing error handling in SW/FW [SW]",
+    "raw": "SYMPTOM: Previous (Patient) Image\nROOT_CAUSE: Missing error handling in SW/FW [SW]"
+  },
+  "Y3839-588": {
+    "symptom": "Intermittent Connectivity",
+    "rc": "Defect USB3 remote (cold solder joints) [HW]",
+    "raw": "SYMPTOM: Intermittent Connectivity\nROOT_CAUSE: Defect USB3 remote (cold solder joints) [HW]"
+  },
+  "Y3839-696": {
+    "symptom": "3rd Party Slowness (NAM)",
+    "rc": "Others currently unknown",
+    "raw": "SYMPTOM: 3rd Party Slowness (NAM)\nROOT_CAUSE: Others currently unknown"
+  },
+  "Y3839-525": {
+    "symptom": "Inconstant ready-for-exposure signaling (SW vs. Interface)",
+    "rc": "SW timing issue [SW]",
+    "raw": "SYMPTOM: Inconstant ready-for-exposure signaling (SW vs. Interface)\nROOT_CAUSE: SW timing issue [SW]"
+  },
+  "Y3839-586": {
+    "symptom": "White Images",
+    "rc": "Sensor self-triggering [HW]",
+    "raw": "SYMPTOM: White Images\nROOT_CAUSE: Sensor self-triggering [HW]"
+  }
+}
