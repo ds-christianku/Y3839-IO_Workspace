@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hardware Analysis Datenbank</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="page">
+      <h1>IO-Hardware Analyse</h1>
+      <p class="subtitle">Auf dieser Seite werden die Analysedaten erfasst und in eine Datenbank geschrieben.</p>
+
+      <div class="switch" role="tablist" aria-label="Bereich umschalten">
+        <button id="sensorTab" class="switch-btn" data-area="sensor" role="tab" aria-selected="false">
+          Sensor
+        </button>
+        <button id="remoteTab" class="switch-btn active" data-area="remote" role="tab" aria-selected="true">
+          Remote
+        </button>
+      </div>
+
+      <form id="intakeForm" novalidate>
+        <section class="card">
+          <h2>Anlieferzustand</h2>
+
+          <div class="intake-row intake-row-2">
+            <label>
+              Ticketnummer
+              <input type="text" name="ticketNumber" />
+            </label>
+
+            <label>
+              Anlieferdatum
+              <input type="date" name="deliveryDate" />
+            </label>
+          </div>
+
+          <div class="intake-row intake-row-4">
+            <label>
+              Seriennummer
+              <input type="text" name="serialNumber" required />
+            </label>
+
+            <label>
+              Hardware Version
+              <input type="text" name="hardwareVersion" />
+            </label>
+
+            <label id="sensorTypeInIntake" class="hidden">
+              Typ
+              <input type="text" name="sensorGeneration" />
+            </label>
+
+            <label id="sensorBrandInIntake" class="hidden">
+              Brand (z.B. Schick33)
+              <input type="text" name="sensorBrand" />
+            </label>
+
+            <label id="remoteTypeInIntake" class="hidden">
+              Remotegeneration
+              <select name="remoteType">
+                <option value="">Bitte waehlen</option>
+                <option value="USB2Remote">USB2Remote</option>
+                <option value="USB3Remote">USB3Remote</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="intake-row intake-row-6">
+            <label>
+              Firmware Version
+              <input type="text" name="firmwareVersion" required />
+            </label>
+
+            <label id="fpgaVersionField">
+              FPGA Version
+              <input type="text" name="fpgaVersion" />
+            </label>
+
+            <label id="oemVersionField" class="hidden">
+              OEM
+              <input type="text" name="oemVersion" />
+            </label>
+
+            <label id="goldenVersionField">
+              Golden Version
+              <input type="text" name="goldenVersion" />
+            </label>
+
+            <label id="g1VersionField">
+              G1 Version
+              <input type="text" name="g1Version" />
+            </label>
+
+            <label id="g2VersionField">
+              G2 Version
+              <input type="text" name="g2Version" />
+            </label>
+
+            <label id="g3VersionField">
+              G3 Version
+              <input type="text" name="g3Version" />
+            </label>
+          </div>
+
+          <label>
+            Beschriebener Fehler aus dem Siroforce-Ticket
+            <textarea name="ticketErrorDescription" rows="4"></textarea>
+          </label>
+
+          <p class="save-hint">Felder koennen schrittweise ausgefuellt und gespeichert werden. Nur die Seriennummer ist Pflichtfeld.</p>
+          <button type="submit" class="save-btn">Anlieferzustand in Datenbank schreiben</button>
+          <p id="resultMessage" class="message" aria-live="polite"></p>
+        </section>
+
+        <section class="card hidden" id="remoteFields">
+          <h2>Fehleranlayse</h2>
+          <div class="analysis-panel">
+            <h3>Physischer Schaden</h3>
+            <div class="grid">
+              <label id="microBDamageField">
+                Ist die micro-B Buchse beschaedigt?
+                <select name="microBDamaged">
+                  <option value="">Bitte waehlen</option>
+                  <option value="ja">Ja</option>
+                  <option value="nein">Nein</option>
+                </select>
+                <span class="upload-label">Bild zur micro-B Buchse (optional)</span>
+                <input type="file" name="microBDamageImage" accept="image/*" />
+                <a id="microBExistingImage" class="existing-image hidden" target="_blank" rel="noopener noreferrer">Vorhandenes Bild oeffnen</a>
+              </label>
+
+              <label>
+                <span id="usbCDamageQuestionText">Ist die USB-C Buchse beschaedigt?</span>
+                <select name="usbCDamaged">
+                  <option value="">Bitte waehlen</option>
+                  <option value="ja">Ja</option>
+                  <option value="nein">Nein</option>
+                </select>
+                <span id="usbCDamageUploadText" class="upload-label">Bild zur USB-C Buchse (optional)</span>
+                <input type="file" name="usbCDamageImage" accept="image/*" />
+                <a id="usbCExistingImage" class="existing-image hidden" target="_blank" rel="noopener noreferrer">Vorhandenes Bild oeffnen</a>
+              </label>
+            </div>
+          </div>
+
+          <div class="analysis-panel">
+            <h3 id="analysisPowerTitle">Remote mit Energie versorgen</h3>
+            <p id="analysisPowerSubtitle" class="panel-subtitle">Hinweis: Es soll bei diesem Test kein Sensor angesteckt sein.</p>
+            <div class="grid">
+              <label>
+                Stromaufnahme
+                <input type="number" step="0.001" min="0" name="currentConsumption" placeholder="z.B. 120" />
+              </label>
+
+              <label>
+                Einheit Stromaufnahme
+                <select name="currentConsumptionUnit">
+                  <option value="">Bitte waehlen</option>
+                  <option value="mA">mA</option>
+                  <option value="A">A</option>
+                </select>
+              </label>
+
+              <label>
+                <span id="ledStateLabelText">PC LED-Zustand</span>
+                <select name="pcLedState" id="pcLedState">
+                  <option value="">Bitte waehlen</option>
+                  <option value="aus">aus</option>
+                  <option value="dauerhaft_gruen">dauerhaft gruen</option>
+                  <option value="dauerhaft_amber">dauerhaft amber</option>
+                  <option value="sonstiges">sonstiges</option>
+                </select>
+              </label>
+            </div>
+
+            <label id="pcLedOtherWrapper" class="hidden">
+              <span id="ledOtherLabelText">LED-Verhalten (bei sonstiges)</span>
+              <textarea name="pcLedStateOther" rows="3" placeholder="Bitte LED-Verhalten genau beschreiben"></textarea>
+            </label>
+
+            <label id="boardPowerSupplyCheckWrapper">
+              <span id="boardPowerSupplyTitleText">Spannungsversorgung auf der Platine pruefen</span>
+              <span id="boardPowerSupplyNoteText" class="field-note">Optional. Wird nur bei PC LED-Zustand "aus" zum Pflichtfeld.</span>
+              <textarea name="boardPowerSupplyCheck" rows="3" placeholder="Bitte Pruefergebnis der Spannungsversorgung eingeben"></textarea>
+            </label>
+          </div>
+
+          <div class="analysis-panel">
+            <h3 id="detectionTitle">Sensor/Remote-Erkennung</h3>
+            <label>
+              <span id="remoteDetectionQuestionText">Remote wird vom PC permanent als AE Sensor USB Interface erkannt</span>
+              <select name="remoteAeSensorDetected" id="remoteAeSensorDetected">
+                <option value="">Bitte waehlen</option>
+                <option value="ja">Ja</option>
+                <option value="nein">Nein</option>
+                <option id="remoteDetectionThirdOption" value="sonstiges">Sonstiges</option>
+              </select>
+            </label>
+
+            <label id="deviceManagerNameWrapper" class="hidden">
+              Name des Devices im Geraetemanager (z.B. Westbridge)
+              <input type="text" name="deviceManagerName" placeholder="Bitte Device-Namen eingeben" />
+            </label>
+
+            <label id="sensorCableInspectionWrapper" class="hidden">
+              Pruefung des Sensorkabels, des Elastomers und der Kabelverschraubung
+              <textarea name="sensorCableInspection" rows="3" placeholder="Bitte Befund dokumentieren"></textarea>
+            </label>
+
+            <p id="sensorDetectionSubtitle" class="panel-subtitle">Die unterschiedlichen Sensoren (G1, G2, G3) werden von der Remote erkannt (nach Anstecken des Sensors leuchtet die Sensor-LED permanent gruen).</p>
+            <div class="grid">
+              <label>
+                Sensor G1 wird erkannt
+                <select name="sensorG1Detected">
+                  <option value="">Bitte waehlen</option>
+                  <option value="ja">Ja</option>
+                  <option value="nein">Nein</option>
+                </select>
+              </label>
+
+              <label>
+                Sensor G2 wird erkannt
+                <select name="sensorG2Detected">
+                  <option value="">Bitte waehlen</option>
+                  <option value="ja">Ja</option>
+                  <option value="nein">Nein</option>
+                </select>
+              </label>
+
+              <label>
+                Sensor G3 wird erkannt
+                <select name="sensorG3Detected">
+                  <option value="">Bitte waehlen</option>
+                  <option value="ja">Ja</option>
+                  <option value="nein">Nein</option>
+                </select>
+              </label>
+            </div>
+
+            <label id="sensorPathCheckWrapper" class="hidden">
+              Sensorpfad auf Platine pruefen und FPGA Flashdump erzeugen und pruefen
+              <textarea name="sensorPathFpgaCheck" rows="3" placeholder="Bitte Ergebnis der Pruefung dokumentieren"></textarea>
+              <span class="upload-label">Flashdump hochladen</span>
+              <input type="file" name="flashDumpUpload" />
+              <a id="flashDumpExistingFile" class="existing-image hidden" target="_blank" rel="noopener noreferrer">Vorhandenen Flashdump oeffnen</a>
+            </label>
+          </div>
+
+          <div class="analysis-panel">
+            <h3>Sonstige Pruefungen</h3>
+            <label>
+              Eingabe
+              <textarea name="otherChecks" rows="3" placeholder="Sonstige Pruefungen dokumentieren"></textarea>
+            </label>
+          </div>
+
+          <div class="analysis-panel">
+            <h3>Fehlerursache</h3>
+            <label>
+              Eingabe
+              <textarea name="errorCause" rows="3" placeholder="Vermutete oder bestaetigte Fehlerursache dokumentieren"></textarea>
+            </label>
+          </div>
+
+          <p class="analysis-save-note">Beim Klicken auf Daten speichern werden die aktuellen Fehleranalysedaten in die Datenbank geschrieben.</p>
+          <button type="submit" class="save-btn">Fehleranalyse in Datenbank schreiben</button>
+        </section>
+      </form>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>

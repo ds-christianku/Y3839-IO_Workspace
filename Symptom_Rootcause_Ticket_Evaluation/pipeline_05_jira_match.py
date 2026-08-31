@@ -63,19 +63,24 @@ def build_client(provider: str, model: str, base_url: str | None):
     return None  # signals use of native Ollama API
 
 
-def ask_llm(client, model: str, provider: str, base_url: str | None, prompt: str) -> str:
+def ask_llm(client, model: str, provider: str, base_url: str | None, prompt: str, timeout: int = 300) -> str:
     if client is None:
-        # Native Ollama /api/chat — returns full response including after thinking tokens
+        # Native Ollama /api/chat — keep the request small and deterministic to avoid long reasoning delays.
         import urllib.request
         url = (base_url or "http://localhost:11434").rstrip("/v1").rstrip("/") + "/api/chat"
         payload = json.dumps({
             "model": model,
             "messages": [{"role": "user", "content": prompt}],
             "stream": False,
-            "options": {"temperature": 0},
+            "think": False,
+            "options": {
+                "temperature": 0,
+                "num_predict": 2048,
+                "num_ctx": 8192,
+            },
         }).encode("utf-8")
         req = urllib.request.Request(url, data=payload, headers={"Content-Type": "application/json"})
-        with urllib.request.urlopen(req, timeout=120) as resp:
+        with urllib.request.urlopen(req, timeout=timeout) as resp:
             data = json.load(resp)
         return (data.get("message", {}).get("content") or "").strip()
     resp = client.chat.completions.create(
@@ -112,20 +117,21 @@ OFF_TOPIC_KEYWORDS = [
 
 
 def build_prompt(key: str, summary_title: str, ai_summary: str, taxonomy: str) -> str:
+    short_summary = (ai_summary or "").strip()
+    if len(short_summary) > 500:
+        short_summary = short_summary[:500].rstrip() + "..."
     return (
-        f"Du klassifizierst Jira-Tickets fuer das Y3839 USB3-Sensor-Interface-Projekt (Dental-Roentgensensor).\n\n"
-        f"Ticket {key}: {summary_title}\n"
-        f"KI-Zusammenfassung: {ai_summary}\n\n"
+        f"Du klassifizierst Jira-Tickets fuer das Y3839 USB3-Sensor-Interface-Projekt.\n\n"
+        f"Ticket {key}: {summary_title[:180]}\n"
+        f"KI-Zusammenfassung: {short_summary}\n\n"
         f"Verfuegbare Symptome und Root Causes:\n{taxonomy}\n\n"
         f"Aufgabe:\n"
         f"Weise das Ticket dem passendsten Symptom und der passendsten Root Cause zu.\n"
-        f"Nutze die KI-Zusammenfassung -- insbesondere 'Die Ursache liegt...' -- als Hauptsignal.\n"
-        f"Nutze KEIN_MATCH NUR wenn das Ticket eindeutig kein technisches Sensor-Problem ist "
-        f"(z.B. Dokumentationsnachweis, Spracheinstellungen, Standards-Zertifizierung).\n"
-        f"Bei allen technischen Verbindungs-, Bild-, Update- oder Signal-Problemen: immer klassifizieren.\n\n"
-        f"Antwortformat (exakt, kein zusaetzlicher Text):\n"
-        f"SYMPTOM: <exakter Symptomname aus der Liste>\n"
-        f"ROOT_CAUSE: <exakter Root-Cause-Text aus der Liste>\n\n"
+        f"Wenn es eindeutig kein technisches Sensor-Problem ist, antworte exakt: KEIN_MATCH\n"
+        f"Bei technischen Verbindungs-, Bild-, Update- oder Signal-Problemen: immer zuordnen.\n\n"
+        f"Antwortformat (exakt):\n"
+        f"SYMPTOM: <exakter Symptomname>\n"
+        f"ROOT_CAUSE: <exakter Root-Cause-Text>\n\n"
         f"oder:\nKEIN_MATCH"
     )
 
@@ -152,7 +158,7 @@ def parse_response(answer: str, sym_map: dict) -> tuple[str | None, str | None]:
 
 # ─── Main pipeline ────────────────────────────────────────────────────────────
 
-def run(provider="ollama", model="gemma4:12b", base_url=None, force=False):
+def run(provider="ollama", model="gemma4:12b", base_url=None, force=False, batch_size: int = 5, timeout: int = 300):
     with open(JIRA_PATH, encoding="utf-8") as f:
         jira_issues = json.load(f)
     with open(SYMPTOM_PATH, encoding="utf-8") as f:
@@ -188,31 +194,39 @@ def run(provider="ollama", model="gemma4:12b", base_url=None, force=False):
     print(f"  Open bugs:          {len(bugs)}")
     print(f"  Cached:             {len(llm_cache)}")
     print(f"  AI summaries:       {len(ai_summaries)}")
-    print(f"  -> To classify:      {len(to_classify)}\n")
+    print(f"  -> To classify:      {len(to_classify)}")
+    print(f"  -> Batch size:       {batch_size}")
+    print(f"  -> Timeout:          {timeout}s\n")
 
     if to_classify:
         client = build_client(provider, model, base_url)
-        for i, ticket in enumerate(to_classify, 1):
-            key = ticket["key"]
-            ai_sum = ai_summaries[key]
-            prompt = build_prompt(key, ticket.get("summary", ""), ai_sum, taxonomy)
-            print(f"[{i:3}/{len(to_classify)}] {key}: {ticket.get('summary','')[:60]}", end=" ... ")
-            try:
-                answer = ask_llm(client, model, provider, base_url, prompt)
-                sym_name, rc_text = parse_response(answer, sym_map)
-                if sym_name and rc_text:
-                    llm_cache[key] = {"symptom": sym_name, "rc": rc_text, "raw": answer}
-                    print(f"-> {sym_name[:30]} / {rc_text[:35]}")
-                else:
-                    llm_cache[key] = {"symptom": None, "rc": None, "raw": answer}
-                    print("-> KEIN_MATCH")
-            except Exception as e:
-                print(f"FEHLER: {e}")
+        for start in range(0, len(to_classify), batch_size):
+            batch = to_classify[start:start + batch_size]
+            print(f"--- Batch {start // batch_size + 1} ({len(batch)} tickets) ---")
+            for i, ticket in enumerate(batch, 1):
+                key = ticket["key"]
+                ai_sum = ai_summaries[key]
+                prompt = build_prompt(key, ticket.get("summary", ""), ai_sum, taxonomy)
+                print(f"[{start + i:3}/{len(to_classify)}] {key}: {ticket.get('summary','')[:60]}", end=" ... ")
+                try:
+                    answer = ask_llm(client, model, provider, base_url, prompt, timeout=timeout)
+                    sym_name, rc_text = parse_response(answer, sym_map)
+                    if sym_name and rc_text:
+                        llm_cache[key] = {"symptom": sym_name, "rc": rc_text, "raw": answer}
+                        print(f"-> {sym_name[:30]} / {rc_text[:35]}")
+                    else:
+                        llm_cache[key] = {"symptom": None, "rc": None, "raw": answer}
+                        print("-> KEIN_MATCH")
+                except Exception as e:
+                    print(f"FEHLER: {e}")
+                    llm_cache[key] = {"symptom": None, "rc": None, "raw": f"ERROR: {e}"}
+                    time.sleep(2)
+                    continue
+                with open(LLM_CACHE_PATH, "w", encoding="utf-8") as f:
+                    json.dump(llm_cache, f, indent=2, ensure_ascii=False)
+            # short pause between batches so the local model can recover
+            if start + batch_size < len(to_classify):
                 time.sleep(2)
-                continue
-            # Save cache after each ticket to survive interruptions
-            with open(LLM_CACHE_PATH, "w", encoding="utf-8") as f:
-                json.dump(llm_cache, f, indent=2, ensure_ascii=False)
 
     # ── Assemble output ──────────────────────────────────────────────────────
     assignments: dict[str, tuple[str, str, str]] = {}
@@ -266,5 +280,7 @@ if __name__ == "__main__":
     parser.add_argument("--model",    default="gemma4:12b")
     parser.add_argument("--base-url", default=None)
     parser.add_argument("--force",    action="store_true", help="Re-classify all tickets")
+    parser.add_argument("--batch-size", type=int, default=5, help="Number of tickets to classify per chunk")
+    parser.add_argument("--timeout", type=int, default=300, help="Per-ticket timeout in seconds for the LLM provider")
     args = parser.parse_args()
-    run(provider=args.provider, model=args.model, base_url=args.base_url, force=args.force)
+    run(provider=args.provider, model=args.model, base_url=args.base_url, force=args.force, batch_size=args.batch_size, timeout=args.timeout)

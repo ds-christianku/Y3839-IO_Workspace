@@ -27,7 +27,7 @@
         "Complaint": 34
       }
     },
-    "generated_at": "2026-08-26T15:59:28"
+    "generated_at": "2026-08-31T12:00:46"
   },
   "symptoms": [
     {
@@ -38,6 +38,7 @@
       "root_causes": [
         "Others currently unknown"
       ],
+      "hint": "",
       "search_field": "notes",
       "keywords": [
         "slow",
@@ -807,6 +808,7 @@
         "IOSS bugs [SW]",
         "Others currently unknown"
       ],
+      "hint": "",
       "search_field": "notes",
       "keywords": [
         "intermittent",
@@ -2754,15 +2756,6 @@
               "score": 75,
               "source": "llm",
               "url": "https://jira.dentsplysirona.com/browse/Y3839-598"
-            },
-            {
-              "key": "Y3839-734",
-              "summary": "Synergy/Raptor USB Interface Module Self-Resets and Disconnects During Acquisition (reproducible onl",
-              "status": "Open",
-              "priority": "High",
-              "score": 75,
-              "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-734"
             }
           ]
         },
@@ -2800,6 +2793,15 @@
               "score": 75,
               "source": "llm",
               "url": "https://jira.dentsplysirona.com/browse/Y3839-526"
+            },
+            {
+              "key": "Y3839-568",
+              "summary": "Sidexis/IOSS: Viewport remains red after sensor reconnect, sensor shown twice in configuration app a",
+              "status": "Accepted",
+              "priority": "Medium",
+              "score": 75,
+              "source": "llm",
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-568"
             },
             {
               "key": "Y3839-575",
@@ -2888,6 +2890,15 @@
               "url": "https://jira.dentsplysirona.com/browse/Y3839-521"
             },
             {
+              "key": "Y3839-530",
+              "summary": "RED LED State is not defined in IFU and Designs",
+              "status": "Accepted",
+              "priority": "Medium",
+              "score": 75,
+              "source": "llm",
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-530"
+            },
+            {
               "key": "Y3839-537",
               "summary": "InUse lock not released when SSE connection between Sidexis and IO-Sensor-Service is lost",
               "status": "Accepted",
@@ -2897,6 +2908,24 @@
               "url": "https://jira.dentsplysirona.com/browse/Y3839-537"
             },
             {
+              "key": "Y3839-538",
+              "summary": "USB race condition on cold boot causes sensor NoHardware state",
+              "status": "Accepted",
+              "priority": "High",
+              "score": 75,
+              "source": "llm",
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-538"
+            },
+            {
+              "key": "Y3839-587",
+              "summary": "SW freezes after taking some images (Waukee Dental)",
+              "status": "Open",
+              "priority": "Urgent",
+              "score": 75,
+              "source": "llm",
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-587"
+            },
+            {
               "key": "Y3839-594",
               "summary": "Dentrix/CDR: The Sensor LED stays orange sporadically after unplugging the sensor",
               "status": "Open",
@@ -2904,6 +2933,24 @@
               "score": 75,
               "source": "llm",
               "url": "https://jira.dentsplysirona.com/browse/Y3839-594"
+            },
+            {
+              "key": "Y3839-607",
+              "summary": "USB3 Interface: Sensor LED turns orange during consecutive acquisitions in TA",
+              "status": "Open",
+              "priority": "Medium",
+              "score": 75,
+              "source": "llm",
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-607"
+            },
+            {
+              "key": "Y3839-690",
+              "summary": "Error flag destroys USB3 channel to host computer",
+              "status": "Open",
+              "priority": "Medium",
+              "score": 75,
+              "source": "llm",
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-690"
             },
             {
               "key": "Y3839-732",
@@ -2922,21 +2969,20 @@
         },
         {
           "text": "Insufficient power-supply [HW]",
-          "jira_tickets": [
-            {
-              "key": "Y3839-663",
-              "summary": "Power cycle leads to unstable voltage ",
-              "status": "Open",
-              "priority": "Medium",
-              "score": 75,
-              "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-663"
-            }
-          ]
+          "jira_tickets": []
         },
         {
           "text": "IOSS bugs [SW]",
           "jira_tickets": [
+            {
+              "key": "Y3839-478",
+              "summary": "Acquisition app not initializing properly",
+              "status": "Accepted",
+              "priority": "High",
+              "score": 75,
+              "source": "llm",
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-478"
+            },
             {
               "key": "Y3839-522",
               "summary": "IOSS Crashes when disconnecting supreme sensor from USB 2 interface",
@@ -2968,6 +3014,7 @@
         "Missing error handling in SW/FW [SW]",
         "Others currently unknown"
       ],
+      "hint": "",
       "search_field": "notes",
       "keywords": [
         "previous.{0,20}image",
@@ -3185,13 +3232,13 @@
           "text": "Workflow robustness [SW]",
           "jira_tickets": [
             {
-              "key": "Y3839-541",
-              "summary": "Negative effect of checkerboard pattern on image quality",
-              "status": "IN PROGRESS",
+              "key": "Y3839-712",
+              "summary": "Documentation: Recovery references multiple unfinished acquisition sessions although only one sessio",
+              "status": "Accepted",
               "priority": "Medium",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-541"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-712"
             }
           ]
         },
@@ -3219,6 +3266,15 @@
               "score": 75,
               "source": "llm",
               "url": "https://jira.dentsplysirona.com/browse/Y3839-662"
+            },
+            {
+              "key": "Y3839-664",
+              "summary": "Broken FPGA image still loaded after sensor unplugged",
+              "status": "Open",
+              "priority": "Medium",
+              "score": 75,
+              "source": "llm",
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-664"
             }
           ]
         },
@@ -3243,6 +3299,7 @@
         "Missing error handling in SW/FW [SW]",
         "Others currently unknown"
       ],
+      "hint": "",
       "search_field": "notes",
       "keywords": [
         "image not transfer",
@@ -3555,6 +3612,15 @@
           "text": "Missing error handling in SW/FW [SW]",
           "jira_tickets": [
             {
+              "key": "Y3839-255",
+              "summary": "Missing message when starting intraoral acquisition with insufficient disk space",
+              "status": "Accepted",
+              "priority": "Medium",
+              "score": 75,
+              "source": "llm",
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-255"
+            },
+            {
               "key": "Y3839-282",
               "summary": "8000991426, XIOS AE sporadically no image provided",
               "status": "Open",
@@ -3573,6 +3639,24 @@
               "url": "https://jira.dentsplysirona.com/browse/Y3839-520"
             },
             {
+              "key": "Y3839-529",
+              "summary": "Saving image failed due to resources ; Image Loss",
+              "status": "Accepted",
+              "priority": "Medium",
+              "score": 75,
+              "source": "llm",
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-529"
+            },
+            {
+              "key": "Y3839-555",
+              "summary": "X-ray applied but no image acquired/transmitted (Spring Oaks)",
+              "status": "IN PROGRESS",
+              "priority": "High",
+              "score": 75,
+              "source": "llm",
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-555"
+            },
+            {
               "key": "Y3839-570",
               "summary": "Eaglesoft/IOSS: No image received after exposure, USB3 interface stuck in state 6",
               "status": "Accepted",
@@ -3580,6 +3664,15 @@
               "score": 75,
               "source": "llm",
               "url": "https://jira.dentsplysirona.com/browse/Y3839-570"
+            },
+            {
+              "key": "Y3839-593",
+              "summary": "Checkered pattern image in a X-Ray series (Dr. Mathes)",
+              "status": "Open",
+              "priority": "Medium",
+              "score": 75,
+              "source": "llm",
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-593"
             }
           ]
         },
@@ -3599,8 +3692,10 @@
         "Incorrect assembly (wrong torque used) [HW]",
         "Incorrect torque used during sensor cable exchange [HW]",
         "Vibration / sensor handling loosens the connection [HW]",
+        "Missing error handling Remote (FPGA) / Sensor (FPGA) [FW]",
         "Others currently unknown"
       ],
+      "hint": "",
       "search_field": "notes",
       "keywords": [
         "screw.{0,20}loos",
@@ -3702,6 +3797,10 @@
           "jira_tickets": []
         },
         {
+          "text": "Missing error handling Remote (FPGA) / Sensor (FPGA) [FW]",
+          "jira_tickets": []
+        },
+        {
           "text": "Others currently unknown",
           "jira_tickets": []
         }
@@ -3721,6 +3820,7 @@
         "USB cable physically damaged [HW]",
         "Others currently unknown"
       ],
+      "hint": "",
       "search_field": "notes",
       "keywords": [
         "dying box",
@@ -4305,7 +4405,17 @@
         },
         {
           "text": "Others currently unknown",
-          "jira_tickets": []
+          "jira_tickets": [
+            {
+              "key": "Y3839-695",
+              "summary": "Unexpected Orange Residue Present on Electronic Chips of USB3 Interfaces After Manufacturing",
+              "status": "Open",
+              "priority": "Medium",
+              "score": 75,
+              "source": "llm",
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-695"
+            }
+          ]
         }
       ]
     },
@@ -4317,8 +4427,11 @@
       "root_causes": [
         "SW timing issue [SW]",
         "Workflow sequence not correctly used by 3rd party SW [SW]",
+        "State-machine mismatch in SW/FW (out-of-sync) [FW]",
+        "Missing signals/state changes from USB3 remote to PC [FW]",
         "Others currently unknown"
       ],
+      "hint": "Acquisition SW must correctly display the system status.",
       "search_field": "notes",
       "keywords": [
         "ready.for.exposure",
@@ -4485,24 +4598,6 @@
               "score": 75,
               "source": "llm",
               "url": "https://jira.dentsplysirona.com/browse/Y3839-567"
-            },
-            {
-              "key": "Y3839-698",
-              "summary": "On plug-in of incompatible sensor, Sensor LED lights up green before turning red",
-              "status": "Accepted",
-              "priority": "Medium",
-              "score": 75,
-              "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-698"
-            },
-            {
-              "key": "Y3839-706",
-              "summary": "Documentation: rotation buttons are usable",
-              "status": "Accepted",
-              "priority": "Medium",
-              "score": 75,
-              "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-706"
             }
           ]
         },
@@ -4584,8 +4679,17 @@
           ]
         },
         {
-          "text": "Others currently unknown",
+          "text": "State-machine mismatch in SW/FW (out-of-sync) [FW]",
           "jira_tickets": [
+            {
+              "key": "Y3839-382",
+              "summary": "Sporadic \"Application Error\" when starting exposure series",
+              "status": "Accepted",
+              "priority": "Low",
+              "score": 75,
+              "source": "llm",
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-382"
+            },
             {
               "key": "Y3839-524",
               "summary": "During Bensheim automated testing - randomly Autotake flashes red even though everything is fine and",
@@ -4594,8 +4698,34 @@
               "score": 75,
               "source": "llm",
               "url": "https://jira.dentsplysirona.com/browse/Y3839-524"
+            },
+            {
+              "key": "Y3839-698",
+              "summary": "On plug-in of incompatible sensor, Sensor LED lights up green before turning red",
+              "status": "Accepted",
+              "priority": "Medium",
+              "score": 75,
+              "source": "llm",
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-698"
+            },
+            {
+              "key": "Y3839-706",
+              "summary": "Documentation: rotation buttons are usable",
+              "status": "Accepted",
+              "priority": "Medium",
+              "score": 75,
+              "source": "llm",
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-706"
             }
           ]
+        },
+        {
+          "text": "Missing signals/state changes from USB3 remote to PC [FW]",
+          "jira_tickets": []
+        },
+        {
+          "text": "Others currently unknown",
+          "jira_tickets": []
         }
       ]
     },
@@ -4606,10 +4736,12 @@
       "ai_category": "Imaging/Acquisition/Exposure, Hardware Defect/Physical Damage",
       "root_causes": [
         "Wrong X-Ray generator settings [HW]",
-        "Acquisition software misconfiguration [SW]",
         "Sensor sensitivity issue [HW]",
+        "Error in the image processing path [SW]",
+        "Different implementation for dark image substraction [SW]",
         "Others currently unknown"
       ],
+      "hint": "",
       "search_field": "notes",
       "keywords": [
         "overexpos",
@@ -4664,11 +4796,25 @@
           "jira_tickets": []
         },
         {
-          "text": "Acquisition software misconfiguration [SW]",
+          "text": "Sensor sensitivity issue [HW]",
           "jira_tickets": []
         },
         {
-          "text": "Sensor sensitivity issue [HW]",
+          "text": "Error in the image processing path [SW]",
+          "jira_tickets": [
+            {
+              "key": "Y3839-541",
+              "summary": "Negative effect of checkerboard pattern on image quality",
+              "status": "IN PROGRESS",
+              "priority": "Medium",
+              "score": 75,
+              "source": "llm",
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-541"
+            }
+          ]
+        },
+        {
+          "text": "Different implementation for dark image substraction [SW]",
           "jira_tickets": []
         },
         {
@@ -4687,8 +4833,12 @@
         "Sensor self-triggering [HW]",
         "Sensor triggers by the influence of an electric field [HW]",
         "Sensor housing allows light to pass through [HW]",
+        "Wrong alignment X-Ray generator and sensor (user fault)",
+        "Wrong X-Ray generator power [HW]",
+        "Sensor permanently armed (scattering X-Ray, background accumulation) [FW]",
         "Others currently unknown"
       ],
+      "hint": "",
       "search_field": "notes",
       "keywords": [
         "white image",
@@ -4865,6 +5015,28 @@
           "jira_tickets": []
         },
         {
+          "text": "Wrong alignment X-Ray generator and sensor (user fault)",
+          "jira_tickets": []
+        },
+        {
+          "text": "Wrong X-Ray generator power [HW]",
+          "jira_tickets": []
+        },
+        {
+          "text": "Sensor permanently armed (scattering X-Ray, background accumulation) [FW]",
+          "jira_tickets": [
+            {
+              "key": "Y3839-722",
+              "summary": "CDR: Sensor remains armed (event detection not disabled) if integrator transitions from State 6 dire",
+              "status": "Accepted",
+              "priority": "Medium",
+              "score": 75,
+              "source": "llm",
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-722"
+            }
+          ]
+        },
+        {
           "text": "Others currently unknown",
           "jira_tickets": []
         }
@@ -4879,9 +5051,10 @@
         "Circuit fault on the RAM [HW]",
         "Power cycling the RAM during update corrupts the update file [HW]",
         "Missing error handling in SW/FW [SW]",
-        "Driver conflicts after IOSS/CDR reinstall [SW]",
+        "Driver conflicts after IOSS/CDR reinstall for 3rd party [SW]",
         "Others currently unknown"
       ],
+      "hint": "",
       "search_field": "notes",
       "keywords": [
         "interface update",
@@ -5073,13 +5246,22 @@
               "url": "https://jira.dentsplysirona.com/browse/Y3839-689"
             },
             {
-              "key": "Y3839-690",
-              "summary": "Error flag destroys USB3 channel to host computer",
-              "status": "Open",
+              "key": "Y3839-702",
+              "summary": "Indication region in Sidexis is different to the one in indication dialog",
+              "status": "Accepted",
               "priority": "Medium",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-690"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-702"
+            },
+            {
+              "key": "Y3839-705",
+              "summary": "IOSS Installer: Error Text Stays German Even if other languages is selected",
+              "status": "Accepted",
+              "priority": "Medium",
+              "score": 75,
+              "source": "llm",
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-705"
             },
             {
               "key": "Y3839-711",
@@ -5093,7 +5275,7 @@
           ]
         },
         {
-          "text": "Driver conflicts after IOSS/CDR reinstall [SW]",
+          "text": "Driver conflicts after IOSS/CDR reinstall for 3rd party [SW]",
           "jira_tickets": [
             {
               "key": "Y3839-673",
@@ -5117,7 +5299,17 @@
         },
         {
           "text": "Others currently unknown",
-          "jira_tickets": []
+          "jira_tickets": [
+            {
+              "key": "Y3839-422",
+              "summary": "Applicable standards missing",
+              "status": "IN PROGRESS",
+              "priority": "Medium",
+              "score": 75,
+              "source": "llm",
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-422"
+            }
+          ]
         }
       ]
     }

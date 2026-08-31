@@ -1,0 +1,723 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Datenbank Auswertung</title>
+    <style>
+      :root {
+        --bg: #f4f7fb;
+        --panel: #ffffff;
+        --panel-alt: #eef8fb;
+        --text: #1f2a37;
+        --muted: #5b6673;
+        --primary: #0e7490;
+        --primary-dark: #115e59;
+        --border: #d9e3ec;
+        --shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
+        --success: #166534;
+        --warn: #9a3412;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        color: var(--text);
+        background:
+          radial-gradient(circle at 100% 0%, #dff2ff 0%, transparent 35%),
+          radial-gradient(circle at 0% 100%, #e8fff6 0%, transparent 35%),
+          var(--bg);
+      }
+
+      .page {
+        max-width: 1450px;
+        margin: 0 auto;
+        padding: 2rem 1.2rem 3rem;
+      }
+
+      .hero {
+        display: grid;
+        gap: 1rem;
+        grid-template-columns: 1.2fr 0.8fr;
+        align-items: stretch;
+      }
+
+      .hero-card,
+      .card,
+      .detail-card {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        box-shadow: var(--shadow);
+      }
+
+      .hero-card {
+        padding: 1.35rem 1.4rem;
+      }
+
+      h1 {
+        margin: 0 0 0.4rem;
+        font-size: clamp(1.8rem, 2.5vw, 2.5rem);
+      }
+
+      .subtitle {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+
+      .meta {
+        margin-top: 1rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.6rem;
+      }
+
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        border-radius: 999px;
+        padding: 0.35rem 0.75rem;
+        background: var(--panel-alt);
+        color: var(--primary-dark);
+        font-weight: 700;
+        font-size: 0.9rem;
+      }
+
+      .summary-grid {
+        display: grid;
+        gap: 0.85rem;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .card {
+        padding: 1rem;
+      }
+
+      .metric-label {
+        margin: 0;
+        color: var(--muted);
+        font-size: 0.92rem;
+      }
+
+      .metric-value {
+        margin: 0.35rem 0 0;
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: var(--primary);
+      }
+
+      .toolbar {
+        margin-top: 1.2rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.8rem;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .search {
+        flex: 1 1 320px;
+        max-width: 460px;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 0.8rem 0.95rem;
+        font: inherit;
+        background: #fff;
+      }
+
+      .status {
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      .two-col {
+        margin-top: 1rem;
+        display: grid;
+        grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+        gap: 1rem;
+      }
+
+      .area-block {
+        display: grid;
+        gap: 1rem;
+      }
+
+      .area-title {
+        margin: 0 0 0.35rem;
+        font-size: 1.2rem;
+      }
+
+      .area-subtitle {
+        margin: 0 0 1rem;
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      .table-wrap {
+        overflow-x: auto;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background: #fff;
+      }
+
+      th,
+      td {
+        padding: 0.8rem 0.9rem;
+        text-align: left;
+        border-bottom: 1px solid var(--border);
+        vertical-align: top;
+      }
+
+      th {
+        background: #eef8fb;
+        color: #0f172a;
+        font-size: 0.94rem;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+      }
+
+      tbody tr {
+        cursor: pointer;
+      }
+
+      tbody tr:hover {
+        background: #f8fbfd;
+      }
+
+      tbody tr.selected {
+        background: #def4ff;
+      }
+
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        border-radius: 999px;
+        padding: 0.18rem 0.55rem;
+        font-size: 0.82rem;
+        font-weight: 800;
+        white-space: nowrap;
+      }
+
+      .pill.sensor {
+        background: #e8fff6;
+        color: var(--success);
+      }
+
+      .pill.remote {
+        background: #e0f2fe;
+        color: #155e75;
+      }
+
+      .pill.good {
+        background: #dcfce7;
+        color: #166534;
+      }
+
+      .pill.warn {
+        background: #ffedd5;
+        color: var(--warn);
+      }
+
+      .pill.neutral {
+        background: #e2e8f0;
+        color: #334155;
+      }
+
+      .detail-card {
+        padding: 1rem;
+        position: sticky;
+        top: 1rem;
+      }
+
+      .detail-head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+      }
+
+      .detail-head h2 {
+        margin: 0;
+        font-size: 1.25rem;
+      }
+
+      .detail-head p {
+        margin: 0.25rem 0 0;
+        color: var(--muted);
+      }
+
+      .detail-grid {
+        display: grid;
+        gap: 0.75rem;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .detail-item {
+        padding: 0.75rem;
+        border-radius: 12px;
+        background: #f8fbfd;
+        border: 1px solid #e5eef4;
+      }
+
+      .detail-item.full {
+        grid-column: 1 / -1;
+      }
+
+      .detail-label {
+        margin: 0 0 0.25rem;
+        color: var(--muted);
+        font-size: 0.82rem;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+
+      .detail-value {
+        margin: 0;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+
+      .detail-empty {
+        padding: 1rem;
+        border-radius: 14px;
+        border: 1px dashed var(--border);
+        background: #fcfdff;
+        color: var(--muted);
+      }
+
+      .section-label {
+        margin: 1.4rem 0 0.65rem;
+        font-size: 1.1rem;
+      }
+
+      .note {
+        margin-top: 1rem;
+        color: var(--muted);
+        font-size: 0.92rem;
+      }
+
+      .loading,
+      .error {
+        padding: 1rem;
+        border-radius: 14px;
+        background: #fff;
+        border: 1px solid var(--border);
+      }
+
+      .error {
+        color: #b91c1c;
+        background: #fff1f2;
+        border-color: #fecdd3;
+      }
+
+      @media (max-width: 1100px) {
+        .hero,
+        .two-col {
+          grid-template-columns: 1fr;
+        }
+
+        .detail-card {
+          position: static;
+        }
+      }
+
+      @media (max-width: 700px) {
+        .page {
+          padding: 1rem 0.8rem 2rem;
+        }
+
+        .summary-grid,
+        .detail-grid {
+          grid-template-columns: 1fr;
+        }
+
+        th,
+        td {
+          padding: 0.65rem 0.7rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <section class="hero">
+        <div class="hero-card">
+          <h1>Datenbank Auswertung</h1>
+          <p class="subtitle">Sensor und Remote werden getrennt dargestellt. Links siehst du die Uebersicht aller Komponenten mit ihrem Anlieferzustand, rechts die Details zum angewählten Datensatz.</p>
+          <div class="meta">
+            <span class="chip" id="lastUpdateChip">Lade Daten ...</span>
+            <span class="chip">Klick auf Zeile = Detailansicht</span>
+          </div>
+        </div>
+
+        <div class="summary-grid">
+          <div class="card">
+            <p class="metric-label">Gesamtdatensaetze</p>
+            <p class="metric-value" id="totalCount">-</p>
+          </div>
+          <div class="card">
+            <p class="metric-label">Sensor</p>
+            <p class="metric-value" id="sensorCount">-</p>
+          </div>
+          <div class="card">
+            <p class="metric-label">Remote</p>
+            <p class="metric-value" id="remoteCount">-</p>
+          </div>
+          <div class="card">
+            <p class="metric-label">Zuletzt geladen</p>
+            <p class="metric-value" style="font-size: 1.05rem; line-height: 1.35;" id="loadedAt">-</p>
+          </div>
+        </div>
+      </section>
+
+      <div class="toolbar">
+        <input id="searchInput" class="search" type="search" placeholder="Nach Seriennummer, Ticket oder Zustand filtern ..." />
+        <div class="status" id="statusText">Bereit.</div>
+      </div>
+
+      <div id="messageBox"></div>
+
+      <div class="two-col">
+        <section class="area-block">
+          <div class="card">
+            <h2 class="area-title">Sensoren</h2>
+            <p class="area-subtitle">Alle Sensor-Datensaetze mit Anlieferzustand und direkter Auswahl.</p>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Seriennummer</th>
+                    <th>Anlieferzustand</th>
+                    <th>Hardware</th>
+                    <th>Erstellt</th>
+                  </tr>
+                </thead>
+                <tbody id="sensorTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2 class="area-title">Remotes</h2>
+            <p class="area-subtitle">Alle Remote-Datensaetze mit Anlieferzustand und direkter Auswahl.</p>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Seriennummer</th>
+                    <th>Anlieferzustand</th>
+                    <th>Remote-Typ</th>
+                    <th>Erstellt</th>
+                  </tr>
+                </thead>
+                <tbody id="remoteTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <aside class="detail-card">
+          <div class="detail-head">
+            <div>
+              <h2 id="detailTitle">Detailansicht</h2>
+              <p id="detailSubtitle">Waehle links einen Sensor oder eine Remote aus.</p>
+            </div>
+            <span class="pill neutral" id="detailAreaPill">Kein Datensatz</span>
+          </div>
+          <div id="detailContent" class="detail-empty">Noch kein Datensatz ausgewählt.</div>
+        </aside>
+      </div>
+
+      <h2 class="section-label">Hinweis</h2>
+      <p class="note">Die Auswertung wird live aus der SQLite-Datenbank geladen. Eine neue Auswahl aktualisiert die Detailansicht sofort.</p>
+    </main>
+
+    <script>
+      const state = {
+        entries: [],
+        filteredEntries: [],
+        selectedId: null
+      };
+
+      const sensorTableBody = document.getElementById('sensorTableBody');
+      const remoteTableBody = document.getElementById('remoteTableBody');
+      const detailTitle = document.getElementById('detailTitle');
+      const detailSubtitle = document.getElementById('detailSubtitle');
+      const detailAreaPill = document.getElementById('detailAreaPill');
+      const detailContent = document.getElementById('detailContent');
+      const messageBox = document.getElementById('messageBox');
+      const statusText = document.getElementById('statusText');
+      const searchInput = document.getElementById('searchInput');
+      const totalCount = document.getElementById('totalCount');
+      const sensorCount = document.getElementById('sensorCount');
+      const remoteCount = document.getElementById('remoteCount');
+      const lastUpdateChip = document.getElementById('lastUpdateChip');
+      const loadedAt = document.getElementById('loadedAt');
+
+      function escapeHtml(value) {
+        return String(value ?? '')
+          .replaceAll('&', '&amp;')
+          .replaceAll('<', '&lt;')
+          .replaceAll('>', '&gt;')
+          .replaceAll('"', '&quot;')
+          .replaceAll("'", '&#39;');
+      }
+
+      function formatValue(value) {
+        const text = String(value ?? '').trim();
+        return text ? escapeHtml(text) : '<span class="pill neutral">leer</span>';
+      }
+
+      function formatDate(value) {
+        if (!value) return 'leer';
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) return escapeHtml(value);
+        return date.toLocaleString('de-DE');
+      }
+
+      function getAnlieferzustand(entry) {
+        const detection = String(entry.remote_ae_sensor_detected || '').trim();
+
+        if (entry.area === 'sensor') {
+          if (detection === 'ja') return { label: 'erkannt', cls: 'good' };
+          if (detection === 'sporadisch') return { label: 'sporadisch', cls: 'warn' };
+          if (detection === 'nein') return { label: 'nicht erkannt', cls: 'warn' };
+          return { label: 'offen', cls: 'neutral' };
+        }
+
+        if (detection === 'ja') return { label: 'erkannt', cls: 'good' };
+        if (detection === 'sonstiges') return { label: 'sonstiges', cls: 'warn' };
+        if (detection === 'nein') return { label: 'nicht erkannt', cls: 'warn' };
+        return { label: 'offen', cls: 'neutral' };
+      }
+
+      function dedupeLatestBySerial(entries) {
+        const seen = new Set();
+        const uniqueEntries = [];
+
+        for (const entry of entries) {
+          const serialNumber = String(entry.serial_number || '').trim();
+          if (!serialNumber || seen.has(serialNumber)) {
+            continue;
+          }
+
+          seen.add(serialNumber);
+          uniqueEntries.push(entry);
+        }
+
+        return uniqueEntries;
+      }
+
+      function buildRow(entry) {
+        const stateInfo = getAnlieferzustand(entry);
+        const isSelected = state.selectedId === entry.id ? ' selected' : '';
+        const areaLabel = entry.area === 'sensor' ? 'Sensor' : 'Remote';
+        const areaClass = entry.area === 'sensor' ? 'sensor' : 'remote';
+        const extraColumn = entry.area === 'sensor'
+          ? formatValue(entry.hardware_version)
+          : formatValue(entry.remote_type);
+
+        return `
+          <tr class="${isSelected}" data-entry-id="${entry.id}">
+            <td>
+              <strong>${escapeHtml(entry.serial_number)}</strong><br />
+              <span class="pill ${areaClass}">${areaLabel}</span>
+            </td>
+            <td><span class="pill ${stateInfo.cls}">${escapeHtml(stateInfo.label)}</span></td>
+            <td>${extraColumn}</td>
+            <td>${escapeHtml(formatDate(entry.created_at))}</td>
+          </tr>
+        `;
+      }
+
+      function renderTables() {
+        const query = searchInput.value.trim().toLowerCase();
+        const matches = (entry) => {
+          if (!query) return true;
+          const stateInfo = getAnlieferzustand(entry).label.toLowerCase();
+          return [
+            entry.serial_number,
+            entry.ticket_number,
+            entry.ticket_error_description,
+            entry.hardware_version,
+            entry.remote_type,
+            entry.area,
+            stateInfo
+          ].some((value) => String(value || '').toLowerCase().includes(query));
+        };
+
+        const sensorEntries = dedupeLatestBySerial(
+          state.entries.filter((entry) => entry.area === 'sensor' && matches(entry))
+        );
+        const remoteEntries = dedupeLatestBySerial(
+          state.entries.filter((entry) => entry.area === 'remote' && matches(entry))
+        );
+
+        sensorTableBody.innerHTML = sensorEntries.length
+          ? sensorEntries.map(buildRow).join('')
+          : '<tr><td colspan="4">Keine Sensor-Datensaetze gefunden.</td></tr>';
+
+        remoteTableBody.innerHTML = remoteEntries.length
+          ? remoteEntries.map(buildRow).join('')
+          : '<tr><td colspan="4">Keine Remote-Datensaetze gefunden.</td></tr>';
+
+        totalCount.textContent = String(state.entries.length);
+        sensorCount.textContent = String(dedupeLatestBySerial(state.entries.filter((entry) => entry.area === 'sensor')).length);
+        remoteCount.textContent = String(dedupeLatestBySerial(state.entries.filter((entry) => entry.area === 'remote')).length);
+
+        if (!state.entries.length) {
+          renderEmptyDetail();
+        } else if (state.selectedId && !state.entries.some((entry) => entry.id === state.selectedId)) {
+          selectEntry(state.entries[0]?.id || null);
+        } else if (!state.selectedId && state.entries.length) {
+          selectEntry(state.entries[0].id);
+        } else {
+          renderDetail(state.entries.find((entry) => entry.id === state.selectedId) || null);
+        }
+      }
+
+      function renderEmptyDetail() {
+        detailTitle.textContent = 'Detailansicht';
+        detailSubtitle.textContent = 'Waehle links einen Sensor oder eine Remote aus.';
+        detailAreaPill.className = 'pill neutral';
+        detailAreaPill.textContent = 'Kein Datensatz';
+        detailContent.className = 'detail-empty';
+        detailContent.textContent = 'Noch kein Datensatz ausgewählt.';
+      }
+
+      function renderDetail(entry) {
+        if (!entry) {
+          renderEmptyDetail();
+          return;
+        }
+
+        const stateInfo = getAnlieferzustand(entry);
+        const areaLabel = entry.area === 'sensor' ? 'Sensor' : 'Remote';
+        const detailFields = [
+          ['Seriennummer', entry.serial_number],
+          ['Bereich', areaLabel],
+          ['Anlieferzustand', stateInfo.label],
+          ['Erstellt', formatDate(entry.created_at)],
+          ['Anlieferdatum', formatDate(entry.delivery_date)],
+          ['Hardware Version', entry.hardware_version],
+          ['Firmware on Delivery', entry.firmware_on_delivery],
+          ['Firmware Version', entry.firmware_version],
+          ['FPGA Version', entry.fpga_version],
+          ['OEM Version', entry.oem_version],
+          ['Golden Version', entry.golden_version],
+          ['G1 Version', entry.g1_version],
+          ['G2 Version', entry.g2_version],
+          ['G3 Version', entry.g3_version],
+          ['Sensorgeneration', entry.sensor_generation],
+          ['Sensor Brand', entry.sensor_brand],
+          ['Remote Typ', entry.remote_type],
+          ['Sensor/Remote Erkennung', entry.remote_ae_sensor_detected],
+          ['Device Manager Name', entry.device_manager_name],
+          ['Sensor Kabelpruefung', entry.sensor_cable_inspection],
+          ['Sensor G1 erkannt', entry.sensor_g1_detected],
+          ['Sensor G2 erkannt', entry.sensor_g2_detected],
+          ['Sensor G3 erkannt', entry.sensor_g3_detected],
+          ['Sensorpfad FPGA Check', entry.sensor_path_fpga_check],
+          ['Flashdump Dateipfad', entry.flashdump_file_path],
+          ['Weitere Pruefungen', entry.other_checks],
+          ['Fehlerursache', entry.error_cause],
+          ['Stromaufnahme', [entry.current_consumption, entry.current_consumption_unit].filter(Boolean).join(' ')],
+          ['PC LED Zustand', entry.pc_led_state],
+          ['PC LED Sonstiges', entry.pc_led_state_other],
+          ['Platinenspannung', entry.board_power_supply_check],
+          ['Micro-B beschädigt', entry.micro_b_damaged],
+          ['USB-C beschädigt', entry.usb_c_damaged],
+          ['Micro-B Bild', entry.micro_b_damage_image],
+          ['USB-C Bild', entry.usb_c_damage_image],
+          ['Ticket Nummer', entry.ticket_number],
+          ['Ticket Beschreibung', entry.ticket_error_description],
+          ['Windows Benutzer', entry.windows_username]
+        ];
+
+        detailTitle.textContent = entry.serial_number;
+        detailSubtitle.textContent = `${areaLabel} · Datensatz #${entry.id}`;
+        detailAreaPill.className = `pill ${entry.area === 'sensor' ? 'sensor' : 'remote'}`;
+        detailAreaPill.textContent = areaLabel;
+        detailContent.className = 'detail-grid';
+        detailContent.innerHTML = detailFields
+          .map(([label, value]) => `
+            <div class="detail-item ${label === 'Ticket Beschreibung' || label === 'Weitere Pruefungen' || label === 'Fehlerursache' ? 'full' : ''}">
+              <p class="detail-label">${escapeHtml(label)}</p>
+              <p class="detail-value">${formatValue(value)}</p>
+            </div>
+          `)
+          .join('');
+
+        document.querySelectorAll('tbody tr[data-entry-id]').forEach((row) => {
+          row.classList.toggle('selected', Number(row.dataset.entryId) === entry.id);
+        });
+      }
+
+      function selectEntry(entryId) {
+        state.selectedId = entryId;
+        const entry = state.entries.find((item) => item.id === entryId) || null;
+        renderDetail(entry);
+      }
+
+      function showMessage(type, text) {
+        messageBox.innerHTML = text
+          ? `<div class="${type}">${escapeHtml(text)}</div>`
+          : '';
+      }
+
+      async function loadData() {
+        statusText.textContent = 'Daten werden geladen ...';
+        lastUpdateChip.textContent = 'Lade Daten ...';
+        loadedAt.textContent = '-';
+
+        try {
+          const response = await fetch('/api/intake/overview');
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+          }
+
+          const payload = await response.json();
+          state.entries = Array.isArray(payload.entries) ? payload.entries : [];
+          state.selectedId = state.entries[0]?.id ?? null;
+
+          const now = new Date();
+          const loadedText = now.toLocaleString('de-DE');
+          statusText.textContent = `Geladen: ${state.entries.length} Datensaetze`;
+          lastUpdateChip.textContent = `Aktualisiert: ${loadedText}`;
+          loadedAt.textContent = loadedText;
+          showMessage('', '');
+          renderTables();
+        } catch (error) {
+          state.entries = [];
+          state.selectedId = null;
+          renderEmptyDetail();
+          showMessage('error', 'Die Auswertung konnte nicht geladen werden. Bitte Server und Datenbank pruefen.');
+          statusText.textContent = 'Fehler beim Laden.';
+          lastUpdateChip.textContent = 'Nicht geladen';
+          loadedAt.textContent = '-';
+        }
+      }
+
+      searchInput.addEventListener('input', () => renderTables());
+
+      document.addEventListener('click', (event) => {
+        const row = event.target.closest('tbody tr[data-entry-id]');
+        if (!row) return;
+        selectEntry(Number(row.dataset.entryId));
+      });
+
+      loadData();
+    </script>
+  </body>
+</html>

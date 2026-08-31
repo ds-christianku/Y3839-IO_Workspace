@@ -1,0 +1,92 @@
+﻿Ticket,Summary,Symptom,Root Cause
+Y3839-696,Preview image is not always available within 7seconds as required,3rd Party Slowness (NAM),Others currently unknown
+Y3839-255,Missing message when starting intraoral acquisition with insufficient disk space,Images not transferred,Missing error handling in SW/FW
+Y3839-282,"8000991426, XIOS AE sporadically no image provided",Images not transferred,Missing error handling in SW/FW
+Y3839-520,Saving image did not succeed,Images not transferred,Missing error handling in SW/FW
+Y3839-529,Saving image failed due to resources ; Image Loss,Images not transferred,Missing error handling in SW/FW
+Y3839-555,X-ray applied but no image acquired/transmitted (Spring Oaks),Images not transferred,Missing error handling in SW/FW
+Y3839-570,"Eaglesoft/IOSS: No image received after exposure, USB3 interface stuck in state 6",Images not transferred,Missing error handling in SW/FW
+Y3839-593,Checkered pattern image in a X-Ray series (Dr. Mathes),Images not transferred,Missing error handling in SW/FW
+Y3839-547,Spring Oaks -> Lost Images,Images not transferred,Software timing error
+Y3839-384,Insufficient buff size resulting in error during exposure and loss of image,Images not transferred,SW allocates too small buffer size
+Y3839-382,"Sporadic ""Application Error"" when starting exposure series",Inconstant ready-for-exposure signaling (SW vs. Interface),State-machine mismatch in SW/FW (out-of-sync)
+Y3839-524,During Bensheim automated testing - randomly Autotake flashes red even though everything is fine and an image is still a,Inconstant ready-for-exposure signaling (SW vs. Interface),State-machine mismatch in SW/FW (out-of-sync)
+Y3839-698,"On plug-in of incompatible sensor, Sensor LED lights up green before turning red",Inconstant ready-for-exposure signaling (SW vs. Interface),State-machine mismatch in SW/FW (out-of-sync)
+Y3839-706,Documentation: rotation buttons are usable,Inconstant ready-for-exposure signaling (SW vs. Interface),State-machine mismatch in SW/FW (out-of-sync)
+Y3839-304,Sporadically no sensor initialization phase at Exposure view,Inconstant ready-for-exposure signaling (SW vs. Interface),SW timing issue
+Y3839-525,"Remote and sensor stuck in ready, not switching to ready-for-exposure",Inconstant ready-for-exposure signaling (SW vs. Interface),SW timing issue
+Y3839-533,Sensor never becomes exposure ready when calibration file read fails,Inconstant ready-for-exposure signaling (SW vs. Interface),SW timing issue
+Y3839-545,USB3 remote was stuck in boot loop,Inconstant ready-for-exposure signaling (SW vs. Interface),SW timing issue
+Y3839-546,Exposure appears double in template acquisition,Inconstant ready-for-exposure signaling (SW vs. Interface),SW timing issue
+Y3839-567,Eaglesoft/IOSS: USB3 interface not ready for next exposure though Eaglesoft indicates so,Inconstant ready-for-exposure signaling (SW vs. Interface),SW timing issue
+Y3839-571,"Eaglesoft/Dentrix [CDR]: ""Unable to take X-Ray"" error after switching to AE sensor, no image acquired",Inconstant ready-for-exposure signaling (SW vs. Interface),Workflow sequence not correctly used by 3rd party SW
+Y3839-573,"Dentrix/CDR: USB3 interface fails to reconnect to sensor after multiple plug cycles, sensor LED stays orange",Inconstant ready-for-exposure signaling (SW vs. Interface),Workflow sequence not correctly used by 3rd party SW
+Y3839-583,Dentrix/CDR: No image delivered after exposure following ~9 min wait in ready state,Inconstant ready-for-exposure signaling (SW vs. Interface),Workflow sequence not correctly used by 3rd party SW
+Y3839-631,Unexpected host LED state in non-Sidexis setup,Inconstant ready-for-exposure signaling (SW vs. Interface),Workflow sequence not correctly used by 3rd party SW
+Y3839-638,"Dentrix/CDR: Dentrix shows ""Ready for exposure"" while Interface LED is orange",Inconstant ready-for-exposure signaling (SW vs. Interface),Workflow sequence not correctly used by 3rd party SW
+Y3839-639,It is possible to acquire images with IOSS without enabling event detection,Inconstant ready-for-exposure signaling (SW vs. Interface),Workflow sequence not correctly used by 3rd party SW
+Y3839-733,CDR AutoAcquire setting has no impact in Eaglesoft,Inconstant ready-for-exposure signaling (SW vs. Interface),Workflow sequence not correctly used by 3rd party SW
+Y3839-736,IOSS - Eaglesoft: Bitewing Series - same exposure is loaded in two frames and stuck at taking the exposure for the third,Inconstant ready-for-exposure signaling (SW vs. Interface),Workflow sequence not correctly used by 3rd party SW
+Y3839-673,Updater Tool: No update possible if no USB drivers are installed,Interface Update Issues,Driver conflicts after IOSS/CDR reinstall for 3rd party
+Y3839-710,Remote Box is not usable after reinstall of IOSS/CDR Drivers,Interface Update Issues,Driver conflicts after IOSS/CDR reinstall for 3rd party
+Y3839-307,Sensor upgrading fails for XIOS XG,Interface Update Issues,Missing error handling in SW/FW
+Y3839-506,IOSS enables Sensor Firmware update even if the firmware is up to date,Interface Update Issues,Missing error handling in SW/FW
+Y3839-510,Only one firmware available for XIOS XG Supreme/Schick 33 sensors,Interface Update Issues,Missing error handling in SW/FW
+Y3839-611, FirmwareUpgradeUtility is sending commands when an USB Stick is connected ,Interface Update Issues,Missing error handling in SW/FW
+Y3839-625,GETFPGAVersions returns null after successful flash,Interface Update Issues,Missing error handling in SW/FW
+Y3839-661,SensorConnected property does not update in Upgrade State,Interface Update Issues,Missing error handling in SW/FW
+Y3839-689,Updater Tool: Downgrade cannot be re-triggered after the FPGA flash step fails,Interface Update Issues,Missing error handling in SW/FW
+Y3839-702,Indication region in Sidexis is different to the one in indication dialog,Interface Update Issues,Missing error handling in SW/FW
+Y3839-705,IOSS Installer: Error Text Stays German Even if other languages is selected,Interface Update Issues,Missing error handling in SW/FW
+Y3839-711,AE Updater tool blocks update due to false sensor connection detection,Interface Update Issues,Missing error handling in SW/FW
+Y3839-422,Applicable standards missing,Interface Update Issues,Others currently unknown
+Y3839-718,Corrupted Calibration file ,Intermittent Connectivity,Calibration file not transferred correctly
+Y3839-588,Multiple different issues with one sensor (Waukee Dental),Intermittent Connectivity,Defect USB3 remote (cold solder joints)
+Y3839-598,USB3 Interface Stuck in Red LED State which requires PC Restart to Restore Connection,Intermittent Connectivity,Driver conflicts (CDR vs IOSS)
+Y3839-478,Acquisition app not initializing properly,Intermittent Connectivity,IOSS bugs
+Y3839-522,IOSS Crashes when disconnecting supreme sensor from USB 2 interface,Intermittent Connectivity,IOSS bugs
+Y3839-383,Connected device is not recognized by IOSS,Intermittent Connectivity,Loose micro-B USB interface (no cable clip used)
+Y3839-265,USB3 Remote LED interfaces have 3 color states,Intermittent Connectivity,Loose USB3 remote/sensor interface
+Y3839-305,Acquisition view shows wrong loading indicator during exposure with sensor disconnect,Intermittent Connectivity,Missing error handling in SW/FW
+Y3839-373,Disconnecting sensor from USB2-Remote does not reliably indicate the missing sensor in the status bar,Intermittent Connectivity,Missing error handling in SW/FW
+Y3839-471,Remote signals sensor connection even tokens are not received any more,Intermittent Connectivity,Missing error handling in SW/FW
+Y3839-479,Acquisition App not able to fetch sensor information and device becomes unavailable,Intermittent Connectivity,Missing error handling in SW/FW
+Y3839-521,USB Device not detected reliably after PBT_APMRESUMEAUTOMATIC,Intermittent Connectivity,Missing error handling in SW/FW
+Y3839-530,RED LED State is not defined in IFU and Designs,Intermittent Connectivity,Missing error handling in SW/FW
+Y3839-537,InUse lock not released when SSE connection between Sidexis and IO-Sensor-Service is lost,Intermittent Connectivity,Missing error handling in SW/FW
+Y3839-538,USB race condition on cold boot causes sensor NoHardware state,Intermittent Connectivity,Missing error handling in SW/FW
+Y3839-587,SW freezes after taking some images (Waukee Dental),Intermittent Connectivity,Missing error handling in SW/FW
+Y3839-594,Dentrix/CDR: The Sensor LED stays orange sporadically after unplugging the sensor,Intermittent Connectivity,Missing error handling in SW/FW
+Y3839-607,USB3 Interface: Sensor LED turns orange during consecutive acquisitions in TA,Intermittent Connectivity,Missing error handling in SW/FW
+Y3839-690,Error flag destroys USB3 channel to host computer,Intermittent Connectivity,Missing error handling in SW/FW
+Y3839-732,"Sensor stays unregistered in Sidexis after 401 on device re-registration (expired refresh token, no retry)",Intermittent Connectivity,Missing error handling in SW/FW
+Y3839-231,Schick AE sensor connection LED sporadically not powered when the USB 3.0 connection to host PC is interrupted,Intermittent Connectivity,Reconnection of sensor not stable
+Y3839-526,Re-Plug-in of sensor not handled correctly,Intermittent Connectivity,Reconnection of sensor not stable
+Y3839-568,"Sidexis/IOSS: Viewport remains red after sensor reconnect, sensor shown twice in configuration app and Sidexis",Intermittent Connectivity,Reconnection of sensor not stable
+Y3839-575,Sensor sporadically not detected after repeated USB3 Interface reconnect,Intermittent Connectivity,Reconnection of sensor not stable
+Y3839-599,Sidexis[IOSS]/Dentrix[CDR]: USB3 Interface Sporadically Fails to Detect Sensor After Reconnection,Intermittent Connectivity,Reconnection of sensor not stable
+Y3839-657,Dentrix [CDR]: AE Sensor Not Recognized After Multiple Reconnects cycles and Orange LED Remains Active,Intermittent Connectivity,Reconnection of sensor not stable
+Y3839-691,Sensor detection not stable,Intermittent Connectivity,Reconnection of sensor not stable
+Y3839-549,defective sensors @practices Rümenapp and Ernst,Loosening Screws,Incorrect torque used during sensor cable exchange
+Y3839-695,Unexpected Orange Residue Present on Electronic Chips of USB3 Interfaces After Manufacturing,"No Power / ""Dying Boxes"" (USB module)",Others currently unknown
+Y3839-234,Connection Status LED lights up dimly when USB3 remote plugged in host PC,"No Power / ""Dying Boxes"" (USB module)",USB3 remote hardware failure
+Y3839-541,Negative effect of checkerboard pattern on image quality,Overexposed images,Error in the image processing path
+Y3839-523,In the acquisition window acquired Image would not be displayed if during image acquisition the selected image odontogra,Previous (Patient) Image,Missing error handling in SW/FW
+Y3839-662,HyperRAM is not erased for Gen3 Sensors,Previous (Patient) Image,Missing error handling in SW/FW
+Y3839-664,Broken FPGA image still loaded after sensor unplugged,Previous (Patient) Image,Missing error handling in SW/FW
+Y3839-712,Documentation: Recovery references multiple unfinished acquisition sessions although only one session can exist,Previous (Patient) Image,Workflow robustness
+Y3839-308,Missing holder position aid pictures on Endo Horizontal (15),Unassigned,
+Y3839-309,Unsupported language template list output inconsistently translated,Unassigned,
+Y3839-340,Documentation: Missing document proof for test Sensor IEC and EN Performance Standards,Unassigned,
+Y3839-425,Outdated standards in test ,Unassigned,
+Y3839-426,Missing evidence for UL 60601-1 and CAN/CSA C22.2 No.601.1-M90,Unassigned,
+Y3839-511,X-ray tab in Intraoral Config app only support German and English,Unassigned,
+Y3839-513,Performing an exposure causes an unhandled state when connecting IOSS to a Server different from the one the local Sidex,Unassigned,
+Y3839-515,Documentation: Binning is not taken into account in requirement for visualization time,Unassigned,
+Y3839-663,Power cycle leads to unstable voltage ,Unassigned,
+Y3839-699,Odontogram in indication dialog is active only if it's not predefined in viewset,Unassigned,
+Y3839-709,Endo horizontal and endo vertical templates do not contain predefined anatomic regions,Unassigned,
+Y3839-734,Synergy/Raptor USB Interface Module Self-Resets and Disconnects During Acquisition (reproducible only on the USB 2.0 box,Unassigned,
+Y3839-722,CDR: Sensor remains armed (event detection not disabled) if integrator transitions from State 6 directly to State 3 (Idl,White Images,"Sensor permanently armed (scattering X-Ray, background accumulation)"
+Y3839-586,White images with different sensors (Waukee Dental),White Images,Sensor self-triggering
+Y3839-596,Sensor triggers due to electrostatic charge without x-ray and shows white image,White Images,Sensor triggers by the influence of an electric field

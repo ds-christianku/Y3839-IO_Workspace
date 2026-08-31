@@ -7,6 +7,8 @@ Renders symptom analysis as a self-contained HTML report with trend charts.
 
 import json
 import base64
+import html
+import re
 from pathlib import Path
 from datetime import datetime
 
@@ -35,10 +37,35 @@ def _bar(value, max_value, color="#2a7a9b"):
 
 
 def _tag_rc(text):
-    """Replace [HW] and [SW] with colored badges."""
+    """Replace [HW], [SW], and [FW] with colored badges."""
     text = text.replace("[HW]", '<span style="background:#e67e22;color:white;border-radius:3px;padding:1px 5px;font-size:0.78em;font-weight:700;margin-left:4px">HW</span>')
     text = text.replace("[SW]", '<span style="background:#2980b9;color:white;border-radius:3px;padding:1px 5px;font-size:0.78em;font-weight:700;margin-left:4px">SW</span>')
+    text = text.replace("[FW]", '<span style="background:#2980b9;color:white;border-radius:3px;padding:1px 5px;font-size:0.78em;font-weight:700;margin-left:4px">SW</span>')
     return text
+
+
+def _backlog_item_html(item):
+    title = item.get("title", "")
+    description = item.get("description", "")
+    url_match = re.search(r'https?://[^\s<>"\']+', description or "")
+    url = url_match.group(0) if url_match else ""
+
+    if url:
+        title_html = (
+            f'<a href="{url}" target="_blank" rel="noopener noreferrer" '
+            f'style="color:#0055cc;text-decoration:underline;font-weight:700">{html.escape(title)}</a>'
+        )
+        escaped_desc = html.escape(description)
+        escaped_url = html.escape(url)
+        desc_html = f'<br><span style="font-size:0.82em;color:#555">{escaped_desc}</span>'
+        desc_html = desc_html.replace(
+            escaped_url,
+            f'<a href="{url}" target="_blank" rel="noopener noreferrer" style="color:#0055cc;text-decoration:underline">{escaped_url}</a>'
+        )
+    else:
+        title_html = f'<strong>{html.escape(title)}</strong>'
+        desc_html = f'<br><span style="font-size:0.82em;color:#555">{html.escape(description)}</span>' if description else ""
+    return title_html + desc_html
 
 
 def run():
@@ -88,9 +115,12 @@ def run():
             ai_html = f'<span style="background:#e8f4f8;border:1px solid #b0d4e3;border-radius:4px;padding:2px 8px;font-size:0.82em;font-weight:500;white-space:nowrap">{ai_cat}</span>' if ai_cat else ""
             rc_list = s.get("root_causes", [])
             rc_html = "".join(f'<div style="font-size:0.8em;color:#555;margin-top:2px">&#8226; {_tag_rc(rc)}</div>' for rc in rc_list)
+            hint = s.get("hint", "")
+            hint_escaped = hint.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace('"', "&quot;")
+            hint_html = f'<div style="font-size:0.8em;color:#e67e22;margin-top:4px;font-style:italic">💡 {hint_escaped}</div>' if hint else ""
             rows += f"""
       <tr>
-        <td class="symptom-name">{s["name"]}<br>{rc_html}</td>
+        <td class="symptom-name">{s["name"]}<br>{rc_html}{hint_html}</td>
         <td>{bar}</td>
         <td class="num">{s["pct_of_total"]}%</td>
         {year_cells}
@@ -308,6 +338,12 @@ def run():
             else:
                 jira_toggle = ""
             rc_rows_html += f'<li style="margin-bottom:4px">{_tag_rc(rc)}{jira_toggle}</li>'
+        # Add hint if present
+        hint = s.get("hint", "")
+        hint_html = ""
+        if hint:
+            hint_html_escaped = hint.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace('"', "&quot;")
+            hint_html = f'<div style="margin-top:6px;padding-top:6px;border-top:1px solid #ddd;font-size:0.82em;color:#e67e22;font-style:italic">💡 {hint_html_escaped}</div>'
         # Under Construction / Possible Solution cell
         sol = solutions_map.get(s["name"], {})
         sol_status = sol.get("status", "")
@@ -327,7 +363,7 @@ def run():
         <tr>
           <td><span style="background:{prio_col};color:white;border-radius:4px;padding:2px 8px;font-size:0.82em;font-weight:600">{prio_label}</span></td>
           <td><strong>{s["name"]}</strong><br>{ai_badge}</td>
-          <td><ul style="margin:0;padding-left:16px;font-size:0.88em;color:#444">{rc_rows_html}</ul></td>
+          <td><ul style="margin:0;padding-left:16px;font-size:0.88em;color:#444">{rc_rows_html}</ul>{hint_html}</td>
           <td style="min-width:220px;vertical-align:top">{sol_html}</td>
         </tr>"""
 
@@ -501,11 +537,11 @@ def run():
     for item in backlog_items:
         st = item.get("status", "backlog")
         badge_style, badge_label = _status_styles.get(st, _status_styles["backlog"])
-        desc_html = f'<br><span style="font-size:0.82em;color:#555">{item["description"]}</span>' if item.get("description") else ""
+        item_html = _backlog_item_html(item)
         _backlog_rows += (
             f'<tr>'
             f'<td style="padding:8px 10px"><span style="border-radius:4px;padding:2px 8px;font-size:0.8em;font-weight:600;{badge_style}">{badge_label}</span></td>'
-            f'<td style="padding:8px 10px"><strong>{item["title"]}</strong>{desc_html}</td>'
+            f'<td style="padding:8px 10px">{item_html}</td>'
             f'</tr>'
         )
     backlog_section = f"""
@@ -593,7 +629,7 @@ def run():
 
     /* Summary */
     #summary {{ margin-bottom: 36px; }}
-    #summary h2 {{ font-size: 1.2em; margin-bottom: 16px; color: var(--accent); }}
+    #summary h2, #overview h2 {{ font-size: 1.2em; margin-bottom: 16px; color: var(--accent); }}
 
     /* Keyword tooltip */
     [data-kw] {{ position: relative; cursor: help; border-bottom: 1px dashed #aaa; }}
@@ -722,13 +758,51 @@ def run():
     </div>
   </div>
 
-  <!-- Ticket Search -->
-  <div id="ticket-search-box">
-    <h3>&#128269; Jira Ticket Search</h3>
-    <input id="ticket-search-input" type="text" placeholder="e.g. Y3839-734 or 570, 538"
-           oninput="ticketSearch(this.value)" autocomplete="off" spellcheck="false" />
-    <div id="ticket-search-results"></div>
-  </div>
+  <!-- Overview Charts Panel -->
+  <section id="overview" style="margin-bottom:32px">
+    <h2>Overview & Coverage Analysis</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:24px;margin-bottom:24px">
+      <!-- Chart 1: Matched vs Unmatched -->
+      <div style="background:#f8fafc;border:1px solid #d0dde8;border-radius:8px;padding:20px">
+        <h3 style="margin:0 0 16px 0;font-size:0.95em;color:#333">Siroforce Tickets: Symptom Coverage</h3>
+        <div style="max-width:250px;margin:0 auto">
+          <canvas id="chart1"></canvas>
+        </div>
+        <div style="margin-top:12px;font-size:0.82em;color:#555">
+          <div>Matched: <strong>{sum(s['total'] for s in symptoms):,}</strong></div>
+          <div>Unmatched: <strong>{total - sum(s['total'] for s in symptoms):,}</strong></div>
+          <div style="margin-top:6px;border-top:1px solid #d0dde8;padding-top:6px;color:#888">Ticket Base: <strong>{total:,}</strong></div>
+        </div>
+      </div>
+      <!-- Chart 2: Assigned vs Unassigned -->
+      <div style="background:#f8fafc;border:1px solid #d0dde8;border-radius:8px;padding:20px">
+        <h3 style="margin:0 0 16px 0;font-size:0.95em;color:#333">Jira-Bug Tickets: Symptom Assignment</h3>
+        <div style="max-width:250px;margin:0 auto">
+          <canvas id="chart2"></canvas>
+        </div>
+        <div style="margin-top:12px;font-size:0.82em;color:#555">
+          <div>Assigned: <strong>{jira_assigned:,}</strong></div>
+          <div>Unassigned: <strong>{jira_unassigned:,}</strong></div>
+          <div style="margin-top:6px;border-top:1px solid #d0dde8;padding-top:6px;color:#888">Ticket Base: <strong>{jira_assigned + jira_unassigned:,}</strong></div>
+        </div>
+      </div>
+      <!-- Chart 3: Release vs Backlog -->
+      <div style="background:#f8fafc;border:1px solid #d0dde8;border-radius:8px;padding:20px">
+        <h3 style="margin:0 0 16px 0;font-size:0.95em;color:#333">Jira-Bug Tickets: Release Assignment</h3>
+        <div style="max-width:250px;margin:0 auto;position:relative">
+          <canvas id="chart3"></canvas>
+          <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none">
+            <span style="font-size:1.6em;font-weight:700;color:rgba(180,0,0,0.25);transform:rotate(-30deg);white-space:nowrap;letter-spacing:0.05em">Draft / tbd</span>
+          </div>
+        </div>
+        <div style="margin-top:12px;font-size:0.82em;color:#555">
+          <div>Next Release: <strong>{round(jira_assigned * 0.3):,}</strong></div>
+          <div>Backlog: <strong>{round(jira_assigned * 0.7):,}</strong></div>
+          <div style="margin-top:6px;border-top:1px solid #d0dde8;padding-top:6px;color:#888">Ticket Base: <strong>{jira_assigned:,}</strong></div>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <!-- Overall Summary -->
     <section id="summary">
@@ -785,6 +859,14 @@ def run():
   <!-- Group Sections -->
   {backlog_section}
 
+  <!-- Ticket Search -->
+  <div id="ticket-search-box">
+    <h3>&#128269; Jira Ticket Search</h3>
+    <input id="ticket-search-input" type="text" placeholder="e.g. Y3839-734 or 570, 538"
+           oninput="ticketSearch(this.value)" autocomplete="off" spellcheck="false" />
+    <div id="ticket-search-results"></div>
+  </div>
+
 </div>
 
 <!-- Bug detail modal -->
@@ -798,6 +880,80 @@ def run():
 <footer>
   Symptom Root Cause Ticket Evaluation &nbsp;|&nbsp; Dentsply Sirona &nbsp;|&nbsp; {datetime.now().year}
 </footer>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<script>
+// Initialize pie charts
+document.addEventListener('DOMContentLoaded', function() {{
+  // Chart 1: Matched vs Unmatched
+  const ctx1 = document.getElementById('chart1').getContext('2d');
+  new Chart(ctx1, {{
+    type: 'doughnut',
+    data: {{
+      labels: ['Matched', 'Unmatched'],
+      datasets: [{{
+        data: [{sum(s['total'] for s in symptoms)}, {total - sum(s['total'] for s in symptoms)}],
+        backgroundColor: ['#2563eb', '#94a3b8'],
+        borderColor: ['#1e40af', '#64748b'],
+        borderWidth: 2
+      }}]
+    }},
+    options: {{
+      responsive: true,
+      maintainAspectRatio: true,
+      plugins: {{
+        legend: {{ position: 'bottom', labels: {{ font: {{ size: 12 }} }} }},
+        tooltip: {{ callbacks: {{ label: function(ctx) {{ return ctx.label + ': ' + ctx.parsed + ' tickets'; }} }} }}
+      }}
+    }}
+  }});
+
+  // Chart 2: Assigned vs Unassigned
+  const ctx2 = document.getElementById('chart2').getContext('2d');
+  new Chart(ctx2, {{
+    type: 'doughnut',
+    data: {{
+      labels: ['Assigned', 'Unassigned'],
+      datasets: [{{
+        data: [{jira_assigned}, {jira_unassigned}],
+        backgroundColor: ['#2563eb', '#94a3b8'],
+        borderColor: ['#1e40af', '#64748b'],
+        borderWidth: 2
+      }}]
+    }},
+    options: {{
+      responsive: true,
+      maintainAspectRatio: true,
+      plugins: {{
+        legend: {{ position: 'bottom', labels: {{ font: {{ size: 12 }} }} }},
+        tooltip: {{ callbacks: {{ label: function(ctx) {{ return ctx.label + ': ' + ctx.parsed + ' tickets'; }} }} }}
+      }}
+    }}
+  }});
+
+  // Chart 3: Release vs Backlog
+  const ctx3 = document.getElementById('chart3').getContext('2d');
+  new Chart(ctx3, {{
+    type: 'doughnut',
+    data: {{
+      labels: ['Next Release', 'Backlog'],
+      datasets: [{{
+        data: [{round(jira_assigned * 0.3)}, {round(jira_assigned * 0.7)}],
+        backgroundColor: ['#2563eb', '#94a3b8'],
+        borderColor: ['#1e40af', '#64748b'],
+        borderWidth: 2
+      }}]
+    }},
+    options: {{
+      responsive: true,
+      maintainAspectRatio: true,
+      plugins: {{
+        legend: {{ position: 'bottom', labels: {{ font: {{ size: 12 }} }} }},
+        tooltip: {{ callbacks: {{ label: function(ctx) {{ return ctx.label + ': ' + ctx.parsed + ' tickets'; }} }} }}
+      }}
+    }}
+  }});
+}});
+</script>
 <script>
 const SYMPTOMS = {symptom_data_js};
 const YEARS = {_json.dumps(years)};

@@ -27,7 +27,7 @@
         "Complaint": 34
       }
     },
-    "generated_at": "2026-08-26T15:59:28"
+    "generated_at": "2026-08-31T15:54:49"
   },
   "symptoms": [
     {
@@ -38,6 +38,7 @@
       "root_causes": [
         "Others currently unknown"
       ],
+      "hint": "",
       "search_field": "notes",
       "keywords": [
         "slow",
@@ -791,6 +792,7 @@
         "IOSS bugs [SW]",
         "Others currently unknown"
       ],
+      "hint": "",
       "search_field": "notes",
       "keywords": [
         "intermittent",
@@ -2691,6 +2693,7 @@
         "Missing error handling in SW/FW [SW]",
         "Others currently unknown"
       ],
+      "hint": "",
       "search_field": "notes",
       "keywords": [
         "previous.{0,20}image",
@@ -2907,6 +2910,7 @@
         "Missing error handling in SW/FW [SW]",
         "Others currently unknown"
       ],
+      "hint": "",
       "search_field": "notes",
       "keywords": [
         "image not transfer",
@@ -3181,8 +3185,10 @@
         "Incorrect assembly (wrong torque used) [HW]",
         "Incorrect torque used during sensor cable exchange [HW]",
         "Vibration / sensor handling loosens the connection [HW]",
+        "Missing error handling Remote (FPGA) / Sensor (FPGA) [FW]",
         "Others currently unknown"
       ],
+      "hint": "",
       "search_field": "notes",
       "keywords": [
         "screw.{0,20}loos",
@@ -3271,6 +3277,7 @@
         "USB cable physically damaged [HW]",
         "Others currently unknown"
       ],
+      "hint": "",
       "search_field": "notes",
       "keywords": [
         "dying box",
@@ -3827,8 +3834,11 @@
       "root_causes": [
         "SW timing issue [SW]",
         "Workflow sequence not correctly used by 3rd party SW [SW]",
+        "State-machine mismatch in SW/FW (out-of-sync) [FW]",
+        "Missing signals/state changes from USB3 remote to PC [FW]",
         "Others currently unknown"
       ],
+      "hint": "Acquisition SW must correctly display the system status.",
       "search_field": "notes",
       "keywords": [
         "ready.for.exposure",
@@ -3946,10 +3956,12 @@
       "ai_category": "Imaging/Acquisition/Exposure, Hardware Defect/Physical Damage",
       "root_causes": [
         "Wrong X-Ray generator settings [HW]",
-        "Acquisition software misconfiguration [SW]",
         "Sensor sensitivity issue [HW]",
+        "Error in the image processing path [SW]",
+        "Different implementation for dark image substraction [SW]",
         "Others currently unknown"
       ],
+      "hint": "",
       "search_field": "notes",
       "keywords": [
         "overexpos",
@@ -4009,8 +4021,12 @@
         "Sensor self-triggering [HW]",
         "Sensor triggers by the influence of an electric field [HW]",
         "Sensor housing allows light to pass through [HW]",
+        "Wrong alignment X-Ray generator and sensor (user fault)",
+        "Wrong X-Ray generator power [HW]",
+        "Sensor permanently armed (scattering X-Ray, background accumulation) [FW]",
         "Others currently unknown"
       ],
+      "hint": "",
       "search_field": "notes",
       "keywords": [
         "white image",
@@ -4159,9 +4175,10 @@
         "Circuit fault on the RAM [HW]",
         "Power cycling the RAM during update corrupts the update file [HW]",
         "Missing error handling in SW/FW [SW]",
-        "Driver conflicts after IOSS/CDR reinstall [SW]",
+        "Driver conflicts after IOSS/CDR reinstall for 3rd party [SW]",
         "Others currently unknown"
       ],
+      "hint": "",
       "search_field": "notes",
       "keywords": [
         "interface update",
