@@ -209,14 +209,30 @@ app.get('/output.html', (req, res) => {
 app.get('/auswertung.html', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'output.html'));
 });
+
+app.use((req, res, next) => {
+  if (/\.(html|js|css)$/i.test(req.path || '')) {
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+  }
+
+  next();
+});
+
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploads', express.static(uploadDir));
 
 app.get('/api/intake/by-serial/:serialNumber', (req, res) => {
   const serialNumber = String(req.params.serialNumber || '').trim();
+  const area = String(req.query.area || '').trim().toLowerCase();
 
   if (!serialNumber) {
     return res.status(400).json({ error: 'Seriennummer fehlt.' });
+  }
+
+  if (area && area !== 'sensor' && area !== 'remote') {
+    return res.status(400).json({ error: 'Ungueltiger Bereichsfilter.' });
   }
 
   const query = `
@@ -259,11 +275,12 @@ app.get('/api/intake/by-serial/:serialNumber', (req, res) => {
       usb_c_damage_image
     FROM intake_entries
     WHERE serial_number = ?
+      AND (? = '' OR area = ?)
     ORDER BY datetime(created_at) DESC, id DESC
     LIMIT 1
   `;
 
-  db.get(query, [serialNumber], (err, row) => {
+  db.get(query, [serialNumber, area, area], (err, row) => {
     if (err) {
       return res.status(500).json({ error: 'Fehler beim Laden der Daten.' });
     }
@@ -319,7 +336,7 @@ app.get('/api/intake/overview', (req, res) => {
       created_at,
       windows_username
     FROM intake_entries
-    ORDER BY area ASC, datetime(created_at) DESC, id DESC
+    ORDER BY datetime(created_at) DESC, id DESC
   `;
 
   db.all(query, [], (err, rows) => {

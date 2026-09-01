@@ -519,6 +519,10 @@
         return uniqueEntries;
       }
 
+      function getLatestEntriesBySerial() {
+        return dedupeLatestBySerial(state.entries);
+      }
+
       function buildRow(entry) {
         const stateInfo = getAnlieferzustand(entry);
         const isSelected = state.selectedId === entry.id ? ' selected' : '';
@@ -557,12 +561,9 @@
           ].some((value) => String(value || '').toLowerCase().includes(query));
         };
 
-        const sensorEntries = dedupeLatestBySerial(
-          state.entries.filter((entry) => entry.area === 'sensor' && matches(entry))
-        );
-        const remoteEntries = dedupeLatestBySerial(
-          state.entries.filter((entry) => entry.area === 'remote' && matches(entry))
-        );
+        const latestEntries = getLatestEntriesBySerial();
+        const sensorEntries = latestEntries.filter((entry) => entry.area === 'sensor' && matches(entry));
+        const remoteEntries = latestEntries.filter((entry) => entry.area === 'remote' && matches(entry));
 
         sensorTableBody.innerHTML = sensorEntries.length
           ? sensorEntries.map(buildRow).join('')
@@ -572,9 +573,9 @@
           ? remoteEntries.map(buildRow).join('')
           : '<tr><td colspan="4">Keine Remote-Datensaetze gefunden.</td></tr>';
 
-        totalCount.textContent = String(state.entries.length);
-        sensorCount.textContent = String(dedupeLatestBySerial(state.entries.filter((entry) => entry.area === 'sensor')).length);
-        remoteCount.textContent = String(dedupeLatestBySerial(state.entries.filter((entry) => entry.area === 'remote')).length);
+        totalCount.textContent = String(latestEntries.length);
+        sensorCount.textContent = String(latestEntries.filter((entry) => entry.area === 'sensor').length);
+        remoteCount.textContent = String(latestEntries.filter((entry) => entry.area === 'remote').length);
 
         if (!state.entries.length) {
           renderEmptyDetail();

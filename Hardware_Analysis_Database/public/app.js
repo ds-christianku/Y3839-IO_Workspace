@@ -43,6 +43,52 @@ const flashDumpExistingFile = document.getElementById('flashDumpExistingFile');
 
 let activeArea = 'remote';
 let lookupTimeoutId = null;
+let serialLookupRequestId = 0;
+
+function clearLoadedFields(preserveSerial = true) {
+  const serialValue = preserveSerial ? form.serialNumber.value : '';
+
+  form.ticketNumber.value = '';
+  form.deliveryDate.value = '';
+  form.hardwareVersion.value = '';
+  form.firmwareVersion.value = '';
+  form.ticketErrorDescription.value = '';
+  form.sensorGeneration.value = '';
+  form.sensorBrand.value = '';
+  form.remoteType.value = '';
+  form.fpgaVersion.value = '';
+  form.oemVersion.value = '';
+  form.goldenVersion.value = '';
+  form.g1Version.value = '';
+  form.g2Version.value = '';
+  form.g3Version.value = '';
+  form.microBDamaged.value = '';
+  form.usbCDamaged.value = '';
+  form.currentConsumption.value = '';
+  form.currentConsumptionUnit.value = '';
+  form.pcLedState.value = '';
+  form.pcLedStateOther.value = '';
+  form.boardPowerSupplyCheck.value = '';
+  form.remoteAeSensorDetected.value = '';
+  form.deviceManagerName.value = '';
+  form.sensorCableInspection.value = '';
+  form.sensorG1Detected.value = '';
+  form.sensorG2Detected.value = '';
+  form.sensorG3Detected.value = '';
+  form.sensorPathFpgaCheck.value = '';
+  form.otherChecks.value = '';
+  form.errorCause.value = '';
+
+  updateExistingImageLink(microBExistingImage, '');
+  updateExistingImageLink(usbCExistingImage, '');
+  updateExistingImageLink(flashDumpExistingFile, '');
+
+  form.serialNumber.value = serialValue;
+  updatePcLedOtherVisibility();
+  updateDeviceManagerNameVisibility();
+  updateSensorCableInspectionVisibility();
+  updateSensorPathCheckVisibility();
+}
 
 function updateDeviceManagerNameVisibility() {
   const needsDeviceName = activeArea === 'remote' && ['nein', 'sonstiges'].includes(form.remoteAeSensorDetected.value);
@@ -179,8 +225,21 @@ function updateExistingImageLink(linkElement, imagePath) {
   linkElement.classList.remove('hidden');
 }
 
-sensorTab.addEventListener('click', () => setArea('sensor'));
-remoteTab.addEventListener('click', () => setArea('remote'));
+sensorTab.addEventListener('click', () => {
+  setArea('sensor');
+  if (serialInput.value.trim()) {
+    clearTimeout(lookupTimeoutId);
+    fillBySerialNumber();
+  }
+});
+
+remoteTab.addEventListener('click', () => {
+  setArea('remote');
+  if (serialInput.value.trim()) {
+    clearTimeout(lookupTimeoutId);
+    fillBySerialNumber();
+  }
+});
 pcLedState.addEventListener('change', updatePcLedOtherVisibility);
 remoteAeSensorDetected.addEventListener('change', updateDeviceManagerNameVisibility);
 remoteAeSensorDetected.addEventListener('change', updateSensorCableInspectionVisibility);
@@ -190,42 +249,41 @@ form.sensorG3Detected.addEventListener('change', updateSensorPathCheckVisibility
 
 async function fillBySerialNumber() {
   const serialNumber = serialInput.value.trim();
+  const requestId = ++serialLookupRequestId;
+  const requestedArea = activeArea;
 
   if (!serialNumber) {
     return;
   }
 
   try {
-    const response = await fetch(`/api/intake/by-serial/${encodeURIComponent(serialNumber)}`);
+    const response = await fetch(`/api/intake/by-serial/${encodeURIComponent(serialNumber)}?area=${encodeURIComponent(requestedArea)}`);
     const data = await response.json();
 
     if (!response.ok) {
       throw new Error(data.error || 'Fehler beim Laden vorhandener Daten.');
     }
 
+    // Ignore stale responses from older requests.
+    if (requestId !== serialLookupRequestId || serialInput.value.trim() !== serialNumber || activeArea !== requestedArea) {
+      return;
+    }
+
     if (!data.found || !data.entry) {
+      clearLoadedFields(true);
+      resultMessage.textContent = `Kein Datensatz fuer Bereich ${requestedArea === 'sensor' ? 'Sensor' : 'Remote'} gefunden.`;
+      resultMessage.className = 'message';
       return;
     }
 
     const entry = data.entry;
-    setArea(entry.area);
 
     form.serialNumber.value = entry.serial_number || serialNumber;
     form.hardwareVersion.value = entry.hardware_version || '';
     form.firmwareVersion.value = entry.firmware_version || '';
-    form.fpgaVersion.value = entry.fpga_version || '';
-    form.oemVersion.value = entry.oem_version || '';
-    form.goldenVersion.value = entry.golden_version || '';
-    form.g1Version.value = entry.g1_version || '';
-    form.g2Version.value = entry.g2_version || '';
-    form.g3Version.value = entry.g3_version || '';
     form.deliveryDate.value = entry.delivery_date || '';
     form.ticketNumber.value = entry.ticket_number || '';
     form.ticketErrorDescription.value = entry.ticket_error_description || '';
-    form.sensorGeneration.value = entry.sensor_generation || '';
-    form.sensorBrand.value = entry.sensor_brand || '';
-    form.remoteType.value = entry.remote_type || '';
-    form.microBDamaged.value = entry.micro_b_damaged || '';
     form.usbCDamaged.value = entry.usb_c_damaged || '';
     form.currentConsumption.value = entry.current_consumption || '';
     form.currentConsumptionUnit.value = entry.current_consumption_unit || '';
@@ -233,24 +291,63 @@ async function fillBySerialNumber() {
     form.pcLedStateOther.value = entry.pc_led_state_other || '';
     form.boardPowerSupplyCheck.value = entry.board_power_supply_check || '';
     form.remoteAeSensorDetected.value = entry.remote_ae_sensor_detected || '';
-    form.deviceManagerName.value = entry.device_manager_name || '';
-    form.sensorCableInspection.value = entry.sensor_cable_inspection || '';
-    form.sensorG1Detected.value = entry.sensor_g1_detected || '';
-    form.sensorG2Detected.value = entry.sensor_g2_detected || '';
-    form.sensorG3Detected.value = entry.sensor_g3_detected || '';
-    form.sensorPathFpgaCheck.value = entry.sensor_path_fpga_check || '';
     form.otherChecks.value = entry.other_checks || '';
     form.errorCause.value = entry.error_cause || '';
-    updateExistingImageLink(microBExistingImage, entry.micro_b_damage_image || '');
+
+    if (requestedArea === 'remote') {
+      form.fpgaVersion.value = entry.fpga_version || '';
+      form.goldenVersion.value = entry.golden_version || '';
+      form.g1Version.value = entry.g1_version || '';
+      form.g2Version.value = entry.g2_version || '';
+      form.g3Version.value = entry.g3_version || '';
+      form.remoteType.value = entry.remote_type || '';
+      form.microBDamaged.value = entry.micro_b_damaged || '';
+      form.deviceManagerName.value = entry.device_manager_name || '';
+      form.sensorG1Detected.value = entry.sensor_g1_detected || '';
+      form.sensorG2Detected.value = entry.sensor_g2_detected || '';
+      form.sensorG3Detected.value = entry.sensor_g3_detected || '';
+      form.sensorPathFpgaCheck.value = entry.sensor_path_fpga_check || '';
+
+      form.oemVersion.value = '';
+      form.sensorGeneration.value = '';
+      form.sensorBrand.value = '';
+      form.sensorCableInspection.value = '';
+      updateExistingImageLink(microBExistingImage, entry.micro_b_damage_image || '');
+    } else {
+      form.oemVersion.value = entry.oem_version || '';
+      form.sensorGeneration.value = entry.sensor_generation || '';
+      form.sensorBrand.value = entry.sensor_brand || '';
+      form.sensorCableInspection.value = entry.sensor_cable_inspection || '';
+
+      form.fpgaVersion.value = '';
+      form.goldenVersion.value = '';
+      form.g1Version.value = '';
+      form.g2Version.value = '';
+      form.g3Version.value = '';
+      form.remoteType.value = '';
+      form.microBDamaged.value = '';
+      form.deviceManagerName.value = '';
+      form.sensorG1Detected.value = '';
+      form.sensorG2Detected.value = '';
+      form.sensorG3Detected.value = '';
+      form.sensorPathFpgaCheck.value = '';
+      updateExistingImageLink(microBExistingImage, '');
+    }
+
     updateExistingImageLink(usbCExistingImage, entry.usb_c_damage_image || '');
     updateExistingImageLink(flashDumpExistingFile, entry.flashdump_file_path || '');
     updatePcLedOtherVisibility();
     updateDeviceManagerNameVisibility();
+    updateSensorCableInspectionVisibility();
     updateSensorPathCheckVisibility();
 
     resultMessage.textContent = 'Vorhandener Datensatz zur Seriennummer gefunden. Felder wurden gefuellt.';
     resultMessage.className = 'message success';
   } catch (error) {
+    if (requestId !== serialLookupRequestId || serialInput.value.trim() !== serialNumber || activeArea !== requestedArea) {
+      return;
+    }
+
     resultMessage.textContent = error.message;
     resultMessage.className = 'message error';
   }
