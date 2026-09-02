@@ -1,0 +1,437 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Releaseplanung Intraorales Roentgensystem</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-top: #fdf6e9;
+      --bg-bottom: #e7f4ff;
+      --surface: rgba(255, 255, 255, 0.86);
+      --text: #1b2a3d;
+      --muted: #54657a;
+      --accent: #ff7b3e;
+      --accent-2: #2f83ff;
+      --ok: #1f9d57;
+      --radius: 16px;
+      --shadow: 0 10px 30px rgba(27, 42, 61, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Space Grotesk", "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 12% 20%, rgba(255, 123, 62, 0.2), transparent 38%),
+        radial-gradient(circle at 88% 80%, rgba(47, 131, 255, 0.18), transparent 40%),
+        linear-gradient(160deg, var(--bg-top), var(--bg-bottom));
+    }
+
+    .page {
+      max-width: 1100px;
+      margin: 24px auto;
+      padding: 18px;
+      animation: reveal 700ms ease-out;
+    }
+
+    .hero {
+      padding: 28px;
+      border-radius: calc(var(--radius) + 4px);
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.65));
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(8px);
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(1.45rem, 4vw, 2.2rem);
+      letter-spacing: 0.02em;
+    }
+
+    .subtitle {
+      margin: 0;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+
+    .meta-grid {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 14px;
+    }
+
+    .meta-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255, 255, 255, 0.7);
+    }
+
+    .label {
+      display: block;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .value {
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+
+    .status-strip {
+      margin-top: 18px;
+      background: linear-gradient(90deg, rgba(255, 123, 62, 0.18), rgba(47, 131, 255, 0.18));
+      border-radius: 999px;
+      padding: 4px;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.65);
+    }
+
+    .status-fill {
+      height: 12px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      width: 0;
+      transition: width 500ms ease;
+    }
+
+    .todos {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 14px;
+    }
+
+    .todo-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 14px;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      animation: popIn 500ms ease both;
+    }
+
+    .todo-card:nth-child(2) { animation-delay: 70ms; }
+    .todo-card:nth-child(3) { animation-delay: 140ms; }
+    .todo-card:nth-child(4) { animation-delay: 210ms; }
+
+    h2 {
+      margin: 4px 0 10px;
+      font-size: 1.02rem;
+    }
+
+    .milestone {
+      margin: 0 0 10px;
+      color: var(--accent-2);
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .field {
+      margin-bottom: 9px;
+    }
+
+    .field small {
+      display: block;
+      color: var(--muted);
+      margin-bottom: 5px;
+    }
+
+    input,
+    textarea,
+    select {
+      width: 100%;
+      border: 1px solid rgba(84, 101, 122, 0.26);
+      border-radius: 10px;
+      padding: 9px 10px;
+      font: inherit;
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.95);
+    }
+
+    textarea {
+      min-height: 88px;
+      resize: vertical;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      outline: none;
+      border-color: var(--accent-2);
+      box-shadow: 0 0 0 3px rgba(47, 131, 255, 0.2);
+    }
+
+    .actions {
+      margin-top: 16px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: none;
+      border-radius: 12px;
+      padding: 10px 14px;
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 140ms ease, filter 140ms ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.05);
+    }
+
+    .primary {
+      background: linear-gradient(90deg, var(--accent), #ff9951);
+      color: #fff;
+    }
+
+    .secondary {
+      background: linear-gradient(90deg, var(--accent-2), #57a0ff);
+      color: #fff;
+    }
+
+    .saved {
+      color: var(--ok);
+      font-weight: 600;
+      min-height: 1.2em;
+    }
+
+    @keyframes reveal {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes popIn {
+      from { opacity: 0; transform: translateY(10px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+      <h1>Releaseplanung Intraorales Roentgensystem</h1>
+      <p class="subtitle">Zeitachse bis zum geplanten Release Ende Maerz 2027 mit bearbeitbaren ToDo-Bereichen.</p>
+
+      <div class="meta-grid">
+        <article class="meta-card">
+          <span class="label">Aktuelles Datum</span>
+          <span id="today" class="value"></span>
+        </article>
+        <article class="meta-card">
+          <span class="label">Release Enddatum</span>
+          <span class="value">31.03.2027</span>
+        </article>
+        <article class="meta-card">
+          <span class="label">Tage bis Release</span>
+          <span id="remaining" class="value"></span>
+        </article>
+      </div>
+
+      <div class="status-strip" aria-label="Fortschritt bis zum Release">
+        <div id="statusFill" class="status-fill"></div>
+      </div>
+
+      <div class="actions">
+        <button id="saveBtn" class="primary" type="button">Planung lokal speichern</button>
+        <button id="clearBtn" class="secondary" type="button">Eingaben zuruecksetzen</button>
+      </div>
+      <p id="saveState" class="saved"></p>
+    </section>
+
+    <section class="todos" aria-label="ToDo Planung">
+      <article class="todo-card">
+        <h2>1. Release Umfang definieren</h2>
+        <p class="milestone">Meilenstein: Umfang definiert</p>
+        <div class="field">
+          <small>Aufgabenbeschreibung</small>
+          <textarea id="scope_text" placeholder="Funktionsumfang, Grenzen und Risiken"></textarea>
+        </div>
+        <div class="field">
+          <small>Verantwortlich</small>
+          <input id="scope_owner" type="text" placeholder="Name" />
+        </div>
+        <div class="field">
+          <small>Faelligkeit</small>
+          <input id="scope_due" type="date" />
+        </div>
+        <div class="field">
+          <small>Status</small>
+          <select id="scope_status">
+            <option>Offen</option>
+            <option>In Arbeit</option>
+            <option>Abgeschlossen</option>
+          </select>
+        </div>
+      </article>
+
+      <article class="todo-card">
+        <h2>2. Implementierung</h2>
+        <p class="milestone">Meilenstein: Release Candidate erstellt (SW freeze)</p>
+        <div class="field">
+          <small>Aufgabenbeschreibung</small>
+          <textarea id="impl_text" placeholder="Technische Aufgaben, Meilensteine, Abhaengigkeiten"></textarea>
+        </div>
+        <div class="field">
+          <small>Verantwortlich</small>
+          <input id="impl_owner" type="text" placeholder="Name" />
+        </div>
+        <div class="field">
+          <small>Faelligkeit</small>
+          <input id="impl_due" type="date" />
+        </div>
+        <div class="field">
+          <small>Status</small>
+          <select id="impl_status">
+            <option>Offen</option>
+            <option>In Arbeit</option>
+            <option>Abgeschlossen</option>
+          </select>
+        </div>
+      </article>
+
+      <article class="todo-card">
+        <h2>3. Testing</h2>
+        <p class="milestone">Meilenstein: Testing abgeschlossen</p>
+        <div class="field">
+          <small>Aufgabenbeschreibung</small>
+          <textarea id="test_text" placeholder="Welche Tests und Nachweise sind geplant?"></textarea>
+        </div>
+        <div class="field">
+          <small>Verantwortlich</small>
+          <input id="test_owner" type="text" placeholder="Name" />
+        </div>
+        <div class="field">
+          <small>Faelligkeit</small>
+          <input id="test_due" type="date" />
+        </div>
+        <div class="field">
+          <small>Status</small>
+          <select id="test_status">
+            <option>Offen</option>
+            <option>In Arbeit</option>
+            <option>Abgeschlossen</option>
+          </select>
+        </div>
+      </article>
+
+      <article class="todo-card">
+        <h2>4. Dokumentation</h2>
+        <p class="milestone">Meilenstein: Start Roll-Out</p>
+        <div class="field">
+          <small>Aufgabenbeschreibung</small>
+          <textarea id="doc_text" placeholder="Welche Dokumente werden benoetigt?"></textarea>
+        </div>
+        <div class="field">
+          <small>Verantwortlich</small>
+          <input id="doc_owner" type="text" placeholder="Name" />
+        </div>
+        <div class="field">
+          <small>Faelligkeit</small>
+          <input id="doc_due" type="date" />
+        </div>
+        <div class="field">
+          <small>Status</small>
+          <select id="doc_status">
+            <option>Offen</option>
+            <option>In Arbeit</option>
+            <option>Abgeschlossen</option>
+          </select>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <script>
+    const releaseDate = new Date("2027-03-31T23:59:59");
+    const baselineDate = new Date("2026-01-01T00:00:00");
+    const today = new Date();
+
+    const formatter = new Intl.DateTimeFormat("de-DE", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric"
+    });
+
+    document.getElementById("today").textContent = formatter.format(today);
+
+    const msPerDay = 24 * 60 * 60 * 1000;
+    const remainingDays = Math.max(0, Math.ceil((releaseDate - today) / msPerDay));
+    document.getElementById("remaining").textContent = String(remainingDays);
+
+    const totalWindow = releaseDate - baselineDate;
+    const elapsed = Math.min(Math.max(today - baselineDate, 0), totalWindow);
+    const percent = totalWindow > 0 ? (elapsed / totalWindow) * 100 : 0;
+    document.getElementById("statusFill").style.width = `${percent.toFixed(1)}%`;
+
+    const keys = [
+      "doc_text", "doc_owner", "doc_due", "doc_status",
+      "test_text", "test_owner", "test_due", "test_status",
+      "scope_text", "scope_owner", "scope_due", "scope_status",
+      "impl_text", "impl_owner", "impl_due", "impl_status"
+    ];
+
+    const saveState = document.getElementById("saveState");
+
+    function savePlan() {
+      const data = {};
+      keys.forEach((id) => {
+        const element = document.getElementById(id);
+        data[id] = element.value;
+      });
+      localStorage.setItem("io_release_plan", JSON.stringify(data));
+      saveState.textContent = `Gespeichert am ${new Date().toLocaleTimeString("de-DE")}`;
+    }
+
+    function loadPlan() {
+      const raw = localStorage.getItem("io_release_plan");
+      if (!raw) {
+        return;
+      }
+      const data = JSON.parse(raw);
+      keys.forEach((id) => {
+        const element = document.getElementById(id);
+        if (Object.prototype.hasOwnProperty.call(data, id)) {
+          element.value = data[id];
+        }
+      });
+    }
+
+    function clearPlan() {
+      keys.forEach((id) => {
+        const element = document.getElementById(id);
+        element.value = "";
+        if (element.tagName === "SELECT") {
+          element.selectedIndex = 0;
+        }
+      });
+      localStorage.removeItem("io_release_plan");
+      saveState.textContent = "Eingaben wurden zurueckgesetzt.";
+    }
+
+    document.getElementById("saveBtn").addEventListener("click", savePlan);
+    document.getElementById("clearBtn").addEventListener("click", clearPlan);
+
+    loadPlan();
+  </script>
+</body>
+</html>

@@ -58,6 +58,7 @@ db.serialize(() => {
       sensor_g3_detected TEXT,
       sensor_path_fpga_check TEXT,
       flashdump_file_path TEXT,
+      root_cause_file_path TEXT,
       other_checks TEXT,
       error_cause TEXT,
       current_consumption TEXT,
@@ -149,6 +150,10 @@ db.serialize(() => {
 
     if (!columnNames.has('flashdump_file_path')) {
       db.run('ALTER TABLE intake_entries ADD COLUMN flashdump_file_path TEXT');
+    }
+
+    if (!columnNames.has('root_cause_file_path')) {
+      db.run('ALTER TABLE intake_entries ADD COLUMN root_cause_file_path TEXT');
     }
 
     if (!columnNames.has('other_checks')) {
@@ -262,6 +267,7 @@ app.get('/api/intake/by-serial/:serialNumber', (req, res) => {
       sensor_g3_detected,
       sensor_path_fpga_check,
       flashdump_file_path,
+      root_cause_file_path,
       other_checks,
       error_cause,
       current_consumption,
@@ -322,6 +328,7 @@ app.get('/api/intake/overview', (req, res) => {
       sensor_g3_detected,
       sensor_path_fpga_check,
       flashdump_file_path,
+      root_cause_file_path,
       other_checks,
       error_cause,
       current_consumption,
@@ -351,7 +358,8 @@ app.get('/api/intake/overview', (req, res) => {
 app.post('/api/intake', upload.fields([
   { name: 'microBDamageImage', maxCount: 1 },
   { name: 'usbCDamageImage', maxCount: 1 },
-  { name: 'flashDumpUpload', maxCount: 1 }
+  { name: 'flashDumpUpload', maxCount: 1 },
+  { name: 'rootCauseUpload', maxCount: 1 }
 ]), (req, res) => {
   const {
     area,
@@ -410,9 +418,11 @@ app.post('/api/intake', upload.fields([
   const microBImageFile = req.files?.microBDamageImage?.[0];
   const usbCImageFile = req.files?.usbCDamageImage?.[0];
   const flashDumpFile = req.files?.flashDumpUpload?.[0];
+  const rootCauseFile = req.files?.rootCauseUpload?.[0];
   const microBImagePath = area === 'remote' && microBImageFile ? `/uploads/${microBImageFile.filename}` : null;
   const usbCImagePath = usbCImageFile ? `/uploads/${usbCImageFile.filename}` : null;
   const flashDumpFilePath = flashDumpFile ? `/uploads/${flashDumpFile.filename}` : null;
+  const rootCauseFilePath = rootCauseFile ? `/uploads/${rootCauseFile.filename}` : null;
 
   const query = `
     INSERT INTO intake_entries (
@@ -441,6 +451,7 @@ app.post('/api/intake', upload.fields([
       sensor_g3_detected,
       sensor_path_fpga_check,
       flashdump_file_path,
+      root_cause_file_path,
       other_checks,
       error_cause,
       current_consumption,
@@ -454,7 +465,7 @@ app.post('/api/intake', upload.fields([
       usb_c_damage_image,
       created_at,
       windows_username
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
   const values = [
@@ -483,6 +494,7 @@ app.post('/api/intake', upload.fields([
     area === 'remote' ? sensorG3Detected : null,
     anySensorNotDetected ? String(sensorPathFpgaCheck || '').trim() : null,
     flashDumpFilePath,
+    rootCauseFilePath,
     String(otherChecks || '').trim(),
     String(errorCause || '').trim(),
     currentConsumption,

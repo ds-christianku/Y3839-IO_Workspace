@@ -1,0 +1,137 @@
+[
+  {
+    "_id": "REAL-8001485021",
+    "_comment": "Ticket 8001485021 | got: SpareParts/RMA/Logistics / RMA Request",
+    "description": "spare part request",
+    "notes": "Customer requested spare part and follow-up for RMA logistics processing.",
+    "expected_primary": "Spare Parts/RMA/Logistics",
+    "expected_secondary": "RMA Request",
+    "expected_clarity": "unclear"
+  },
+  {
+    "_id": "REAL-8001482988",
+    "_comment": "Ticket 8001482988 | got: SpareParts/RMA/Logistics / Spare Part Request",
+    "description": "spare part request",
+    "notes": "Customer requested replacement part and logistics handling for shipment follow-up.",
+    "expected_primary": "Spare Parts/RMA/Logistics",
+    "expected_secondary": "Spare Part Request",
+    "expected_clarity": "unclear"
+  },
+  {
+    "_id": "REAL-8001470032",
+    "_comment": "Ticket 8001470032 | got: SpareParts/RMA/Logistics / Spare Part Request",
+    "description": "spare part request",
+    "notes": "Customer requested replacement component and follow-up on spare parts handling.",
+    "expected_primary": "Spare Parts/RMA/Logistics",
+    "expected_secondary": "Spare Part Request",
+    "expected_clarity": "unclear"
+  },
+  {
+    "_id": "REAL-8001482988",
+    "_comment": "Ticket 8001482988 | got: unknown / unknown",
+    "description": "missing classification",
+    "notes": "No clear classification available from the case details; logistics follow-up is unclear.",
+    "expected_primary": "-",
+    "expected_secondary": "-",
+    "expected_clarity": "unclear"
+  },
+  {
+    "_id": "REAL-8001485021",
+    "_comment": "Ticket 8001485021 | got: SpareParts/RMA/Logistics / Logistics",
+    "description": "logistics issue",
+    "notes": "Customer case involved shipment and logistics coordination rather than a direct device fault.",
+    "expected_primary": "Spare Parts/RMA/Logistics",
+    "expected_secondary": "Logistics",
+    "expected_clarity": "unclear"
+  },
+  {
+    "_id": "REAL-8001481259",
+    "_comment": "Ticket 8001481259 | got: Connectivity/Recognition / Sensor Detection Failure (Persistent)",
+    "description": "sensor not detected",
+    "notes": "Sensor was not recognized consistently by the system; troubleshooting pointed to connectivity recognition issue.",
+    "expected_primary": "Connectivity/Recognition",
+    "expected_secondary": "Sensor Detection Failure (Persistent)",
+    "expected_clarity": "unclear"
+  },
+  {
+    "_id": "REAL-8001470864",
+    "_comment": "Ticket 8001470864 | got: Connectivity/Recognition / Remote Detection Failure (Persistent)",
+    "description": "remote not detected",
+    "notes": "Remote/interface was not detected reliably; issue affected connectivity and recognition workflow.",
+    "expected_primary": "Connectivity/Recognition",
+    "expected_secondary": "Remote Detection Failure (Persistent)",
+    "expected_clarity": "unclear"
+  },
+  {
+    "_id": "REAL-8001470032",
+    "_comment": "Ticket 8001470032 | got: SpareParts/RMA/Logistics / Spare Part Request",
+    "description": "spare part request",
+    "notes": "Customer requested a spare part to support replacement logistics and continued operation.",
+    "expected_primary": "Spare Parts/RMA/Logistics",
+    "expected_secondary": "Spare Part Request",
+    "expected_clarity": "unclear"
+  },
+  {
+    "_id": "REAL-8001475765",
+    "_comment": "Ticket 8001475765 | got: Connectivity/Recognition / Remote Detection Failure (Persistent)",
+    "description": "remote detection issue",
+    "notes": "Remote detection failure observed during operation; issue was ultimately classified as a clear connectivity/recognition problem.",
+    "expected_primary": "Connectivity/Recognition",
+    "expected_secondary": "Remote Detection Failure (Persistent)",
+    "expected_clarity": "clear"
+  },
+  {
+    "_id": "REAL-8001479055",
+    "_comment": "Ticket 8001479055 | got: Connectivity/Recognition / Remote Detection Failure (Intermittent)",
+    "description": "intermittent remote detection issue",
+    "notes": "Problem occurred intermittently and affected remote recognition during exposure workflow.",
+    "expected_primary": "Connectivity/Recognition",
+    "expected_secondary": "Remote Detection Failure (Intermittent)",
+    "expected_clarity": "unclear"
+  },
+  {
+    "_id": "REAL-8001478312",
+    "_comment": "Ticket 8001478312 | got: Connectivity/Recognition / Remote Detection Failure (Persistent)",
+    "description": "remote detection failure",
+    "notes": "Remote was not consistently detected; customer issue remained persistent and eventually considered clear.",
+    "expected_primary": "Connectivity/Recognition",
+    "expected_secondary": "Remote Detection Failure (Persistent)",
+    "expected_clarity": "clear"
+  },
+  {
+    "_id": "REAL-8001468627",
+    "_comment": "Ticket 8001468627 | got: Connectivity/Recognition / Sensor Detection Failure (Persistent)",
+    "description": "sensor detection failure",
+    "notes": "Sensor remained undetected and was not recognized reliably by the connected system.",
+    "expected_primary": "Connectivity/Recognition",
+    "expected_secondary": "Sensor Detection Failure (Persistent)",
+    "expected_clarity": "unclear"
+  },
+  {
+    "_id": "REAL-8001466316",
+    "_comment": "Ticket 8001466316 | got: Connectivity/Recognition / Remote Detection Failure (Persistent)",
+    "description": "remote not recognized",
+    "notes": "Remote/interface was not recognized during use, indicating persistent connectivity and recognition problems.",
+    "expected_primary": "Connectivity/Recognition",
+    "expected_secondary": "Remote Detection Failure (Persistent)",
+    "expected_clarity": "unclear"
+  },
+  {
+    "_id": "REAL-8001484037",
+    "_comment": "Ticket 8001484037 | got: Imaging/Acquisition/Exposure / Exposure Issue",
+    "description": "exposure issue",
+    "notes": "Imaging workflow was affected by exposure-related problems and required troubleshooting.",
+    "expected_primary": "Imaging/Acquisition/Exposure",
+    "expected_secondary": "Exposure Issue",
+    "expected_clarity": "clear"
+  },
+  {
+    "_id": "REAL-8001480102",
+    "_comment": "Ticket 8001480102 | got: Imaging/Acquisition/Exposure / Imaging Issue",
+    "description": "imaging issue",
+    "notes": "Ticket described general imaging acquisition problems affecting image capture and system workflow.",
+    "expected_primary": "Imaging/Acquisition/Exposure",
+    "expected_secondary": "Imaging Issue",
+    "expected_clarity": "unclear"
+  }
+]

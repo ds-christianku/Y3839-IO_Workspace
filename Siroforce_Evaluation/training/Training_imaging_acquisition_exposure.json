@@ -1,0 +1,227 @@
+[
+  {
+    "_id": "REAL-8001480234",
+    "_comment": "Ticket 8001480234 | got: Imaging/Acquisition/Exposure / Cannot Acquire Image",
+    "description": "cannot acquire image",
+    "notes": "Image acquisition issue with inability to capture image from sensor/system.",
+    "expected_primary": "Imaging/Acquisition/Exposure",
+    "expected_secondary": "Cannot Acquire Image",
+    "expected_clarity": "unclear"
+  },
+  {
+    "_id": "REAL-8001476794",
+    "_comment": "Ticket 8001476794 | got: Imaging/Acquisition/Exposure / Cannot Acquire Image",
+    "description": "cannot acquire image",
+    "notes": "System could not acquire an image; issue was assessed as image acquisition failure.",
+    "expected_primary": "Imaging/Acquisition/Exposure",
+    "expected_secondary": "Cannot Acquire Image",
+    "expected_clarity": "clear"
+  },
+  {
+    "_id": "REAL-8001466327",
+    "_comment": "Ticket 8001466327 | got: Imaging/Acquisition/Exposure / Cannot Acquire Image",
+    "description": "cannot acquire image",
+    "notes": "Customer reported inability to acquire image from the imaging system.",
+    "expected_primary": "Imaging/Acquisition/Exposure",
+    "expected_secondary": "Cannot Acquire Image",
+    "expected_clarity": "unclear"
+  },
+  {
+    "_id": "REAL-8001381960",
+    "_comment": "Ticket 8001381960 | got: Imaging/Acquisition/Exposure / Cannot Acquire Image",
+    "description": "cannot acquire image",
+    "notes": "Imaging system failed to acquire the image during use; issue was clear after review.",
+    "expected_primary": "Imaging/Acquisition/Exposure",
+    "expected_secondary": "Cannot Acquire Image",
+    "expected_clarity": "clear"
+  },
+  {
+    "_id": "REAL-8001356289",
+    "_comment": "Ticket 8001356289 | got: Imaging/Acquisition/Exposure / Cannot Acquire Image",
+    "description": "cannot acquire image",
+    "notes": "Customer could not acquire images; issue was repeated and classified as a clear acquisition problem.",
+    "expected_primary": "Imaging/Acquisition/Exposure",
+    "expected_secondary": "Cannot Acquire Image",
+    "expected_clarity": "clear"
+  },
+  {
+    "_id": "REAL-8001310504",
+    "_comment": "Ticket 8001310504 | got: Imaging/Acquisition/Exposure / Cannot Acquire Image",
+    "description": "cannot acquire image",
+    "notes": "The system could not acquire the expected image, consistent with an acquisition issue.",
+    "expected_primary": "Imaging/Acquisition/Exposure",
+    "expected_secondary": "Cannot Acquire Image",
+    "expected_clarity": "clear"
+  },
+  {
+    "_id": "REAL-8001375193",
+    "_comment": "Ticket 8001375193 | got: Imaging/Acquisition/Exposure / Cannot Acquire Image",
+    "description": "cannot acquire image",
+    "notes": "Customer reported acquisition failure; issue not fully resolved and remained unclear.",
+    "expected_primary": "Imaging/Acquisition/Exposure",
+    "expected_secondary": "Cannot Acquire Image",
+    "expected_clarity": "unclear"
+  },
+  {
+    "_id": "REAL-800147757",
+    "_comment": "Ticket 800147757 | got: - / -",
+    "description": "missing classification",
+    "notes": "Insufficient detail; no clear primary or secondary classification available.",
+    "expected_primary": "-",
+    "expected_secondary": "-",
+    "expected_clarity": "unclear"
+  },
+  {
+    "_id": "REAL-8001332992",
+    "_comment": "Ticket 8001332992 | got: Imaging/Acquisition/Exposure / Cannot Acquire Image",
+    "description": "cannot acquire image",
+    "notes": "System unable to acquire image; issue was clear and matched acquisition failure pattern.",
+    "expected_primary": "Imaging/Acquisition/Exposure",
+    "expected_secondary": "Cannot Acquire Image",
+    "expected_clarity": "clear"
+  },
+  {
+    "_id": "REAL-8001359131",
+    "_comment": "Ticket 8001359131 | got: Imaging/Acquisition/Exposure / Imaging Issue",
+    "description": "imaging issue",
+    "notes": "Reported issue was a general image acquisition problem in the system workflow.",
+    "expected_primary": "Imaging/Acquisition/Exposure",
+    "expected_secondary": "Imaging Issue",
+    "expected_clarity": "unclear"
+  },
+  {
+    "_id": "REAL-8001368229",
+    "_comment": "Ticket 8001368229 | got: Imaging/Acquisition/Exposure / Imaging Issue",
+    "description": "imaging issue",
+    "notes": "Issue was described as imaging problem without a more specific acquisition diagnosis.",
+    "expected_primary": "Imaging/Acquisition/Exposure",
+    "expected_secondary": "Imaging Issue",
+    "expected_clarity": "unclear"
+  },
+  {
+    "_id": "REAL-8001260655",
+    "_comment": "Ticket 8001260655 | got: Software/Firmware/Driver / Software",
+    "description": "software issue",
+    "notes": "Problem was linked to software behavior and not to direct image-acquisition hardware failure.",
+    "expected_primary": "Software/Firmware/Driver",
+    "expected_secondary": "Software",
+    "expected_clarity": "clear"
+  },
+  {
+    "_id": "REAL-8001368651",
+    "_comment": "Ticket 8001368651 | got: Software/Firmware/Driver / Update/Version",
+    "description": "update/version issue",
+    "notes": "Software update or version mismatch contributed to the reported issue and was resolved as clear.",
+    "expected_primary": "Software/Firmware/Driver",
+    "expected_secondary": "Update/Version",
+    "expected_clarity": "clear"
+  },
+  {
+    "_id": "REAL-8001317812",
+    "_comment": "Ticket 8001317812 | got: Imaging/Acquisition/Exposure / Imaging Issue",
+    "description": "imaging issue",
+    "notes": "Customer described a problem with image capture and quality in the acquisition workflow.",
+    "expected_primary": "Imaging/Acquisition/Exposure",
+    "expected_secondary": "Imaging Issue",
+    "expected_clarity": "clear"
+  },
+  {
+    "_id": "REAL-8001334106",
+    "_comment": "Ticket 8001334106 | got: Imaging/Acquisition/Exposure / Image Quality",
+    "description": "image quality issue",
+    "notes": "Image quality issue was reported but the root cause was not fully specified.",
+    "expected_primary": "Imaging/Acquisition/Exposure",
+    "expected_secondary": "Image Quality",
+    "expected_clarity": "unclear"
+  },
+  {
+    "_id": "REAL-8001310915",
+    "_comment": "Ticket 8001310915 | got: - / -",
+    "description": "missing classification",
+    "notes": "Case contained insufficient information to assign a reliable primary or secondary category.",
+    "expected_primary": "-",
+    "expected_secondary": "-",
+    "expected_clarity": "unclear"
+  },
+  {
+    "_id": "REAL-8001465350",
+    "_comment": "Ticket 8001465350 | got: Imaging/Acquisition/Exposure / Image Quality",
+    "description": "image quality issue",
+    "notes": "Customer reported image quality concerns during image acquisition and processing.",
+    "expected_primary": "Imaging/Acquisition/Exposure",
+    "expected_secondary": "Image Quality",
+    "expected_clarity": "unclear"
+  },
+  {
+    "_id": "REAL-8001412083",
+    "_comment": "Ticket 8001412083 | got: Imaging/Acquisition/Exposure / Image Quality",
+    "description": "image quality issue",
+    "notes": "Image quality problem was documented and remained ambiguous in classification.",
+    "expected_primary": "Imaging/Acquisition/Exposure",
+    "expected_secondary": "Image Quality",
+    "expected_clarity": "unclear"
+  },
+  {
+    "_id": "REAL-8001290032",
+    "_comment": "Ticket 8001290032 | got: Imaging/Acquisition/Exposure / Image Quality",
+    "description": "image quality issue",
+    "notes": "Issue caused degraded image quality but did not clearly map to a more specific category.",
+    "expected_primary": "Imaging/Acquisition/Exposure",
+    "expected_secondary": "Image Quality",
+    "expected_clarity": "unclear"
+  },
+  {
+    "_id": "REAL-8001470694",
+    "_comment": "Ticket 8001470694 | got: - / -",
+    "description": "missing classification",
+    "notes": "No definitive classification available from the provided case summary.",
+    "expected_primary": "-",
+    "expected_secondary": "-",
+    "expected_clarity": "unclear"
+  },
+  {
+    "_id": "REAL-8001466614",
+    "_comment": "Ticket 8001466614 | got: SpareParts/RMA/Logistics / Logistics",
+    "description": "logistics issue",
+    "notes": "Processing issue related to parts and logistics handling rather than image acquisition itself.",
+    "expected_primary": "Spare Parts/RMA/Logistics",
+    "expected_secondary": "Logistics",
+    "expected_clarity": "clear"
+  },
+  {
+    "_id": "REAL-8001418808",
+    "_comment": "Ticket 8001418808 | got: Imaging/Acquisition/Exposure / Image Quality",
+    "description": "image quality issue",
+    "notes": "Customer reported non-diagnostic or degraded image quality during imaging workflow.",
+    "expected_primary": "Imaging/Acquisition/Exposure",
+    "expected_secondary": "Image Quality",
+    "expected_clarity": "unclear"
+  },
+  {
+    "_id": "REAL-8001463086",
+    "_comment": "Ticket 8001463086 | got: Imaging/Acquisition/Exposure / Exposure Issue",
+    "description": "exposure issue",
+    "notes": "Customer issue involved a problem during exposure or image generation stage.",
+    "expected_primary": "Imaging/Acquisition/Exposure",
+    "expected_secondary": "Exposure Issue",
+    "expected_clarity": "unclear"
+  },
+  {
+    "_id": "REAL-8001431513",
+    "_comment": "Ticket 8001431513 | got: Imaging/Acquisition/Exposure / Image Quality",
+    "description": "image quality issue",
+    "notes": "Reported problem affected image quality without a clear acquisition-root-cause determination.",
+    "expected_primary": "Imaging/Acquisition/Exposure",
+    "expected_secondary": "Image Quality",
+    "expected_clarity": "unclear"
+  },
+  {
+    "_id": "REAL-8001279822",
+    "_comment": "Ticket 8001279822 | got: Imaging/Acquisition/Exposure / Cannot Acquire Image",
+    "description": "cannot acquire image",
+    "notes": "Customer was unable to acquire image, matching the cannot-acquire-image acquisition category.",
+    "expected_primary": "Imaging/Acquisition/Exposure",
+    "expected_secondary": "Cannot Acquire Image",
+    "expected_clarity": "unclear"
+  }
+]

@@ -288,6 +288,20 @@
         word-break: break-word;
       }
 
+      .detail-image-link {
+        display: inline-block;
+      }
+
+      .detail-image {
+        display: block;
+        max-width: 100%;
+        width: min(100%, 360px);
+        max-height: 220px;
+        object-fit: cover;
+        border-radius: 10px;
+        border: 1px solid #d4dde7;
+      }
+
       .detail-empty {
         padding: 1rem;
         border-radius: 14px;
@@ -479,6 +493,32 @@
         return text ? escapeHtml(text) : '<span class="pill neutral">leer</span>';
       }
 
+      function isImagePath(value) {
+        const text = String(value ?? '').trim().toLowerCase();
+        return /\.(png|jpe?g|gif|webp|bmp|svg)$/.test(text);
+      }
+
+      function formatImageValue(value, label) {
+        const text = String(value ?? '').trim();
+        if (!text) {
+          return '<span class="pill neutral">leer</span>';
+        }
+
+        if (!isImagePath(text)) {
+          const safeText = escapeHtml(text);
+          return `<a href="${safeText}" target="_blank" rel="noopener noreferrer">${safeText}</a>`;
+        }
+
+        const safeHref = escapeHtml(text);
+        const alt = escapeHtml(`${label} Vorschau`);
+
+        return `
+          <a class="detail-image-link" href="${safeHref}" target="_blank" rel="noopener noreferrer">
+            <img class="detail-image" src="${safeHref}" alt="${alt}" loading="lazy" />
+          </a>
+        `;
+      }
+
       function formatDate(value) {
         if (!value) return 'leer';
         const date = new Date(value);
@@ -631,6 +671,7 @@
           ['Sensor G3 erkannt', entry.sensor_g3_detected],
           ['Sensorpfad FPGA Check', entry.sensor_path_fpga_check],
           ['Flashdump Dateipfad', entry.flashdump_file_path],
+          ['RootCause Datei', entry.root_cause_file_path],
           ['Weitere Pruefungen', entry.other_checks],
           ['Fehlerursache', entry.error_cause],
           ['Stromaufnahme', [entry.current_consumption, entry.current_consumption_unit].filter(Boolean).join(' ')],
@@ -652,12 +693,18 @@
         detailAreaPill.textContent = areaLabel;
         detailContent.className = 'detail-grid';
         detailContent.innerHTML = detailFields
-          .map(([label, value]) => `
+          .map(([label, value]) => {
+            const formattedValue = label === 'Micro-B Bild' || label === 'USB-C Bild' || label === 'RootCause Datei' || label === 'Flashdump Dateipfad'
+              ? formatImageValue(value, label)
+              : formatValue(value);
+
+            return `
             <div class="detail-item ${label === 'Ticket Beschreibung' || label === 'Weitere Pruefungen' || label === 'Fehlerursache' ? 'full' : ''}">
               <p class="detail-label">${escapeHtml(label)}</p>
-              <p class="detail-value">${formatValue(value)}</p>
+              <p class="detail-value">${formattedValue}</p>
             </div>
-          `)
+          `;
+          })
           .join('');
 
         document.querySelectorAll('tbody tr[data-entry-id]').forEach((row) => {

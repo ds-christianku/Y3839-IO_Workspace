@@ -15,6 +15,7 @@ from datetime import datetime
 BASE_DIR = Path(__file__).parent
 INPUT_PATH = BASE_DIR / "output" / "symptom_analysis.json"
 OUTPUT_PATH = BASE_DIR / "output" / "Symptom_Trend_Report.html"
+CHARTJS_PATH = BASE_DIR / "output" / "chart.umd.min.js"
 
 
 def _trend_icon(pct):
@@ -198,6 +199,11 @@ def run():
         with open(img_path, "rb") as f:
             img_b64 = base64.b64encode(f.read()).decode()
 
+    # Embed Chart.js inline for offline use
+    chartjs_inline = ""
+    if CHARTJS_PATH.exists():
+        chartjs_inline = CHARTJS_PATH.read_text(encoding="utf-8")
+
     img_section = ""
     if img_b64:
         img_section = f"""
@@ -284,6 +290,42 @@ def run():
     jira_unassigned = jira_total_bugs - jira_assigned
     jira_pct = round(jira_assigned / jira_total_bugs * 100) if jira_total_bugs else 0
 
+    # Build Intermittent Connectivity RC breakdown for release chart
+    import re as _re
+    ic_hw_labels, ic_hw_counts = [], []
+    ic_sw_labels, ic_sw_counts = [], []
+    for sym in jira_data.get("symptoms", []):
+        if sym["name"] == "Intermittent Connectivity":
+            for rc in sym.get("root_causes_jira", []):
+                count = len(rc.get("jira_tickets", []))
+                if count == 0:
+                    continue
+                label = _re.sub(r"\s*\[(HW|SW|FW)\]", "", rc["text"]).strip()
+                if "[HW]" in rc["text"]:
+                    ic_hw_labels.append(label)
+                    ic_hw_counts.append(count)
+                else:
+                    ic_sw_labels.append(label)
+                    ic_sw_counts.append(count)
+    import json as _json_ic
+    ic_hw_labels_js = _json_ic.dumps(ic_hw_labels)
+    ic_hw_counts_js = _json_ic.dumps(ic_hw_counts)
+    ic_sw_labels_js = _json_ic.dumps(ic_sw_labels)
+    ic_sw_counts_js = _json_ic.dumps(ic_sw_counts)
+    ic_hw_total = sum(ic_hw_counts)
+    ic_sw_total = sum(ic_sw_counts)
+    # Siroforce tickets for Intermittent Connectivity
+    ic_siroforce = next((s["total"] for s in symptoms if s["name"] == "Intermittent Connectivity"), 0)
+    # Top 3 root causes by ticket count
+    ic_all_rc = sorted(
+        [(l, c) for l, c in zip(ic_hw_labels + ic_sw_labels, ic_hw_counts + ic_sw_counts)],
+        key=lambda x: -x[1]
+    )[:3]
+    ic_top3_html = "".join(
+        f'<li style="margin-bottom:4px"><span style="font-weight:600;color:{"#e67e22" if (l, c) in list(zip(ic_hw_labels, ic_hw_counts)) else "#2563eb"}">{c} Tickets</span> &ndash; {l} <span style="background:{"#e67e22" if (l, c) in list(zip(ic_hw_labels, ic_hw_counts)) else "#2980b9"};color:white;border-radius:3px;padding:1px 5px;font-size:0.78em;font-weight:700;margin-left:4px">{"HW" if (l, c) in list(zip(ic_hw_labels, ic_hw_counts)) else "SW"}</span></li>'
+        for l, c in ic_all_rc
+    )
+
     # Symptoms and Root Causes section — with Jira ticket links per root cause
     rc_section_rows = ""
     for s in sorted_symptoms:
@@ -343,7 +385,7 @@ def run():
         hint_html = ""
         if hint:
             hint_html_escaped = hint.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace('"', "&quot;")
-            hint_html = f'<div style="margin-top:6px;padding-top:6px;border-top:1px solid #ddd;font-size:0.82em;color:#e67e22;font-style:italic">💡 {hint_html_escaped}</div>'
+            hint_html = f'<div style="margin-top:6px;padding-top:6px;border-top:1px solid #ddd;font-size:0.82em;color:#e67e22;font-style:italic">&#128161; {hint_html_escaped}</div>'
         # Under Construction / Possible Solution cell
         sol = solutions_map.get(s["name"], {})
         sol_status = sol.get("status", "")
@@ -357,6 +399,7 @@ def run():
                 f'</div>'
                 f'<div style="font-size:0.83em;color:#444;line-height:1.5">{sol_text}</div>'
             )
+            sol_html = f'<div class="sol-content" style="display:none">{sol_html}</div>'
         else:
             sol_html = '<span style="color:#bbb;font-size:0.8em">—</span>'
         rc_section_rows += f"""
@@ -724,6 +767,7 @@ def run():
           <label style="color:white;font-weight:400;cursor:pointer"><input type="checkbox" id="cb-inquiry" checked onchange="applyFilter()"> Inquiry</label>
           <label style="color:white;font-weight:400;cursor:pointer"><input type="checkbox" id="cb-rest" checked onchange="applyFilter()"> Rest</label>
           <button onclick="resetFilters()" style="margin-left:16px;padding:4px 12px;border:1px solid rgba(255,255,255,0.4);border-radius:4px;background:rgba(255,255,255,0.15);cursor:pointer;font-size:0.88em;color:white">Reset</button>
+          <button id="sol-toggle-btn" onclick="toggleAllSolutions()" title="Show / Hide all solutions" style="margin-left:12px;padding:4px 10px;border:1px solid rgba(255,255,255,0.4);border-radius:4px;background:rgba(255,255,255,0.15);cursor:pointer;font-size:1em;color:white">&#128161;</button>
           <span id="filter-count" style="font-size:0.8em;color:rgba(255,255,255,0.6);margin-left:8px"></span>
         </div>
       </div>
@@ -765,40 +809,68 @@ def run():
       <!-- Chart 1: Matched vs Unmatched -->
       <div style="background:#f8fafc;border:1px solid #d0dde8;border-radius:8px;padding:20px">
         <h3 style="margin:0 0 16px 0;font-size:0.95em;color:#333">Siroforce Tickets: Symptom Coverage</h3>
-        <div style="max-width:250px;margin:0 auto">
-          <canvas id="chart1"></canvas>
+        <div style="width:200px;height:200px;margin:0 auto">
+          <canvas id="chart1" width="200" height="200"></canvas>
+        </div>
+        <div style="margin-top:8px;text-align:center;font-size:0.82em;color:#555">
+          <span style="margin-right:12px"><span style="display:inline-block;width:10px;height:10px;background:#2563eb;border-radius:2px;margin-right:3px"></span>Matched</span>
+          <span style="margin-right:12px"><span style="display:inline-block;width:10px;height:10px;background:#f59e0b;border-radius:2px;margin-right:3px"></span>Intermittent Connectivity</span>
+          <span><span style="display:inline-block;width:10px;height:10px;background:#94a3b8;border-radius:2px;margin-right:3px"></span>Unmatched</span>
         </div>
         <div style="margin-top:12px;font-size:0.82em;color:#555">
-          <div>Matched: <strong>{sum(s['total'] for s in symptoms):,}</strong></div>
-          <div>Unmatched: <strong>{total - sum(s['total'] for s in symptoms):,}</strong></div>
+          <div style="display:flex;gap:16px">
+            <span>Matched: <strong>{sum(s['total'] for s in symptoms):,}</strong></span>
+            <span>Unmatched: <strong>{total - sum(s['total'] for s in symptoms):,}</strong></span>
+          </div>
+          <div style="margin-top:4px;color:#888;font-size:0.95em">of which IC: <strong>{ic_siroforce:,}</strong></div>
           <div style="margin-top:6px;border-top:1px solid #d0dde8;padding-top:6px;color:#888">Ticket Base: <strong>{total:,}</strong></div>
         </div>
       </div>
       <!-- Chart 2: Assigned vs Unassigned -->
       <div style="background:#f8fafc;border:1px solid #d0dde8;border-radius:8px;padding:20px">
-        <h3 style="margin:0 0 16px 0;font-size:0.95em;color:#333">Jira-Bug Tickets: Symptom Assignment</h3>
-        <div style="max-width:250px;margin:0 auto">
-          <canvas id="chart2"></canvas>
+        <h3 style="margin:0 0 16px 0;font-size:0.95em;color:#333">Jira-Bug Ticket (Y3839): Symptom Coverage</h3>
+        <div style="width:200px;height:200px;margin:0 auto">
+          <canvas id="chart2" width="200" height="200"></canvas>
+        </div>
+        <div style="margin-top:8px;text-align:center;font-size:0.82em;color:#555">
+          <span style="margin-right:12px"><span style="display:inline-block;width:10px;height:10px;background:#2563eb;border-radius:2px;margin-right:3px"></span>Matched</span>
+          <span style="margin-right:12px"><span style="display:inline-block;width:10px;height:10px;background:#f59e0b;border-radius:2px;margin-right:3px"></span>Intermittent Connectivity</span>
+          <span><span style="display:inline-block;width:10px;height:10px;background:#94a3b8;border-radius:2px;margin-right:3px"></span>Unmatched</span>
         </div>
         <div style="margin-top:12px;font-size:0.82em;color:#555">
-          <div>Assigned: <strong>{jira_assigned:,}</strong></div>
-          <div>Unassigned: <strong>{jira_unassigned:,}</strong></div>
+          <div style="display:flex;gap:16px">
+            <span>Matched: <strong>{jira_assigned:,}</strong></span>
+            <span>Unmatched: <strong>{jira_unassigned:,}</strong></span>
+          </div>
+          <div style="margin-top:4px;color:#888;font-size:0.95em">of which IC: <strong>{ic_hw_total + ic_sw_total}</strong></div>
           <div style="margin-top:6px;border-top:1px solid #d0dde8;padding-top:6px;color:#888">Ticket Base: <strong>{jira_assigned + jira_unassigned:,}</strong></div>
         </div>
       </div>
-      <!-- Chart 3: Release vs Backlog -->
+      <!-- Chart 3: Intermittent Connectivity HW vs SW -->
       <div style="background:#f8fafc;border:1px solid #d0dde8;border-radius:8px;padding:20px">
-        <h3 style="margin:0 0 16px 0;font-size:0.95em;color:#333">Jira-Bug Tickets: Release Assignment</h3>
-        <div style="max-width:250px;margin:0 auto;position:relative">
-          <canvas id="chart3"></canvas>
+        <h3 style="margin:0 0 16px 0;font-size:0.95em;color:#333">Release Scope: Stabilize the Connectivity</h3>
+        <div style="width:200px;height:200px;margin:0 auto;position:relative">
+          <canvas id="chart3" width="200" height="200"></canvas>
           <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none">
-            <span style="font-size:1.6em;font-weight:700;color:rgba(180,0,0,0.25);transform:rotate(-30deg);white-space:nowrap;letter-spacing:0.05em">Draft / tbd</span>
+            <span style="font-size:1.4em;font-weight:700;color:rgba(180,0,0,0.22);transform:rotate(-30deg);white-space:nowrap;letter-spacing:0.05em">DRAFT / TBD</span>
           </div>
         </div>
+        <div style="margin-top:8px;text-align:center;font-size:0.82em;color:#555">
+          <span style="margin-right:12px"><span style="display:inline-block;width:10px;height:10px;background:#e67e22;border-radius:2px;margin-right:3px"></span>HW</span>
+          <span style="margin-right:12px"><span style="display:inline-block;width:10px;height:10px;background:#2563eb;border-radius:2px;margin-right:3px"></span>SW</span>
+          <span><span style="display:inline-block;width:10px;height:10px;background:#94a3b8;border-radius:2px;margin-right:3px"></span>Other Symptoms</span>
+        </div>
         <div style="margin-top:12px;font-size:0.82em;color:#555">
-          <div>Next Release: <strong>{round(jira_assigned * 0.3):,}</strong></div>
-          <div>Backlog: <strong>{round(jira_assigned * 0.7):,}</strong></div>
-          <div style="margin-top:6px;border-top:1px solid #d0dde8;padding-top:6px;color:#888">Ticket Base: <strong>{jira_assigned:,}</strong></div>
+          <div style="display:flex;gap:16px;flex-wrap:wrap">
+            <span>HW: <strong>{ic_hw_total}</strong></span>
+            <span>SW: <strong>{ic_sw_total}</strong></span>
+            <span>Other Symptoms: <strong>{jira_assigned - ic_hw_total - ic_sw_total}</strong></span>
+          </div>
+          <div style="margin-top:6px;border-top:1px solid #d0dde8;padding-top:6px;color:#888">Ticket Base: <strong>{jira_assigned}</strong> matched</div>
+        </div>
+        <div style="margin-top:12px;font-size:0.8em;color:#444">
+          <div style="font-weight:600;margin-bottom:4px;color:#555">Top Root Causes &mdash; Symptom: Intermittent Connectivity:</div>
+          <ol style="margin:0;padding-left:18px;line-height:1.7">{ic_top3_html}</ol>
         </div>
       </div>
     </div>
@@ -849,7 +921,7 @@ def run():
           <th style="width:110px">Priority</th>
           <th style="width:260px">Symptom / AI Category</th>
           <th>Root Causes</th>
-          <th style="width:240px">Under Construction / Possible Solution</th>
+          <th id="sol-col-header" style="width:240px;cursor:pointer;user-select:none" title="Click &#128161; in a row to reveal solutions">&#128274; Solutions</th>
         </tr>
       </thead>
       <tbody>{rc_section_rows}</tbody>
@@ -880,7 +952,7 @@ def run():
 <footer>
   Symptom Root Cause Ticket Evaluation &nbsp;|&nbsp; Dentsply Sirona &nbsp;|&nbsp; {datetime.now().year}
 </footer>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+{f'<script>{chartjs_inline}</script>' if chartjs_inline else '<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>'}
 <script>
 // Initialize pie charts
 document.addEventListener('DOMContentLoaded', function() {{
@@ -890,65 +962,86 @@ document.addEventListener('DOMContentLoaded', function() {{
     type: 'doughnut',
     data: {{
       labels: ['Matched', 'Unmatched'],
-      datasets: [{{
-        data: [{sum(s['total'] for s in symptoms)}, {total - sum(s['total'] for s in symptoms)}],
-        backgroundColor: ['#2563eb', '#94a3b8'],
-        borderColor: ['#1e40af', '#64748b'],
-        borderWidth: 2
-      }}]
+      datasets: [
+        {{
+          label: 'outer',
+          data: [{sum(s['total'] for s in symptoms)}, {total - sum(s['total'] for s in symptoms)}],
+          backgroundColor: ['#2563eb', '#94a3b8'],
+          borderColor: ['#1e40af', '#64748b'],
+          borderWidth: 2,
+          weight: 2,
+        }},
+        {{
+          label: 'inner',
+          data: [{ic_siroforce}, {sum(s['total'] for s in symptoms) - ic_siroforce}, {total - sum(s['total'] for s in symptoms)}],
+          backgroundColor: ['#f59e0b', '#2563eb', '#94a3b8'],
+          borderColor: ['#d97706', '#1e40af', '#64748b'],
+          borderWidth: 1,
+          weight: 1,
+        }}
+      ]
     }},
     options: {{
-      responsive: true,
-      maintainAspectRatio: true,
+      responsive: false,
       plugins: {{
-        legend: {{ position: 'bottom', labels: {{ font: {{ size: 12 }} }} }},
+        legend: {{ display: false }},
         tooltip: {{ callbacks: {{ label: function(ctx) {{ return ctx.label + ': ' + ctx.parsed + ' tickets'; }} }} }}
       }}
     }}
   }});
 
-  // Chart 2: Assigned vs Unassigned
+  // Chart 2: Matched vs Unmatched, with IC overlay on inner ring
   const ctx2 = document.getElementById('chart2').getContext('2d');
   new Chart(ctx2, {{
     type: 'doughnut',
     data: {{
-      labels: ['Assigned', 'Unassigned'],
-      datasets: [{{
-        data: [{jira_assigned}, {jira_unassigned}],
-        backgroundColor: ['#2563eb', '#94a3b8'],
-        borderColor: ['#1e40af', '#64748b'],
-        borderWidth: 2
-      }}]
+      labels: ['Intermittent Connectivity', 'Other Matched', 'Unmatched'],
+      datasets: [
+        {{
+          label: 'outer',
+          data: [{jira_assigned}, {jira_unassigned}],
+          backgroundColor: ['#2563eb', '#94a3b8'],
+          borderColor: ['#1e40af', '#64748b'],
+          borderWidth: 2,
+          weight: 2,
+        }},
+        {{
+          label: 'inner',
+          data: [{ic_hw_total + ic_sw_total}, {jira_assigned - ic_hw_total - ic_sw_total}, {jira_unassigned}],
+          backgroundColor: ['#f59e0b', '#2563eb', '#94a3b8'],
+          borderColor: ['#d97706', '#1e40af', '#64748b'],
+          borderWidth: 1,
+          weight: 1,
+        }}
+      ]
     }},
     options: {{
-      responsive: true,
-      maintainAspectRatio: true,
+      responsive: false,
       plugins: {{
-        legend: {{ position: 'bottom', labels: {{ font: {{ size: 12 }} }} }},
+        legend: {{ display: false }},
         tooltip: {{ callbacks: {{ label: function(ctx) {{ return ctx.label + ': ' + ctx.parsed + ' tickets'; }} }} }}
       }}
     }}
   }});
 
-  // Chart 3: Release vs Backlog
+  // Chart 3: Intermittent Connectivity HW vs SW vs other assigned tickets
   const ctx3 = document.getElementById('chart3').getContext('2d');
   new Chart(ctx3, {{
     type: 'doughnut',
     data: {{
-      labels: ['Next Release', 'Backlog'],
+      labels: ['HW', 'SW', 'Other Symptoms'],
       datasets: [{{
-        data: [{round(jira_assigned * 0.3)}, {round(jira_assigned * 0.7)}],
-        backgroundColor: ['#2563eb', '#94a3b8'],
-        borderColor: ['#1e40af', '#64748b'],
+        data: [{ic_hw_total}, {ic_sw_total}, {jira_assigned - ic_hw_total - ic_sw_total}],
+        backgroundColor: ['#e67e22', '#2563eb', '#94a3b8'],
+        borderColor: ['#d35400', '#1e40af', '#64748b'],
         borderWidth: 2
       }}]
     }},
     options: {{
-      responsive: true,
-      maintainAspectRatio: true,
+      responsive: false,
       plugins: {{
-        legend: {{ position: 'bottom', labels: {{ font: {{ size: 12 }} }} }},
-        tooltip: {{ callbacks: {{ label: function(ctx) {{ return ctx.label + ': ' + ctx.parsed + ' tickets'; }} }} }}
+        legend: {{ display: false }},
+        tooltip: {{ callbacks: {{ label: function(ctx) {{ return ctx.label + ': ' + ctx.parsed + ' Tickets'; }} }} }}
       }}
     }}
   }});
@@ -1163,6 +1256,25 @@ function showBugDetail(key) {{
 
 function closeBugModal() {{
   document.getElementById('bug-modal').style.display = 'none';
+}}
+
+function revealSolution(lampEl) {{
+  const row = lampEl.closest('tr');
+  const solDiv = row ? row.querySelector('.sol-content') : null;
+  if (solDiv) {{
+    const visible = solDiv.style.display !== 'none';
+    solDiv.style.display = visible ? 'none' : 'block';
+    lampEl.innerHTML = visible ? '&#128161;' : '&#128262;';
+    lampEl.style.filter = visible ? '' : 'drop-shadow(0 0 4px #f59e0b)';
+  }}
+}}
+
+let _solVisible = false;
+function toggleAllSolutions() {{
+  _solVisible = !_solVisible;
+  document.querySelectorAll('.sol-content').forEach(d => d.style.display = _solVisible ? 'block' : 'none');
+  const btn = document.getElementById('sol-toggle-btn');
+  if (btn) btn.style.background = _solVisible ? 'rgba(255,220,50,0.35)' : 'rgba(255,255,255,0.15)';
 }}
 
 function resetFilters() {{

@@ -130,6 +130,44 @@ def _run_group(label: str, cases: list[dict], verbose: bool) -> tuple[int, dict[
     return failed_cases, stats, errors
 
 
+def _discover_training_files() -> dict[str, Path]:
+    """Ermittelt alle trainingsrelevanten JSON-Dateien inklusive der neu hinzugefügten Kategorien."""
+    mapping = {
+        "Connectivity/Recognition": [
+            TRAINING_DIR / "training_connectivity_tickets.json",
+            TRAINING_DIR / "Training_connectivity_tickets.json",
+        ],
+        "Software/Firmware/Driver": [
+            TRAINING_DIR / "training_software_firmware_driver_tickets.json",
+            TRAINING_DIR / "Training_software_firmware_driver_tickets.json",
+        ],
+        "Installation/Setup/Upgrade": [
+            TRAINING_DIR / "training_installation_setup_upgrade_tickets.json",
+            TRAINING_DIR / "Training_installation_setup_upgrade_tickets.json",
+        ],
+        "Imaging/Acquisition/Exposure": [
+            TRAINING_DIR / "Training_imaging_acquisition_exposure.json",
+            TRAINING_DIR / "training_imaging_acquisition_exposure.json",
+        ],
+        "Spare Parts/RMA/Logistics": [
+            TRAINING_DIR / "Training_spareparts_rma_logistics.json",
+            TRAINING_DIR / "training_spareparts_rma_logistics.json",
+        ],
+        "Hardware Defect/Physical Damage": [
+            TRAINING_DIR / "Training_hardwaredefect_physicaldamage.json",
+            TRAINING_DIR / "training_hardwaredefect_physicaldamage.json",
+        ],
+    }
+
+    training_files: dict[str, Path] = {}
+    for category_name, file_candidates in mapping.items():
+        for file_path in file_candidates:
+            if file_path.exists():
+                training_files[category_name] = file_path
+                break
+    return training_files
+
+
 def _generate_markdown_report(
     results: dict,
 ) -> str:
@@ -301,12 +339,11 @@ def main() -> None:
         classify.load_and_apply_categories(args.categories)
         print(f"✓ Konfiguration geladen: {args.categories.name}")
 
-    # Definiere alle Training-Dateien
-    training_files = {
-        "Connectivity/Recognition": TRAINING_DIR / "training_connectivity_tickets.json",
-        "Software/Firmware/Driver": TRAINING_DIR / "training_software_firmware_driver_tickets.json",
-        "Installation/Setup/Upgrade": TRAINING_DIR / "training_installation_setup_upgrade_tickets.json",
-    }
+    # Definiere alle Training-Dateien (inkl. neuer Kategorien)
+    training_files = _discover_training_files()
+    if not training_files:
+        print("⚠️  Keine Trainingsdateien gefunden.")
+        sys.exit(1)
 
     results = {}
 

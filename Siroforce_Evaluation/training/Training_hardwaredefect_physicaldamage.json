@@ -1,0 +1,362 @@
+[
+  {
+    "_id": "REAL-8001482365",
+    "_comment": "Ticket 8001482365 | got: - / -",
+    "description": "missing classification",
+    "notes": "Case details insufficient to assign a reliable hardware or physical damage classification.",
+    "expected_primary": "-",
+    "expected_secondary": "-",
+    "expected_clarity": "unclear"
+  },
+  {
+    "_id": "REAL-8001476579",
+    "_comment": "Ticket 8001476579 | got: - / -",
+    "description": "missing classification",
+    "notes": "No clear hardware defect or physical damage pattern was specified in the case notes.",
+    "expected_primary": "-",
+    "expected_secondary": "-",
+    "expected_clarity": "unclear"
+  },
+  {
+    "_id": "REAL-8001474638",
+    "_comment": "Ticket 8001474638 | got: Hardware Defect/Physical Damage / Cable Issue",
+    "description": "cable issue",
+    "notes": "Hardware issue involving cable malfunction and physical damage symptoms.",
+    "expected_primary": "Hardware Defect/Physical Damage",
+    "expected_secondary": "Cable Issue",
+    "expected_clarity": "unclear"
+  },
+  {
+    "_id": "REAL-8001472144",
+    "_comment": "Ticket 8001472144 | got: Hardware Defect/Physical Damage / Remote Failure",
+    "description": "remote failure",
+    "notes": "Hardware or physical issue causing remote connection failure and unreliable operation.",
+    "expected_primary": "Hardware Defect/Physical Damage",
+    "expected_secondary": "Remote Failure",
+    "expected_clarity": "unclear"
+  },
+  {
+    "_id": "REAL-8001480091",
+    "_comment": "Ticket 8001480091 | got: - / -",
+    "description": "missing classification",
+    "notes": "No reliable hardware defect or physical damage diagnosis could be determined from the case summary.",
+    "expected_primary": "-",
+    "expected_secondary": "-",
+    "expected_clarity": "unclear"
+  },
+  {
+    "_id": "REAL-8001480977",
+    "_comment": "Ticket 8001480977 | got: Hardware Defect/Physical Damage / Remote Failure",
+    "description": "remote failure",
+    "notes": "Hardware defect affecting remote functionality and leading to communication failure.",
+    "expected_primary": "Hardware Defect/Physical Damage",
+    "expected_secondary": "Remote Failure",
+    "expected_clarity": "unclear"
+  },
+  {
+    "_id": "REAL-8001480969",
+    "_comment": "Ticket 8001480969 | got: Hardware Defect/Physical Damage / Cable Issue",
+    "description": "cable issue",
+    "notes": "Reported problem involved cable damage or failure affecting hardware performance.",
+    "expected_primary": "Hardware Defect/Physical Damage",
+    "expected_secondary": "Cable Issue",
+    "expected_clarity": "unclear"
+  },
+  {
+    "_id": "REAL-8001483993",
+    "_comment": "Ticket 8001483993 | got: Software/Firmware/Driver / Update/Version",
+    "description": "update/version issue",
+    "notes": "Issue was tied to software update or version mismatch and not to a direct hardware failure.",
+    "expected_primary": "Software/Firmware/Driver",
+    "expected_secondary": "Update/Version",
+    "expected_clarity": "unclear"
+  },
+  {
+    "_id": "REAL-8001483927",
+    "_comment": "Ticket 8001483927 | got: Hardware Defect/Physical Damage / Remote Failure",
+    "description": "remote failure",
+    "notes": "Hardware problem caused remote failure and was considered a clear defect case.",
+    "expected_primary": "Hardware Defect/Physical Damage",
+    "expected_secondary": "Remote Failure",
+    "expected_clarity": "clear"
+  },
+  {
+    "_id": "REAL-8001482398",
+    "_comment": "Ticket 8001482398 | got: - / -",
+    "description": "missing classification",
+    "notes": "Insufficient case detail to assign a stable hardware defect classification.",
+    "expected_primary": "-",
+    "expected_secondary": "-",
+    "expected_clarity": "unclear"
+  },
+  {
+    "_id": "REAL-8001472961",
+    "_comment": "Ticket 8001472961 | got: Hardware Defect/Physical Damage / Remote Failure",
+    "description": "remote failure",
+    "notes": "Failure was attributed to remote hardware or physical damage and remained unclear during classification.",
+    "expected_primary": "Hardware Defect/Physical Damage",
+    "expected_secondary": "Remote Failure",
+    "expected_clarity": "unclear"
+  },
+  {
+    "_id": "REAL-8001466926",
+    "_comment": "Ticket 8001466926 | got: Hardware Defect/Physical Damage / Remote Failure",
+    "description": "remote failure",
+    "notes": "Hardware defect caused a remote failure with a clear diagnosis after evaluation.",
+    "expected_primary": "Hardware Defect/Physical Damage",
+    "expected_secondary": "Remote Failure",
+    "expected_clarity": "clear"
+  },
+  {
+    "_id": "REAL-8001466624",
+    "_comment": "Ticket 8001466624 | got: Hardware Defect/Physical Damage / Remote Failure",
+    "description": "remote failure",
+    "notes": "Issue involved remote hardware failure and remained unresolved during classification.",
+    "expected_primary": "Hardware Defect/Physical Damage",
+    "expected_secondary": "Remote Failure",
+    "expected_clarity": "unclear"
+  },
+  {
+    "_id": "REAL-8001469167",
+    "_comment": "Ticket 8001469167 | got: Hardware Defect/Physical Damage / Remote Failure",
+    "description": "remote failure",
+    "notes": "Hardware-related remote failure with no higher-confidence alternate classification.",
+    "expected_primary": "Hardware Defect/Physical Damage",
+    "expected_secondary": "Remote Failure",
+    "expected_clarity": "unclear"
+  },
+  {
+    "_id": "REAL-8001411123",
+    "_comment": "Ticket 8001411123 | got: - / -",
+    "description": "missing classification",
+    "notes": "No sufficient detail available to classify as a definite hardware defect or physical damage issue.",
+    "expected_primary": "-",
+    "expected_secondary": "-",
+    "expected_clarity": "unclear"
+  },
+  {
+    "_id": "REAL-8001482403",
+    "_comment": "Ticket 8001482403 | got: - / -",
+    "description": "missing classification",
+    "notes": "Case summary did not provide enough evidence for a definitive physical damage assessment.",
+    "expected_primary": "-",
+    "expected_secondary": "-",
+    "expected_clarity": "unclear"
+  },
+  {
+    "_id": "REAL-8001472106",
+    "_comment": "Ticket 8001472106 | got: - / -",
+    "description": "missing classification",
+    "notes": "Limited information prevented assignment of a hardware defect or physical damage label.",
+    "expected_primary": "-",
+    "expected_secondary": "-",
+    "expected_clarity": "unclear"
+  },
+  {
+    "_id": "REAL-8001466682",
+    "_comment": "Ticket 8001466682 | got: - / -",
+    "description": "missing classification",
+    "notes": "No firm classification could be concluded from the provided data.",
+    "expected_primary": "-",
+    "expected_secondary": "-",
+    "expected_clarity": "unclear"
+  },
+  {
+    "_id": "REAL-8001479349",
+    "_comment": "Ticket 8001479349 | got: - / -",
+    "description": "missing classification",
+    "notes": "No enough signal in the case records to support a hardware defect categorization.",
+    "expected_primary": "-",
+    "expected_secondary": "-",
+    "expected_clarity": "unclear"
+  },
+  {
+    "_id": "REAL-8001472155",
+    "_comment": "Ticket 8001472155 | got: Hardware Defect/Physical Damage / Remote Failure",
+    "description": "remote failure",
+    "notes": "Remote hardware issue led to elevated failure symptoms and remained unclear.",
+    "expected_primary": "Hardware Defect/Physical Damage",
+    "expected_secondary": "Remote Failure",
+    "expected_clarity": "unclear"
+  },
+  {
+    "_id": "REAL-8001479316",
+    "_comment": "Ticket 8001479316 | got: - / -",
+    "description": "missing classification",
+    "notes": "No reliable hardware or physical damage classification was available in the notes.",
+    "expected_primary": "-",
+    "expected_secondary": "-",
+    "expected_clarity": "unclear"
+  },
+  {
+    "_id": "REAL-8001469181",
+    "_comment": "Ticket 8001469181 | got: - / -",
+    "description": "missing classification",
+    "notes": "Case did not provide enough detail for a firm classification decision.",
+    "expected_primary": "-",
+    "expected_secondary": "-",
+    "expected_clarity": "unclear"
+  },
+  {
+    "_id": "REAL-8001469034",
+    "_comment": "Ticket 8001469034 | got: - / -",
+    "description": "missing classification",
+    "notes": "No clear hardware defect or physical damage pattern was evident from the case summary.",
+    "expected_primary": "-",
+    "expected_secondary": "-",
+    "expected_clarity": "unclear"
+  },
+  {
+    "_id": "REAL-8001468804",
+    "_comment": "Ticket 8001468804 | got: - / -",
+    "description": "missing classification",
+    "notes": "Insufficient evidence to assign a hardware defect or physical damage diagnosis.",
+    "expected_primary": "-",
+    "expected_secondary": "-",
+    "expected_clarity": "unclear"
+  },
+  {
+    "_id": "REAL-8001478807",
+    "_comment": "Ticket 8001478807 | got: - / -",
+    "description": "missing classification",
+    "notes": "The summary lacked the details needed to classify this as a hardware defect.",
+    "expected_primary": "-",
+    "expected_secondary": "-",
+    "expected_clarity": "unclear"
+  },
+  {
+    "_id": "REAL-8001479390",
+    "_comment": "Ticket 8001479390 | got: Hardware Defect/Physical Damage / Remote Failure",
+    "description": "remote failure",
+    "notes": "Hardware issue led to remote failure and remained unclear in the final case assessment.",
+    "expected_primary": "Hardware Defect/Physical Damage",
+    "expected_secondary": "Remote Failure",
+    "expected_clarity": "unclear"
+  },
+  {
+    "_id": "REAL-8001474783",
+    "_comment": "Ticket 8001474783 | got: - / -",
+    "description": "missing classification",
+    "notes": "No reliable hardware defect label determined from the available notes.",
+    "expected_primary": "-",
+    "expected_secondary": "-",
+    "expected_clarity": "clear"
+  },
+  {
+    "_id": "REAL-8001469678",
+    "_comment": "Ticket 8001469678 | got: Hardware Defect/Physical Damage / Physical Damage",
+    "description": "physical damage",
+    "notes": "Physical damage was evident, but the case remained uncertain in final classification.",
+    "expected_primary": "Hardware Defect/Physical Damage",
+    "expected_secondary": "Physical Damage",
+    "expected_clarity": "unclear"
+  },
+  {
+    "_id": "REAL-8001481127",
+    "_comment": "Ticket 8001481127 | got: - / -",
+    "description": "missing classification",
+    "notes": "No clear classification available because the problem description was incomplete.",
+    "expected_primary": "-",
+    "expected_secondary": "-",
+    "expected_clarity": "unclear"
+  },
+  {
+    "_id": "REAL-8001465737",
+    "_comment": "Ticket 8001465737 | got: Hardware Defect/Physical Damage / Physical Damage",
+    "description": "physical damage",
+    "notes": "Evidence pointed to physical damage and the case was classified as clear.",
+    "expected_primary": "Hardware Defect/Physical Damage",
+    "expected_secondary": "Physical Damage",
+    "expected_clarity": "clear"
+  },
+  {
+    "_id": "REAL-8001469204",
+    "_comment": "Ticket 8001469204 | got: Hardware Defect/Physical Damage / Cable Issue",
+    "description": "cable issue",
+    "notes": "Cable-related hardware defect was reported and remained unclear at classification time.",
+    "expected_primary": "Hardware Defect/Physical Damage",
+    "expected_secondary": "Cable Issue",
+    "expected_clarity": "unclear"
+  },
+  {
+    "_id": "REAL-8001466301",
+    "_comment": "Ticket 8001466301 | got: Hardware Defect/Physical Damage / Remote Failure",
+    "description": "remote failure",
+    "notes": "Hardware defect caused remote failure; final classification was clear.",
+    "expected_primary": "Hardware Defect/Physical Damage",
+    "expected_secondary": "Remote Failure",
+    "expected_clarity": "clear"
+  },
+  {
+    "_id": "REAL-8001483591",
+    "_comment": "Ticket 8001483591 | got: - / -",
+    "description": "missing classification",
+    "notes": "No reliable hardware or physical damage assignment could be made from this summary.",
+    "expected_primary": "-",
+    "expected_secondary": "-",
+    "expected_clarity": "unclear"
+  },
+  {
+    "_id": "REAL-8001467589",
+    "_comment": "Ticket 8001467589 | got: - / -",
+    "description": "missing classification",
+    "notes": "Insufficient detail to determine whether this was a hardware defect or a different issue.",
+    "expected_primary": "-",
+    "expected_secondary": "-",
+    "expected_clarity": "unclear"
+  },
+  {
+    "_id": "REAL-8001484840",
+    "_comment": "Ticket 8001484840 | got: Hardware Defect/Physical Damage / Cable Issue",
+    "description": "cable issue",
+    "notes": "Cable problem consistent with hardware damage or physical interruption in operation.",
+    "expected_primary": "Hardware Defect/Physical Damage",
+    "expected_secondary": "Cable Issue",
+    "expected_clarity": "unclear"
+  },
+  {
+    "_id": "REAL-8001484814",
+    "_comment": "Ticket 8001484814 | got: - / -",
+    "description": "missing classification",
+    "notes": "No meaningful category assignment could be inferred from the available record.",
+    "expected_primary": "-",
+    "expected_secondary": "-",
+    "expected_clarity": "unclear"
+  },
+  {
+    "_id": "REAL-8001470067",
+    "_comment": "Ticket 8001470067 | got: - / -",
+    "description": "missing classification",
+    "notes": "Summary did not include enough detail to support a confident hardware classification.",
+    "expected_primary": "-",
+    "expected_secondary": "-",
+    "expected_clarity": "unclear"
+  },
+  {
+    "_id": "REAL-8001465680",
+    "_comment": "Ticket 8001465680 | got: Software/Firmware/Driver / Driver",
+    "description": "driver issue",
+    "notes": "Issue was diagnosed as a driver problem and not a clear physical damage defect.",
+    "expected_primary": "Software/Firmware/Driver",
+    "expected_secondary": "Driver",
+    "expected_clarity": "clear"
+  },
+  {
+    "_id": "REAL-8001465656",
+    "_comment": "Ticket 8001465656 | got: Hardware Defect/Physical Damage / Sensor Failure",
+    "description": "sensor failure",
+    "notes": "Sensor failure with a hardware defect diagnosis and a less certain classification.",
+    "expected_primary": "Hardware Defect/Physical Damage",
+    "expected_secondary": "Sensor Failure",
+    "expected_clarity": "unclear"
+  },
+  {
+    "_id": "REAL-8001475809",
+    "_comment": "Ticket 8001475809 | got: Hardware Defect/Physical Damage / Cable Issue",
+    "description": "cable issue",
+    "notes": "Reported cable defect was related to hardware damage and remained classified as unclear.",
+    "expected_primary": "Hardware Defect/Physical Damage",
+    "expected_secondary": "Cable Issue",
+    "expected_clarity": "unclear"
+  }
+]

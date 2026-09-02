@@ -1,5 +1,5 @@
 # Training Result - Gesamt Report
-**Generiert:** 2026-08-20 16:39:01  
+**Generiert:** 2026-09-01 17:25:12  
 **Pipeline:** pipeline_02_classify.py (Multi-level classification)
 
 ---
@@ -8,12 +8,12 @@
 
 | Metrik | Wert |
 |--------|------|
-| **Gesamt Training-Tickets** | 93 |
-| **Kategorien validiert** | 3 |
-| **Kategorisierung bestanden** | 70/86 (81.4%) |
-| **Clearness bestanden** | 75/86 (87.2%) |
-| **Durchschnittliche Erfolgsquote** | 84.3% |
-| **Fehlerhafte Fälle** | 24 |
+| **Gesamt Training-Tickets** | 173 |
+| **Kategorien validiert** | 6 |
+| **Kategorisierung bestanden** | 117/142 (82.4%) |
+| **Clearness bestanden** | 141/166 (84.9%) |
+| **Durchschnittliche Erfolgsquote** | 83.8% |
+| **Fehlerhafte Fälle** | 45 |
 | **Status** | ⚠️ FEHLER |
 
 ---
@@ -26,18 +26,18 @@
 **Tickets:** 33
 
 #### Kategorisierung
-- ✓ Bestanden: **27/30** (90.0%)
-- ✗ Fehlgeschlagen: **3**
-- ⏭️ Übersprungen: 3
-- **Status:** 🟡 Gut
-
-#### Clearness-Klassifikation
-- ✓ Bestanden: **26/30** (86.7%)
-- ✗ Fehlgeschlagen: **4**
+- ✓ Bestanden: **25/30** (83.3%)
+- ✗ Fehlgeschlagen: **5**
 - ⏭️ Übersprungen: 3
 - **Status:** 🔴 Verbesserungsbedarf
 
-**Fehlerhafte Fälle:** 7
+#### Clearness-Klassifikation
+- ✓ Bestanden: **25/30** (83.3%)
+- ✗ Fehlgeschlagen: **5**
+- ⏭️ Übersprungen: 3
+- **Status:** 🔴 Verbesserungsbedarf
+
+**Fehlerhafte Fälle:** 10
 
 ---
 
@@ -47,18 +47,18 @@
 **Tickets:** 30
 
 #### Kategorisierung
-- ✓ Bestanden: **22/26** (84.6%)
-- ✗ Fehlgeschlagen: **4**
+- ✓ Bestanden: **21/26** (80.8%)
+- ✗ Fehlgeschlagen: **5**
 - ⏭️ Übersprungen: 4
 - **Status:** 🔴 Verbesserungsbedarf
 
 #### Clearness-Klassifikation
-- ✓ Bestanden: **25/26** (96.2%)
-- ✗ Fehlgeschlagen: **1**
+- ✓ Bestanden: **19/26** (73.1%)
+- ✗ Fehlgeschlagen: **7**
 - ⏭️ Übersprungen: 4
-- **Status:** 🟡 Gut
+- **Status:** 🔴 Verbesserungsbedarf
 
-**Fehlerhafte Fälle:** 5
+**Fehlerhafte Fälle:** 11
 
 ---
 
@@ -68,18 +68,81 @@
 **Tickets:** 30
 
 #### Kategorisierung
-- ✓ Bestanden: **21/30** (70.0%)
-- ✗ Fehlgeschlagen: **9**
+- ✓ Bestanden: **15/30** (50.0%)
+- ✗ Fehlgeschlagen: **15**
 - ⏭️ Übersprungen: 0
 - **Status:** 🔴 Verbesserungsbedarf
 
 #### Clearness-Klassifikation
-- ✓ Bestanden: **24/30** (80.0%)
+- ✓ Bestanden: **26/30** (86.7%)
+- ✗ Fehlgeschlagen: **4**
+- ⏭️ Übersprungen: 0
+- **Status:** 🔴 Verbesserungsbedarf
+
+**Fehlerhafte Fälle:** 15
+
+---
+
+### Imaging/Acquisition/Exposure
+
+**Test-Datei:** Training_imaging_acquisition_exposure.json  
+**Tickets:** 25
+
+#### Kategorisierung
+- ✓ Bestanden: **22/22** (100.0%)
+- ✗ Fehlgeschlagen: **0**
+- ⏭️ Übersprungen: 3
+- **Status:** 🟢 Ausgezeichnet
+
+#### Clearness-Klassifikation
+- ✓ Bestanden: **19/25** (76.0%)
 - ✗ Fehlgeschlagen: **6**
 - ⏭️ Übersprungen: 0
 - **Status:** 🔴 Verbesserungsbedarf
 
-**Fehlerhafte Fälle:** 12
+**Fehlerhafte Fälle:** 6
+
+---
+
+### Spare Parts/RMA/Logistics
+
+**Test-Datei:** Training_spareparts_rma_logistics.json  
+**Tickets:** 15
+
+#### Kategorisierung
+- ✓ Bestanden: **14/14** (100.0%)
+- ✗ Fehlgeschlagen: **0**
+- ⏭️ Übersprungen: 1
+- **Status:** 🟢 Ausgezeichnet
+
+#### Clearness-Klassifikation
+- ✓ Bestanden: **13/15** (86.7%)
+- ✗ Fehlgeschlagen: **2**
+- ⏭️ Übersprungen: 0
+- **Status:** 🔴 Verbesserungsbedarf
+
+**Fehlerhafte Fälle:** 2
+
+---
+
+### Hardware Defect/Physical Damage
+
+**Test-Datei:** Training_hardwaredefect_physicaldamage.json  
+**Tickets:** 40
+
+#### Kategorisierung
+- ✓ Bestanden: **20/20** (100.0%)
+- ✗ Fehlgeschlagen: **0**
+- ⏭️ Übersprungen: 20
+- **Status:** 🟢 Ausgezeichnet
+
+#### Clearness-Klassifikation
+- ✓ Bestanden: **39/40** (97.5%)
+- ✗ Fehlgeschlagen: **1**
+- ⏭️ Übersprungen: 0
+- **Status:** 🟡 Gut
+
+**Fehlerhafte Fälle:** 1
 
 ---
 
@@ -87,9 +150,12 @@
 
 | Kategorie | Tickets | Kategorie Pass | Clearness Pass | Status |
 |-----------|---------|----------------|-----------------|--------|
-| Connectivity/Recognition | 33 | 27/30 | 26/30 | 🟡 |
-| Software/Firmware/Driver | 30 | 22/26 | 25/26 | ⚠️ |
-| Installation/Setup/Upgrade | 30 | 21/30 | 24/30 | ⚠️ |
+| Connectivity/Recognition | 33 | 25/30 | 25/30 | ⚠️ |
+| Software/Firmware/Driver | 30 | 21/26 | 19/26 | ⚠️ |
+| Installation/Setup/Upgrade | 30 | 15/30 | 26/30 | ⚠️ |
+| Imaging/Acquisition/Exposure | 25 | 22/22 | 19/25 | ⚠️ |
+| Spare Parts/RMA/Logistics | 15 | 14/14 | 13/15 | 🟡 |
+| Hardware Defect/Physical Damage | 40 | 20/20 | 39/40 | 🟡 |
 
 ---
 
@@ -114,7 +180,7 @@ python training/run_all_training.py
 
 ## Empfehlungen
 
-⚠️ **24 Fehler gefunden**
+⚠️ **45 Fehler gefunden**
 
 Betroffene Kategorien sollten überprüft werden:
 1. Identifiziere Kategorien mit Fehlern
@@ -124,4 +190,4 @@ Betroffene Kategorien sollten überprüft werden:
 
 ---
 
-**Report generiert:** 2026-08-20 16:39:01
+**Report generiert:** 2026-09-01 17:25:12

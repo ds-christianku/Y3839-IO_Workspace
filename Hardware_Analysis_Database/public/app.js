@@ -40,6 +40,8 @@ const remoteAeSensorDetected = document.getElementById('remoteAeSensorDetected')
 const deviceManagerNameWrapper = document.getElementById('deviceManagerNameWrapper');
 const sensorPathCheckWrapper = document.getElementById('sensorPathCheckWrapper');
 const flashDumpExistingFile = document.getElementById('flashDumpExistingFile');
+const rootCauseUploadText = document.getElementById('rootCauseUploadText');
+const rootCauseExistingFile = document.getElementById('rootCauseExistingFile');
 
 let activeArea = 'remote';
 let lookupTimeoutId = null;
@@ -78,10 +80,12 @@ function clearLoadedFields(preserveSerial = true) {
   form.sensorPathFpgaCheck.value = '';
   form.otherChecks.value = '';
   form.errorCause.value = '';
+  form.rootCauseUpload.value = '';
 
   updateExistingImageLink(microBExistingImage, '');
   updateExistingImageLink(usbCExistingImage, '');
   updateExistingImageLink(flashDumpExistingFile, '');
+  updateExistingImageLink(rootCauseExistingFile, '');
 
   form.serialNumber.value = serialValue;
   updatePcLedOtherVisibility();
@@ -169,6 +173,7 @@ function setArea(area) {
     sensorDetectionSubtitle.classList.add('hidden');
     flashDumpExistingFile.classList.add('hidden');
     flashDumpExistingFile.removeAttribute('href');
+    rootCauseUploadText.textContent = 'RootCause-Datei Sensor (optional)';
   } else {
     usbCDamageQuestionText.textContent = 'Ist die USB-C Buchse beschaedigt?';
     usbCDamageUploadText.textContent = 'Bild zur USB-C Buchse (optional)';
@@ -187,6 +192,7 @@ function setArea(area) {
     remoteDetectionThirdOption.textContent = 'Sonstiges';
     sensorDetectionSubtitle.textContent = 'Die unterschiedlichen Sensoren (G1, G2, G3) werden von der Remote erkannt (nach Anstecken des Sensors leuchtet die Sensor-LED permanent gruen).';
     sensorDetectionSubtitle.classList.remove('hidden');
+    rootCauseUploadText.textContent = 'RootCause-Datei Remote (optional)';
   }
 
   if (isSensor) {
@@ -336,6 +342,7 @@ async function fillBySerialNumber() {
 
     updateExistingImageLink(usbCExistingImage, entry.usb_c_damage_image || '');
     updateExistingImageLink(flashDumpExistingFile, entry.flashdump_file_path || '');
+    updateExistingImageLink(rootCauseExistingFile, entry.root_cause_file_path || '');
     updatePcLedOtherVisibility();
     updateDeviceManagerNameVisibility();
     updateSensorCableInspectionVisibility();
@@ -410,6 +417,10 @@ form.addEventListener('submit', async (event) => {
 
   if (form.flashDumpUpload.files[0]) {
     formData.append('flashDumpUpload', form.flashDumpUpload.files[0]);
+  }
+
+  if (form.rootCauseUpload.files[0]) {
+    formData.append('rootCauseUpload', form.rootCauseUpload.files[0]);
   }
 
   try {
