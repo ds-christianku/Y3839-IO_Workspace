@@ -1,0 +1,82 @@
+{
+  "solved_issues": [
+    {
+      "id": 1,
+      "fix": "Stabilize sensor connection to remote by a revised sensor connector housing",
+      "fixed_rootcause": "Loose USB3 remote/sensor interface",
+      "status": "solved",
+      "improvement_to_symptoms": [
+        "Intermittent Connectivity",
+        "Previous Patient",
+        "Images not transferred"
+      ]
+    },
+    {
+      "id": 2,
+      "fix": "Overwrite RAM by checkered pattern before next image acquisition",
+      "fixed_rootcause": "-",
+      "status": "solved",
+      "improvement_to_symptoms": [
+        "Previous Patient"
+      ]
+    },
+    {
+      "id": 3,
+      "fix": "Reduce USB speed",
+      "fixed_rootcause": "-",
+      "status": "solved",
+      "improvement_to_symptoms": [
+        "Intermittent Connectivity",
+        "Images not transferred"
+      ]
+    },
+    {
+      "id": 4,
+      "fix": "Core isolation",
+      "fixed_rootcause": "-",
+      "status": "solved",
+      "improvement_to_symptoms": [
+        "Intermittent Connectivity",
+        "Images not transferred"
+      ]
+    },
+    {
+      "id": 5,
+      "fix": "Stabilize firmware update",
+      "fixed_rootcause": "Firmware update bricked the USB3 remote, Circuit fault on the RAM (SW-solution), Power cycling the RAM during update corrupts the update file (SW-solution)",
+      "status": "solved",
+      "improvement_to_symptoms": [
+        "Interface Update Issue"
+      ]
+    },
+    {
+      "id": 6,
+      "fix": "USB-HUB communication",
+      "fixed_rootcause": "Not specified USB cable used to PC (above max. specified range)",
+      "status": "solved",
+      "improvement_to_symptoms": [
+        "Intermittent Connectivity"
+      ]
+    },
+    {
+      "id": 7,
+      "fix": "Revise IFU cable-clip",
+      "fixed_rootcause": "Loose micro-B USB interface (no cable clip used)",
+      "status": "solved",
+      "improvement_to_symptoms": [
+        "Intermittent Connectivity",
+        "Images not transferred"
+      ]
+    },
+    {
+      "id": 8,
+      "fix": "Sensor cable screw torque communication",
+      "fixed_rootcause": "Loose sensor cable screws, Incorrect torque used during sensor cable exchange, Incorrect assembly (wrong torque used)",
+      "status": "solved",
+      "improvement_to_symptoms": [
+        "Intermittent Connectivity",
+        "Images not transferred"
+      ]
+    }
+  ]
+}

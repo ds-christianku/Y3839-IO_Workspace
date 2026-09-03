@@ -794,10 +794,10 @@
       "group": "Connectivity / Sensor Recognition",
       "ai_category": "Connectivity/Recognition, Hardware Defect/Physical Damage",
       "root_causes": [
-        "Not specified USB cable used to PC (above max. specified range) [HW]",
-        "Loose micro-B USB interface (no cable clip used) [HW]",
+        "Not specified USB cable used to PC (above max. specified range) [CM]",
+        "Loose micro-B USB interface (no cable clip used) [CM]",
         "Loose USB3 remote/sensor interface [HW]",
-        "Loose sensor cable screws [HW]",
+        "Loose sensor cable screws [CM]",
         "Defect USB3 remote (cold solder joints) [HW]",
         "Driver conflicts (CDR vs IOSS) [SW]",
         "Calibration file not transferred correctly [SW]",
@@ -2696,11 +2696,11 @@
       ],
       "root_causes_jira": [
         {
-          "text": "Not specified USB cable used to PC (above max. specified range) [HW]",
+          "text": "Not specified USB cable used to PC (above max. specified range) [CM]",
           "jira_tickets": []
         },
         {
-          "text": "Loose micro-B USB interface (no cable clip used) [HW]",
+          "text": "Loose micro-B USB interface (no cable clip used) [CM]",
           "jira_tickets": [
             {
               "key": "Y3839-383",
@@ -2728,7 +2728,7 @@
           ]
         },
         {
-          "text": "Loose sensor cable screws [HW]",
+          "text": "Loose sensor cable screws [CM]",
           "jira_tickets": []
         },
         {
@@ -3007,7 +3007,7 @@
       "ai_category": "Imaging/Acquisition/Exposure, Software/Firmware/Driver",
       "root_causes": [
         "Loose USB3 remote/sensor interface [HW]",
-        "Loose sensor cable screws [HW]",
+        "Loose sensor cable screws [CM]",
         "Sensor cable damaged [HW]",
         "Workflow robustness [SW]",
         "Second (rescue) image transfer path in IOSS [SW]",
@@ -3221,7 +3221,7 @@
           "jira_tickets": []
         },
         {
-          "text": "Loose sensor cable screws [HW]",
+          "text": "Loose sensor cable screws [CM]",
           "jira_tickets": []
         },
         {
@@ -3294,7 +3294,7 @@
         "Software timing error [SW]",
         "Software can trigger a FPGA reset [SW]",
         "Loose USB3 remote/sensor interface [HW]",
-        "More than one USB3 remote connected to acquisition PC [HW]",
+        "More than one USB3 remote connected to acquisition PC [CM]",
         "SW allocates too small buffer size [SW]",
         "Missing error handling in SW/FW [SW]",
         "Others currently unknown"
@@ -3591,7 +3591,7 @@
           "jira_tickets": []
         },
         {
-          "text": "More than one USB3 remote connected to acquisition PC [HW]",
+          "text": "More than one USB3 remote connected to acquisition PC [CM]",
           "jira_tickets": []
         },
         {
@@ -3690,7 +3690,7 @@
       "root_causes": [
         "Mechanical wear [HW]",
         "Incorrect assembly (wrong torque used) [HW]",
-        "Incorrect torque used during sensor cable exchange [HW]",
+        "Incorrect torque used during sensor cable exchange [CM]",
         "Vibration / sensor handling loosens the connection [HW]",
         "Missing error handling Remote (FPGA) / Sensor (FPGA) [FW]",
         "Others currently unknown"
@@ -3779,11 +3779,11 @@
           "jira_tickets": []
         },
         {
-          "text": "Incorrect torque used during sensor cable exchange [HW]",
+          "text": "Incorrect torque used during sensor cable exchange [CM]",
           "jira_tickets": [
             {
               "key": "Y3839-549",
-              "summary": "defective sensors @practices Rümenapp and Ernst",
+              "summary": "defective sensors @practices R├╝menapp and Ernst",
               "status": "IN PROGRESS",
               "priority": "Medium",
               "score": 75,
@@ -3817,7 +3817,7 @@
         "Micro-B USB interface physically damaged [HW]",
         "Voltage regulator (U12) broken [HW]",
         "Firmware update bricked the USB3 remote [SW]",
-        "USB cable physically damaged [HW]",
+        "USB cable physically damaged [CM]",
         "Others currently unknown"
       ],
       "hint": "",
@@ -4400,7 +4400,7 @@
           "jira_tickets": []
         },
         {
-          "text": "USB cable physically damaged [HW]",
+          "text": "USB cable physically damaged [CM]",
           "jira_tickets": []
         },
         {
