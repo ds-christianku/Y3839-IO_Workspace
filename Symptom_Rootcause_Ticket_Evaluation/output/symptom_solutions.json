@@ -27,7 +27,7 @@
     "status": "under_construction",
     "solution": "Updater tool robustness improvements; driver cleanup procedure after IOSS/CDR reinstall."
   },
-  "Inconstant ready-for-exposure signaling (SW vs. Interface)": {
+  "Inconstant/wrong signaling (SW vs. Interface)": {
     "status": "under_construction",
     "solution": "SW timing fix for ready-for-exposure signal; 3rd party SW integration guideline update."
   },

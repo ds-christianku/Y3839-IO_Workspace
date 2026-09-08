@@ -72,6 +72,8 @@ def build_report_data(rows: list[dict[str, object]], file_name: str, generated_a
             "Region": str(r["Region"]),
             "Language": str(r.get("Language", "")),
             "Notes": str(r.get("Notes", "")),
+            "ProblemSummary": str(r.get("ProblemSummary", r.get("problem_summary", "n.a."))),
+            "SolutionSummary": str(r.get("SolutionSummary", r.get("solution_summary", "n.a."))),
             "Clarity": str(r.get("Clarity", "")),
             "SparePartGroup": str(r.get("SparePartGroup", "")),
             "MajorIssueDomain": str(r.get("MajorIssueDomain", "")),
@@ -600,8 +602,18 @@ def render_html(report_data: dict[str, object]) -> str:
         </article>
         <article class="panel" id="notesPanel" style="flex:1;min-width:0;display:none;flex-direction:column;">
           <h3>Ticket Notes</h3>
-          <div class="panel-body" style="flex:1;display:flex;flex-direction:column;min-height:0;">
-            <div id="notesTicketId" class="muted" style="margin-bottom:0.5rem;"></div>
+          <div class="panel-body" style="flex:1;display:flex;flex-direction:column;min-height:0;gap:0.75rem;">
+            <div id="notesTicketId" class="muted" style="margin-bottom:0.1rem;"></div>
+            <div style="border:1px solid #d8d1c5;border-radius:8px;background:#f8fbfb;padding:0.7rem;display:flex;flex-direction:column;gap:0.5rem;">
+              <div>
+                <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:#5e6b74;font-weight:700;">Problem summary</div>
+                <div id="notesProblemSummary" style="margin-top:0.2rem;white-space:pre-wrap;word-break:break-word;line-height:1.45;">n.a.</div>
+              </div>
+              <div>
+                <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:#5e6b74;font-weight:700;">Solution summary</div>
+                <div id="notesSolutionSummary" style="margin-top:0.2rem;white-space:pre-wrap;word-break:break-word;line-height:1.45;">n.a.</div>
+              </div>
+            </div>
             <pre id="notesContent" style="white-space:pre-wrap;word-break:break-word;font-size:0.8rem;flex:1;min-height:0;overflow-y:auto;background:#f9f9f9;padding:0.75rem;border-radius:4px;margin:0;"></pre>
           </div>
         </article>
@@ -1544,6 +1556,8 @@ def render_html(report_data: dict[str, object]) -> str:
             contactPerson: extractLatestContactPerson(row.Notes || ''),
             region: row.Region || '-',
             notes: row.Notes || '',
+            problemSummary: row.ProblemSummary || row.problemSummary || 'n.a.',
+            solutionSummary: row.SolutionSummary || row.solutionSummary || 'n.a.',
             clarity: row.Clarity || '',
             ts: parseDateIso(row.CreatedAt)?.getTime() || 0,
           }}))
@@ -1560,7 +1574,7 @@ def render_html(report_data: dict[str, object]) -> str:
         hintEl.innerHTML = `Transaction Number: <strong>${{esc(transactionFilterEl.value.trim())}}</strong> | Rows: ${{nf.format(visibleRows.length)}}`;
         bodyEl.innerHTML = visibleRows.length
           ? visibleRows.map(item => item.notes
-              ? `<tr style="cursor:pointer;" onclick="showNotes('${{esc(item.transaction)}}', this)" data-notes="${{esc(item.notes)}}"><td>${{esc(item.createdAt)}}</td><td>${{esc(item.transaction)}}</td><td>${{esc(item.category3)}}</td><td>${{esc(item.category4)}}</td><td>${{esc(item.descPrimary)}}</td><td>${{esc(item.descSecondary)}}</td><td>${{esc(item.contactPerson)}}</td><td style="text-align:center;font-size:1rem;">${{item.clarity === 'clear' ? 'âœ“' : item.clarity === 'unclear' ? 'âœ—' : ''}}</td><td>${{esc(item.region)}}</td></tr>`
+              ? `<tr style="cursor:pointer;" onclick="showNotes('${{esc(item.transaction)}}', this)" data-notes="${{esc(item.notes)}}" data-problem-summary="${{esc(item.problemSummary || 'n.a.')}}" data-solution-summary="${{esc(item.solutionSummary || 'n.a.')}}"><td>${{esc(item.createdAt)}}</td><td>${{esc(item.transaction)}}</td><td>${{esc(item.category3)}}</td><td>${{esc(item.category4)}}</td><td>${{esc(item.descPrimary)}}</td><td>${{esc(item.descSecondary)}}</td><td>${{esc(item.contactPerson)}}</td><td style="text-align:center;font-size:1rem;">${{item.clarity === 'clear' ? 'âœ“' : item.clarity === 'unclear' ? 'âœ—' : ''}}</td><td>${{esc(item.region)}}</td></tr>`
               : `<tr><td>${{esc(item.createdAt)}}</td><td>${{esc(item.transaction)}}</td><td>${{esc(item.category3)}}</td><td>${{esc(item.category4)}}</td><td>${{esc(item.descPrimary)}}</td><td>${{esc(item.descSecondary)}}</td><td>${{esc(item.contactPerson)}}</td><td></td><td>${{esc(item.region)}}</td></tr>`
             ).join('')
           : '<tr><td colspan="9" class="muted">No matching transactions found.</td></tr>';
@@ -1578,7 +1592,7 @@ def render_html(report_data: dict[str, object]) -> str:
       hintEl.innerHTML = `Description: <strong>${{esc(currentSelectedDescription)}}</strong> | Rows: ${{nf.format(currentDescriptionDetailRows.length)}}`;
       bodyEl.innerHTML = currentDescriptionDetailRows.length
         ? currentDescriptionDetailRows.map(item => item.notes
-            ? `<tr style="cursor:pointer;" onclick="showNotes('${{esc(item.transaction)}}', this)" data-notes="${{esc(item.notes)}}"><td>${{esc(item.createdAt)}}</td><td>${{esc(item.transaction)}}</td><td>${{esc(item.category3)}}</td><td>${{esc(item.category4)}}</td><td>${{esc(item.descPrimary)}}</td><td>${{esc(item.descSecondary)}}</td><td>${{esc(item.contactPerson)}}</td><td style="text-align:center;font-size:1rem;">${{item.clarity === 'clear' ? 'âœ“' : item.clarity === 'unclear' ? 'âœ—' : ''}}</td><td>${{esc(item.region)}}</td></tr>`
+            ? `<tr style="cursor:pointer;" onclick="showNotes('${{esc(item.transaction)}}', this)" data-notes="${{esc(item.notes)}}" data-problem-summary="${{esc(item.problemSummary || 'n.a.')}}" data-solution-summary="${{esc(item.solutionSummary || 'n.a.')}}"><td>${{esc(item.createdAt)}}</td><td>${{esc(item.transaction)}}</td><td>${{esc(item.category3)}}</td><td>${{esc(item.category4)}}</td><td>${{esc(item.descPrimary)}}</td><td>${{esc(item.descSecondary)}}</td><td>${{esc(item.contactPerson)}}</td><td style="text-align:center;font-size:1rem;">${{item.clarity === 'clear' ? 'âœ“' : item.clarity === 'unclear' ? 'âœ—' : ''}}</td><td>${{esc(item.region)}}</td></tr>`
             : `<tr><td>${{esc(item.createdAt)}}</td><td>${{esc(item.transaction)}}</td><td>${{esc(item.category3)}}</td><td>${{esc(item.category4)}}</td><td>${{esc(item.descPrimary)}}</td><td>${{esc(item.descSecondary)}}</td><td>${{esc(item.contactPerson)}}</td><td></td><td>${{esc(item.region)}}</td></tr>`
           ).join('')
         : '<tr><td colspan="9" class="muted">No matching transactions found.</td></tr>';
@@ -1606,6 +1620,8 @@ def render_html(report_data: dict[str, object]) -> str:
           contactPerson: extractLatestContactPerson(row.Notes || ''),
           region: row.Region || '-',
           notes: row.Notes || '',
+          problemSummary: row.ProblemSummary || row.problemSummary || 'n.a.',
+          solutionSummary: row.SolutionSummary || row.solutionSummary || 'n.a.',
           clarity: row.Clarity || '',
           ts: parseDateIso(row.CreatedAt)?.getTime() || 0,
         }}))
@@ -1709,12 +1725,18 @@ def render_html(report_data: dict[str, object]) -> str:
 
     function showNotes(transactionId, rowEl) {{
       const notes = rowEl.getAttribute('data-notes') || '';
+      const problemSummary = rowEl.getAttribute('data-problem-summary') || 'n.a.';
+      const solutionSummary = rowEl.getAttribute('data-solution-summary') || 'n.a.';
       const panel = document.getElementById('notesPanel');
       const content = document.getElementById('notesContent');
       const ticketIdEl = document.getElementById('notesTicketId');
+      const problemEl = document.getElementById('notesProblemSummary');
+      const solutionEl = document.getElementById('notesSolutionSummary');
       document.querySelectorAll('#descDetailBodyCopy tr').forEach(r => r.style.background = '');
       rowEl.style.background = '#d4e8f0';
       ticketIdEl.textContent = 'Ticket: ' + transactionId;
+      problemEl.textContent = problemSummary || 'n.a.';
+      solutionEl.textContent = solutionSummary || 'n.a.';
       content.textContent = notes;
       panel.style.display = 'flex';
     }}

@@ -28,6 +28,7 @@ def main() -> None:
     parser.add_argument("--raw-json",     default="output/tickets_raw.json",                         help="Zwischen-Output Stage 1")
     parser.add_argument("--classified-json", default="output/tickets_classified.json",              help="Zwischen-Output Stage 2")
     parser.add_argument("--output",       default="Ticket_Report_CSV.html",                          help="Finaler HTML-Report")
+    parser.add_argument("--batch-size",   type=int, default=500,                                     help="Anzahl Tickets pro LLM-Block")
     parser.add_argument("--skip-ingest",  action="store_true",                                       help="Stage 1 ueberspringen (Rohdaten bereits vorhanden)")
     parser.add_argument("--skip-classify",action="store_true",                                       help="Stage 1+2 ueberspringen (klassifizierte Daten vorhanden)")
     args = parser.parse_args()
@@ -67,17 +68,33 @@ def main() -> None:
             stage1.apply_region_config(cfg)
             print(f"Keyword-Konfiguration geladen: {cat_path}")
 
-        classified, stats = stage2.classify_tickets(raw_tickets)
+        existing_tickets: list[dict] = []
+        if classified_path.exists():
+            try:
+                existing_payload = json.loads(classified_path.read_text(encoding="utf-8"))
+                existing_tickets = existing_payload.get("tickets", [])
+            except Exception:
+                existing_tickets = []
 
-        print(f"Notes-Refinement: {stats['notes_refined_total']} / {stats['total']} Tickets")
-        for tr, cnt in list(stats["top_transitions"].items())[:5]:
-            pct = cnt / max(stats["notes_refined_total"], 1) * 100
-            print(f"  {tr}: {cnt} ({pct:.1f}%)")
+        batch = stage2.select_unclassified_batch(raw_tickets, existing_tickets, args.batch_size)
+        if not batch:
+            print(f"Keine neuen Tickets zum Klassifizieren. {len(existing_tickets)} bereits klassifizierte Tickets bleiben erhalten.")
+            payload = {"tickets": existing_tickets, "stats": {"total": len(existing_tickets), "notes_refined_total": 0, "refined_by_primary": {}, "top_transitions": {}}}
+            classified_path.parent.mkdir(parents=True, exist_ok=True)
+            classified_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+        else:
+            classified, stats = stage2.classify_tickets(batch, existing_tickets=existing_tickets, batch_size=args.batch_size)
+            merged = existing_tickets + classified
+            print(f"Block: {len(batch)} Tickets klassifiziert; {len(existing_tickets)} bereits vorhanden; insgesamt {len(merged)}")
+            print(f"Notes-Refinement: {stats['notes_refined_total']} / {stats['total']} Tickets")
+            for tr, cnt in list(stats["top_transitions"].items())[:5]:
+                pct = cnt / max(stats["notes_refined_total"], 1) * 100
+                print(f"  {tr}: {cnt} ({pct:.1f}%)")
 
-        payload = {"tickets": classified, "stats": stats}
-        classified_path.parent.mkdir(parents=True, exist_ok=True)
-        classified_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
-        print(f"→ Gespeichert: {classified_path}")
+            payload = {"tickets": merged, "stats": stats}
+            classified_path.parent.mkdir(parents=True, exist_ok=True)
+            classified_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+            print(f"→ Gespeichert: {classified_path}")
 
     # ── Stage 3: Render ───────────────────────────────────────────────────────
     print(f"\n{'='*60}")

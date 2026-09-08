@@ -108,6 +108,44 @@ def run_tests(test_path: Path, verbose: bool = False) -> int:
     return 0 if total_failed == 0 else 1
 
 
+def test_llm_summary_fallback() -> None:
+    notes = """
+    Problem Description
+    Sensor not recognized on workstation 3.
+
+    Solution Description
+    Re-seated sensor cable and reinstalled driver. Sensor works again.
+    """
+    summary = classify.build_problem_solution_summary(notes, "Sensor not recognized")
+    assert summary["problem"] == "Sensor not recognized on workstation 3."
+    assert summary["solution"] == "Re-seated sensor cable and reinstalled driver. Sensor works again."
+
+    empty = classify.build_problem_solution_summary("No useful data here", "")
+    assert empty["problem"] == "n.a."
+    assert empty["solution"] == "n.a."
+
+
+def test_summary_drives_clarity() -> None:
+    summary = {
+        "problem": "Sensor not recognized on workstation 3.",
+        "solution": "Re-seated sensor cable and reinstalled driver. Sensor works again.",
+    }
+    assert classify.classify_clarity("Problem Description\nSensor issue", summary) == "clear"
+    assert classify.classify_clarity("Problem Description\nSensor issue", {"problem": "Sensor issue", "solution": "n.a."}) == "unclear"
+
+
+def test_select_unclassified_batch_skips_existing_and_limits_size() -> None:
+    raw_tickets = [{"ticket_id": f"T{i}", "description_text": f"issue {i}", "notes_text": "some notes"} for i in range(1200)]
+    existing = [{"ticket_id": f"T{i}", "primary": "Connectivity/Recognition", "secondary": "Other"} for i in range(75)]
+
+    batch = classify.select_unclassified_batch(raw_tickets, existing_tickets=existing, batch_size=500)
+
+    assert len(batch) == 500
+    assert all(ticket["ticket_id"] not in {t["ticket_id"] for t in existing} for ticket in batch)
+    assert batch[0]["ticket_id"] == "T75"
+    assert batch[-1]["ticket_id"] == "T574"
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Klassifizierungstest fuer Ticket-Pipeline")
     parser.add_argument("--file", type=Path,
@@ -124,6 +162,8 @@ def main() -> None:
     total = len(json.loads(args.file.read_text(encoding="utf-8")))
     print(f"Testdatei: {args.file.name}  ({total} Faelle)")
 
+    test_llm_summary_fallback()
+    print("LLM summary fallback checks: OK")
     sys.exit(run_tests(args.file, verbose=args.verbose))
 
 

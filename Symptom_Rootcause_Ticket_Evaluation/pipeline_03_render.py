@@ -18,6 +18,12 @@ INPUT_PATH = BASE_DIR / "output" / "symptom_analysis.json"
 OUTPUT_PATH = BASE_DIR / "output" / "Symptom_Trend_Report.html"
 CHARTJS_PATH = BASE_DIR / "output" / "chart.umd.min.js"
 
+BLOCKED_ROOT_CAUSE_KEYS = {
+  "ioss bug",
+  "ioss bugs",
+  "software timing error",
+}
+
 
 def _trend_icon(pct):
     if pct is None:
@@ -109,6 +115,49 @@ def _collect_rc_statuses_for_counts(rc_entry, jira_tickets):
   return [status] if status else []
 
 
+def _build_symptom_status_stats(symptom_list, jira_sym_map, rc_status_map):
+  """Build per-symptom status counts from symptom/root-cause structures."""
+  symptom_stats = []
+  for symptom in symptom_list:
+    symptom_name = symptom.get("name", "")
+    rc_list = symptom.get("root_causes", [])
+    jira_enriched = (jira_sym_map.get(symptom_name) or {}).get("root_causes_jira", [])
+    jira_by_rc = _jira_tickets_by_normalized_rc(jira_enriched)
+
+    completed = 0
+    inprogress = 0
+    inanalysis = 0
+    onhold = 0
+
+    for rc in rc_list:
+      raw_rc_entry = _lookup_rc_entry(rc_status_map.get(symptom_name, {}), rc, "OnHold")
+      rc_statuses = _collect_rc_statuses_for_counts(raw_rc_entry, jira_by_rc.get(_normalize_rc_key(rc), []))
+      for rc_status in rc_statuses:
+        if rc_status == "Solved":
+          completed += 1
+        elif rc_status == "InProgress":
+          inprogress += 1
+        elif rc_status == "InAnalysis":
+          inanalysis += 1
+        elif rc_status == "OnHold":
+          onhold += 1
+
+    symptom_total = completed + inprogress + inanalysis + onhold
+    open_count = inanalysis + inprogress + onhold
+
+    symptom_stats.append({
+      "name": symptom_name,
+      "completed": completed,
+      "inprogress": inprogress,
+      "inanalysis": inanalysis,
+      "onhold": onhold,
+      "total": symptom_total,
+      "open": open_count,
+    })
+
+  return symptom_stats
+
+
 def _derive_status_from_tickets(ticket_entries):
   """Derive one aggregated status from Jira ticket statuses."""
   mapped = []
@@ -141,11 +190,74 @@ def _derive_status_from_tickets(ticket_entries):
 def _history_rc_entry_status(entry):
   """Read status from history RC entries supporting both string and object formats."""
   if isinstance(entry, dict):
+    # For Jira-backed RCs, derive status from ticket states to avoid stale RC-level values.
+    if isinstance(entry.get("jira_tickets"), list) and entry.get("jira_tickets"):
+      derived = _derive_status_from_tickets(entry.get("jira_tickets", []))
+      if derived:
+        return derived
     explicit = _normalize_status(entry.get("status", ""))
     if explicit:
       return explicit
     return _derive_status_from_tickets(entry.get("jira_tickets", []))
   return _normalize_status(entry)
+
+
+def _selected_ticket_statuses(entry):
+  """Return mapped Jira ticket statuses for selected RCs.
+
+  Preferred model: RC carries selected=Yes/No. For legacy entries without RC-level
+  selected, fall back to ticket-level selected flags. RCs without Jira tickets are
+  counted as a single status item using the RC status itself.
+  """
+  if not isinstance(entry, dict):
+    return []
+  rc_selected = str(entry.get("selected", "")).strip().lower() == "yes"
+  ticket_entries = entry.get("jira_tickets", [])
+  if not isinstance(ticket_entries, list) or not ticket_entries:
+    if rc_selected:
+      rc_status = _normalize_status(entry.get("status", ""))
+      if rc_status:
+        return [rc_status]
+    return []
+
+  legacy_selected_keys = set()
+  if not rc_selected:
+    for ticket in ticket_entries:
+      if not isinstance(ticket, dict):
+        continue
+      if str(ticket.get("selected", "")).strip().lower() == "yes":
+        legacy_selected_keys.add(str(ticket.get("key", "")).strip())
+    if not legacy_selected_keys:
+      return []
+
+  statuses = []
+  for ticket in ticket_entries:
+    if not isinstance(ticket, dict):
+      continue
+    if not rc_selected:
+      ticket_key = str(ticket.get("key", "")).strip()
+      if ticket_key not in legacy_selected_keys:
+        continue
+    mapped = _map_jira_ticket_status(ticket.get("jira_status") or ticket.get("status"))
+    if mapped:
+      statuses.append(mapped)
+  return statuses
+
+
+def _rc_selected_value(entry, default="No"):
+  """Read selected flag from RC entry with legacy ticket-level fallback."""
+  if isinstance(entry, dict):
+    rc_selected = str(entry.get("selected", "")).strip().lower()
+    if rc_selected in {"yes", "no"}:
+      return "Yes" if rc_selected == "yes" else "No"
+    tickets = entry.get("jira_tickets", [])
+    if isinstance(tickets, list) and tickets:
+      if any(
+        isinstance(ticket, dict) and str(ticket.get("selected", "")).strip().lower() == "yes"
+        for ticket in tickets
+      ):
+        return "Yes"
+  return "Yes" if str(default).strip().lower() == "yes" else "No"
 
 
 def _effective_status(status, tickets):
@@ -164,6 +276,51 @@ def _normalize_rc_key(text):
   cleaned = re.sub(r"\s*\[(HW|SW|FW|CM)\]\s*$", "", cleaned)
   cleaned = re.sub(r"\s+", " ", cleaned).strip(" ,")
   return cleaned.lower()
+
+
+def _is_blocked_root_cause(text):
+  return _normalize_rc_key(str(text)) in BLOCKED_ROOT_CAUSE_KEYS
+
+
+def _filter_blocked_rc_entries(rc_entries):
+  """Drop blocked root-cause keys from RC status maps."""
+  if not isinstance(rc_entries, dict):
+    return {}
+  filtered = {}
+  for rc_name, rc_value in rc_entries.items():
+    if _is_blocked_root_cause(rc_name):
+      continue
+    filtered[rc_name] = rc_value
+  return filtered
+
+
+def _filter_blocked_rc_status_map(status_map):
+  """Drop blocked root causes for every symptom in a nested rc_status map."""
+  if not isinstance(status_map, dict):
+    return {}
+  cleaned = {}
+  for symptom_name, rc_entries in status_map.items():
+    if not isinstance(rc_entries, dict):
+      continue
+    filtered_entries = _filter_blocked_rc_entries(rc_entries)
+    if filtered_entries:
+      cleaned[symptom_name] = filtered_entries
+  return cleaned
+
+
+def _normalize_rc_name(text):
+  """Return display RC name without action-type suffix tags."""
+  if not text:
+    return ""
+  return re.sub(r"\s*\[(HW|SW|FW|CM)\]\s*$", "", str(text)).strip()
+
+
+def _action_type_from_rc_name(text):
+  """Extract action type from RC suffix, e.g. [HW] -> HW."""
+  if not text:
+    return ""
+  m = re.search(r"\[(HW|SW|FW|CM)\]\s*$", str(text), flags=re.IGNORECASE)
+  return m.group(1).upper() if m else ""
   
 def _lookup_rc_entry(rc_map, rc_name, default=None):
   """Get RC entry by exact key first, then by normalized key."""
@@ -176,6 +333,44 @@ def _lookup_rc_entry(rc_map, rc_name, default=None):
     if _normalize_rc_key(stored_name) == target_key:
       return stored_value
   return default
+
+
+def _jira_tickets_by_normalized_rc(jira_enriched):
+  """Aggregate Jira tickets by normalized RC text and deduplicate by ticket key."""
+  grouped = {}
+  seen = {}
+  for rc_obj in jira_enriched or []:
+    if not isinstance(rc_obj, dict):
+      continue
+    rc_key = _normalize_rc_key(rc_obj.get("text", ""))
+    if not rc_key:
+      continue
+    grouped.setdefault(rc_key, [])
+    seen.setdefault(rc_key, set())
+    for ticket in rc_obj.get("jira_tickets", []) or []:
+      if not isinstance(ticket, dict):
+        continue
+      ticket_key = str(ticket.get("key", "")).strip()
+      if ticket_key and ticket_key in seen[rc_key]:
+        continue
+      if ticket_key:
+        seen[rc_key].add(ticket_key)
+      grouped[rc_key].append(ticket)
+  return grouped
+
+
+def _ensure_unknown_last(root_causes):
+  """Ensure 'Others currently unknown' is always rendered as the last root cause."""
+  if not isinstance(root_causes, list) or not root_causes:
+    return root_causes
+  normal = []
+  unknown = []
+  for rc in root_causes:
+    if _normalize_rc_key(str(rc)) == "others currently unknown":
+      unknown.append(rc)
+    else:
+      normal.append(rc)
+  return normal + unknown
 
 def _status_select(symptom_name, rc, current_status):
   """Render an editable status dropdown for RCs without Jira bugs."""
@@ -287,6 +482,11 @@ def run():
     date_max = meta.get("date_max", "")[:10]
     date_range = f"{date_min} – {date_max}" if date_min and date_max else " / ".join(years)
     symptoms = sorted(data["symptoms"], key=lambda s: (s.get("priority", 99), -s["total"]))
+
+    for symptom in symptoms:
+      root_causes = symptom.get("root_causes", [])
+      if isinstance(root_causes, list):
+        symptom["root_causes"] = [rc for rc in root_causes if not _is_blocked_root_cause(rc)]
 
     # Group by priority
     prio_labels = {1: "Priority 1", 2: "Priority 2", 3: "Priority 3", 4: "Priority 4"}
@@ -423,7 +623,7 @@ def run():
         ("Connectivity / Sensor Recognition", ["Intermittent Connectivity", "Images not transferred", "Loosening Screws"]),
         ("Power / Module Failure", ['"Dying Boxes" (USB module)', "No Power"]),
         ("Image Quality", ["White Images", "Overexposed images", "Previous (Patient) Image"]),
-        ("Software / Update", ["Interface Update Issues", "Inconstant ready-for-exposure signaling (SW vs. Interface)", "3rd Party Slowness (NAM)"]),
+        ("Software / Update", ["Interface Update Issues", "Inconstant/wrong signaling (SW vs. Interface)", "3rd Party Slowness (NAM)"]),
     ]
     sym_by_name = {s["name"]: s for s in symptoms}
     market_ref_sections = ""
@@ -454,7 +654,6 @@ def run():
     jira_path = BASE_DIR / "output" / "symptom_analysis_jira.json"
     jira_issues_path    = BASE_DIR / "output" / "jira_issues.json"
     jira_summaries_path = BASE_DIR / "output" / "jira_summaries.json"
-    rc_status_path = BASE_DIR / "output" / "rc_status.json"
     solved_issues_path = BASE_DIR / "output" / "solved_issues.json"
     if jira_path.exists():
         with open(jira_path, encoding="utf-8") as f:
@@ -464,15 +663,39 @@ def run():
         jira_data = {}
         jira_sym_map = {}
 
-    # Load status mappings if available
-    # New structure: rc_status[symptom][rc] = status
+    # Keep render RC taxonomy in sync with Jira-enriched output so all Jira groups are visible.
+    for symptom in symptoms:
+      symptom_name = symptom.get("name", "")
+      if not symptom_name:
+        continue
+      jira_sym = jira_sym_map.get(symptom_name) or {}
+      existing_rcs = symptom.setdefault("root_causes", [])
+      existing_keys = {_normalize_rc_key(rc) for rc in existing_rcs if rc}
+
+      candidate_rcs = []
+      for rc in jira_sym.get("root_causes", []) or []:
+        if isinstance(rc, str) and rc.strip():
+          candidate_rcs.append(rc.strip())
+      for rc_obj in jira_sym.get("root_causes_jira", []) or []:
+        rc_text = rc_obj.get("text", "") if isinstance(rc_obj, dict) else ""
+        if rc_text:
+          candidate_rcs.append(str(rc_text).strip())
+
+      for rc_text in candidate_rcs:
+        rc_key = _normalize_rc_key(rc_text)
+        if not rc_key or rc_key in existing_keys or _is_blocked_root_cause(rc_text):
+          continue
+        existing_rcs.append(rc_text)
+        existing_keys.add(rc_key)
+
+      symptom["root_causes"] = _ensure_unknown_last(existing_rcs)
+
+    # Re-sort after RC enrichment so downstream sections use the updated symptom model.
+    sorted_symptoms = sorted(symptoms, key=lambda s: (s.get("priority", 99), -s["total"]))
+
+    # Current status model is sourced from latest history snapshot.
     rc_status_map = {}
     selected_for_release_map = {}
-    if rc_status_path.exists():
-        with open(rc_status_path, encoding="utf-8") as f:
-            rc_status_data = json.load(f)
-        rc_status_map = rc_status_data.get("rc_status", {})
-        selected_for_release_map = rc_status_data.get("selected_for_release", {})
 
     # Load status history if available
     rc_status_history = []
@@ -484,6 +707,7 @@ def run():
 
     # Load release scope root causes from solved_issues.json
     release_rc_keys = set()
+    solved_issues_data = {"solved_issues": []}
     if solved_issues_path.exists():
       with open(solved_issues_path, encoding="utf-8") as f:
         solved_issues_data = json.load(f)
@@ -495,6 +719,74 @@ def run():
           normalized_key = _normalize_rc_key(rc_item)
           if normalized_key:
             release_rc_keys.add(normalized_key)
+
+    latest_history_status_map = {}
+    if rc_status_history:
+      latest_history_entry = rc_status_history[-1] if isinstance(rc_status_history[-1], dict) else {}
+      latest_history_status_map = latest_history_entry.get("rc_status", {}) if isinstance(latest_history_entry, dict) else {}
+    latest_history_status_map = _filter_blocked_rc_status_map(latest_history_status_map)
+    if isinstance(latest_history_status_map, dict):
+      rc_status_map = json.loads(json.dumps(latest_history_status_map, ensure_ascii=False))
+
+    # Normalize RC keys in current snapshot (remove [HW]/[SW]/[FW]/[CM] suffixes).
+    normalized_rc_status_map = {}
+    for symptom_name, rc_entries in rc_status_map.items():
+      if not isinstance(rc_entries, dict):
+        continue
+      normalized_entries = {}
+      for rc_name, rc_entry in rc_entries.items():
+        normalized_entries[_normalize_rc_name(rc_name)] = rc_entry
+      normalized_rc_status_map[symptom_name] = _filter_blocked_rc_entries(normalized_entries)
+    rc_status_map = normalized_rc_status_map
+
+    # Backfill missing RC entries so the table always has all configured root causes.
+    for symptom in symptoms:
+      symptom_name = symptom.get("name", "")
+      if not symptom_name:
+        continue
+      symptom_rc_map = rc_status_map.setdefault(symptom_name, {})
+      jira_enriched = (jira_sym_map.get(symptom_name) or {}).get("root_causes_jira", [])
+      jira_by_key = _jira_tickets_by_normalized_rc(jira_enriched)
+      for rc_with_tag in symptom.get("root_causes", []):
+        rc_name = _normalize_rc_name(rc_with_tag)
+        if rc_name in symptom_rc_map and isinstance(symptom_rc_map.get(rc_name), dict):
+          continue
+
+        default_selected = "Yes" if _normalize_rc_key(rc_with_tag) in release_rc_keys else "No"
+        action_type = _action_type_from_rc_name(rc_with_tag)
+        source_tickets = jira_by_key.get(_normalize_rc_key(rc_with_tag), [])
+        if source_tickets:
+          ticket_rows = []
+          for ticket in source_tickets:
+            if not isinstance(ticket, dict):
+              continue
+            raw_status = ticket.get("status", "")
+            ticket_rows.append({
+              "key": ticket.get("key", ""),
+              "status": _map_jira_ticket_status(raw_status),
+              "jira_status": raw_status,
+            })
+          symptom_rc_map[rc_name] = {
+            "status": "",
+            "selected": default_selected,
+            "action_type": action_type,
+            "jira_tickets": ticket_rows,
+          }
+        else:
+          symptom_rc_map[rc_name] = {
+            "status": "OnHold",
+            "selected": default_selected,
+            "action_type": action_type,
+          }
+
+    # Derive selected_for_release map from current RC snapshot.
+    for symptom_name, rc_entries in rc_status_map.items():
+      if not isinstance(rc_entries, dict):
+        continue
+      selected_for_release_map[symptom_name] = {}
+      for rc_name, rc_entry in rc_entries.items():
+        selected_value = _rc_selected_value(rc_entry, "No")
+        selected_for_release_map[symptom_name][rc_name] = selected_value
 
     # Compute Jira coverage stats
     jira_total_bugs = 0
@@ -571,6 +863,68 @@ def run():
         for l, c, t in ic_all_rc
     )
 
+    # Build release-scope breakdown from selected RCs (tickets plus solved RCs without tickets).
+    release_scope_counts = {"Solved": 0, "CM": 0, "HW": 0, "SW": 0, "Other Symptoms": 0}
+    release_ic_rc_counter = {}
+    for symptom_name, rc_entries in rc_status_map.items():
+      if not isinstance(rc_entries, dict):
+        continue
+      symptom_release_map = selected_for_release_map.get(symptom_name, {}) if isinstance(selected_for_release_map, dict) else {}
+      for rc_name, rc_entry in rc_entries.items():
+        if not isinstance(rc_entry, dict):
+          continue
+        selected_value = _lookup_rc_entry(symptom_release_map, rc_name, "No") if isinstance(symptom_release_map, dict) else "No"
+        if str(selected_value).strip().lower() != "yes":
+          continue
+
+        action_type = str(rc_entry.get("action_type", "")).strip().upper()
+        tickets = rc_entry.get("jira_tickets", [])
+        ticket_count = len(tickets) if isinstance(tickets, list) else 0
+
+        if ticket_count > 0:
+          if symptom_name == "Intermittent Connectivity" and action_type in {"CM", "HW", "SW"}:
+            release_scope_counts[action_type] += ticket_count
+            release_ic_rc_counter[rc_name] = release_ic_rc_counter.get(rc_name, 0) + ticket_count
+          else:
+            release_scope_counts["Other Symptoms"] += ticket_count
+          continue
+
+        # RCs without Jira tickets contribute as virtual entries.
+        mapped_status = _normalize_status(rc_entry.get("status", ""))
+        if mapped_status == "Solved":
+          release_scope_counts["Solved"] += 1
+        elif symptom_name == "Intermittent Connectivity" and action_type in {"CM", "HW", "SW"}:
+          release_scope_counts[action_type] += 1
+          release_ic_rc_counter[rc_name] = release_ic_rc_counter.get(rc_name, 0) + 1
+        else:
+          release_scope_counts["Other Symptoms"] += 1
+
+    release_scope_solved = release_scope_counts["Solved"]
+    release_scope_cm = release_scope_counts["CM"]
+    release_scope_hw = release_scope_counts["HW"]
+    release_scope_sw = release_scope_counts["SW"]
+    release_scope_other = release_scope_counts["Other Symptoms"]
+    release_scope_total = sum(release_scope_counts.values())
+
+    ic_release_entries = rc_status_map.get("Intermittent Connectivity", {}) if isinstance(rc_status_map.get("Intermittent Connectivity", {}), dict) else {}
+    release_ic_top3_rows = []
+    for rc_name, count in sorted(release_ic_rc_counter.items(), key=lambda item: -item[1])[:3]:
+      rc_entry = _lookup_rc_entry(ic_release_entries, rc_name, {})
+      rc_type = str(rc_entry.get("action_type", "")).upper() if isinstance(rc_entry, dict) else ""
+      if rc_type == "CM":
+        rc_color = "#16a34a"
+      elif rc_type == "HW":
+        rc_color = "#e67e22"
+      elif rc_type == "SW":
+        rc_color = "#2563eb"
+      else:
+        rc_color = "#64748b"
+      rc_type_label = rc_type if rc_type in {"CM", "HW", "SW"} else "OTHER"
+      release_ic_top3_rows.append(
+        f'<li style="margin-bottom:4px"><span style="font-weight:600;color:{rc_color}">{count} Selected</span> &ndash; {rc_name} <span style="background:{rc_color};color:white;border-radius:3px;padding:1px 5px;font-size:0.78em;font-weight:700;margin-left:4px">{rc_type_label}</span></li>'
+      )
+    release_ic_top3_html = "".join(release_ic_top3_rows) if release_ic_top3_rows else '<li style="color:#888">No selected root causes available.</li>'
+
     # Symptoms and Root Causes section — with Jira ticket links per root cause
     rc_section_rows = ""
     editable_rc_count = 0
@@ -579,75 +933,69 @@ def run():
         prio_col = prio_colors.get(prio_num, "#444")
         prio_label = prio_labels.get(prio_num, f"P{prio_num}")
         rc_list = s.get("root_causes", [])
-        ai_cat = s.get("ai_category", "")
-        ai_cats = [c.strip() for c in ai_cat.split(',') if c.strip()]
-        ai_badge = ''.join(
-            f'<span style="background:#e8f4f8;border:1px solid #b0d4e3;border-radius:4px;padding:1px 6px;font-size:0.8em;white-space:nowrap;margin-right:3px">{c}</span>'
-            for c in ai_cats
-        ) if ai_cats else ""
         jira_enriched = (jira_sym_map.get(s["name"]) or {}).get("root_causes_jira", [])
-        jira_by_rc = {r["text"]: r.get("jira_tickets", []) for r in jira_enriched}
+        jira_by_rc = _jira_tickets_by_normalized_rc(jira_enriched)
         rc_map_rows_html = ""
         for rc in rc_list:
-            tickets = jira_by_rc.get(rc, [])
-            rc_id = f"rc-{abs(hash(s['name'] + rc)) % 99999}"
-            raw_rc_entry = _lookup_rc_entry(rc_status_map.get(s["name"], {}), rc, "OnHold")
-            rc_status_value = _rc_entry_status(raw_rc_entry, "OnHold")
-            rc_status = _effective_status(rc_status_value, tickets)
-            stored_release_value = ""
-            symptom_release_map = selected_for_release_map.get(s["name"], {}) if isinstance(selected_for_release_map, dict) else {}
-            if isinstance(symptom_release_map, dict):
-              stored_release_value = _lookup_rc_entry(symptom_release_map, rc, "")
-            if str(stored_release_value).strip().lower() in {"yes", "no"}:
-                release_selected = "Yes" if str(stored_release_value).strip().lower() == "yes" else "No"
-            else:
-                release_selected = _release_selected_value(raw_rc_entry, _normalize_rc_key(rc) in release_rc_keys)
+          tickets = jira_by_rc.get(_normalize_rc_key(rc), [])
+          rc_id = f"rc-{abs(hash(s['name'] + rc)) % 99999}"
+          raw_rc_entry = _lookup_rc_entry(rc_status_map.get(s["name"], {}), rc, "OnHold")
+          rc_status_value = _rc_entry_status(raw_rc_entry, "OnHold")
+          rc_status = _effective_status(rc_status_value, tickets)
+          stored_release_value = ""
+          symptom_release_map = selected_for_release_map.get(s["name"], {}) if isinstance(selected_for_release_map, dict) else {}
+          if isinstance(symptom_release_map, dict):
+            stored_release_value = _lookup_rc_entry(symptom_release_map, rc, "")
+          if str(stored_release_value).strip().lower() in {"yes", "no"}:
+            release_selected = "Yes" if str(stored_release_value).strip().lower() == "yes" else "No"
+          else:
+            release_selected = _release_selected_value(raw_rc_entry, _normalize_rc_key(rc) in release_rc_keys)
 
-            release_control = _release_select(s["name"], rc, release_selected)
-            status_badge = _status_control_html(s["name"], rc, rc_status_value, tickets)
-            if not tickets and rc_status != "Solved":
-                editable_rc_count += 1
-            if tickets:
-                ticket_count = len(tickets)
-                ticket_details = ""
-                for t in tickets:
-                    tk = t["key"]
-                    t_tip = (jira_summaries.get(tk) or t["summary"])[:500].replace('"', '&quot;').replace('<', '&lt;').replace('>', '&gt;').replace('\n', ' ')
-                    ticket_details += (
-                        f'<tr style="background:#fffef0;cursor:pointer" onclick="showBugDetail(\'{tk}\')" title="{t_tip}">'
-                        f'<td style="padding:4px 8px;white-space:nowrap">'
-                        f'<a href="{t["url"]}" target="_blank" style="font-weight:600;color:#856404;text-decoration:none" onclick="event.stopPropagation()">{tk}</a>'
-                        f'</td>'
-                        f'<td style="padding:4px 8px;font-size:0.82em;color:#555">{t["summary"][:90]}</td>'
-                        f'<td style="padding:4px 8px;white-space:nowrap;font-size:0.8em">'
-                        f'<span style="background:#e2e8f0;border-radius:3px;padding:1px 5px">{t["status"]}</span></td>'
-                        f'<td style="padding:4px 8px;font-size:0.8em;color:#888">{t["priority"]}</td>'
-                        f'</tr>'
-                    )
-                jira_toggle = (
-                    f'<span onclick="toggleJira(\'{rc_id}\')" '
-                    f'style="margin-left:8px;cursor:pointer;background:#ffc107;color:#333;'
-                    f'border-radius:3px;padding:1px 6px;font-size:0.75em;font-weight:600;'
-                    f'user-select:none" title="Show/hide Jira tickets">'
-                    f'Jira Bugs: {ticket_count}</span>'
-                    f'<table id="{rc_id}" style="display:none;margin-top:4px;margin-left:16px;'
-                    f'border:1px solid #ffc107;border-radius:4px;font-size:0.82em;width:calc(100% - 16px)">'
-                    f'<thead><tr style="background:#fff3cd">'
-                    f'<th style="padding:3px 8px;text-align:left">Key</th>'
-                    f'<th style="padding:3px 8px;text-align:left">Summary</th>'
-                    f'<th style="padding:3px 8px;text-align:left">Status</th>'
-                    f'<th style="padding:3px 8px;text-align:left">Priority</th>'
-                    f'</tr></thead><tbody>{ticket_details}</tbody></table>'
-                )
-            else:
-                jira_toggle = ""
-            rc_map_rows_html += (
-                '<tr>'
-                f'<td style="padding:6px 8px;border-bottom:1px solid #e2e8f0;vertical-align:top">{_tag_rc(rc)}{jira_toggle}</td>'
-                f'<td style="padding:6px 8px;border-bottom:1px solid #e2e8f0;vertical-align:top;width:140px">{release_control}</td>'
-                f'<td style="padding:6px 8px;border-bottom:1px solid #e2e8f0;vertical-align:top;width:130px">{status_badge}</td>'
-                '</tr>'
+          release_control = _release_select(s["name"], rc, release_selected)
+          status_badge = _status_control_html(s["name"], rc, rc_status_value, tickets)
+          if not tickets and rc_status != "Solved":
+            editable_rc_count += 1
+          if tickets:
+            ticket_count = len(tickets)
+            ticket_details = ""
+            for t in tickets:
+              tk = t["key"]
+              t_tip = (jira_summaries.get(tk) or t["summary"])[:500].replace('"', '&quot;').replace('<', '&lt;').replace('>', '&gt;').replace('\n', ' ')
+              ticket_details += (
+                f'<tr style="background:#fffef0;cursor:pointer" onclick="showBugDetail(\'{tk}\')" title="{t_tip}">'
+                f'<td style="padding:4px 8px;white-space:nowrap">'
+                f'<a href="{t["url"]}" target="_blank" style="font-weight:600;color:#856404;text-decoration:none" onclick="event.stopPropagation()">{tk}</a>'
+                f'</td>'
+                f'<td style="padding:4px 8px;font-size:0.82em;color:#555">{t["summary"][:90]}</td>'
+                f'<td style="padding:4px 8px;white-space:nowrap;font-size:0.8em">'
+                f'<span style="background:#e2e8f0;border-radius:3px;padding:1px 5px">{t["status"]}</span></td>'
+                f'<td style="padding:4px 8px;font-size:0.8em;color:#888">{t["priority"]}</td>'
+                f'</tr>'
+              )
+            jira_toggle = (
+              f'<span onclick="toggleJira(\'{rc_id}\')" '
+              f'style="margin-left:8px;cursor:pointer;background:#ffc107;color:#333;'
+              f'border-radius:3px;padding:1px 6px;font-size:0.75em;font-weight:600;'
+              f'user-select:none" title="Show/hide Jira tickets">'
+              f'Jira Bugs: {ticket_count}</span>'
+              f'<table id="{rc_id}" style="display:none;margin-top:4px;margin-left:16px;'
+              f'border:1px solid #ffc107;border-radius:4px;font-size:0.82em;width:calc(100% - 16px)">'
+              f'<thead><tr style="background:#fff3cd">'
+              f'<th style="padding:3px 8px;text-align:left">Key</th>'
+              f'<th style="padding:3px 8px;text-align:left">Summary</th>'
+              f'<th style="padding:3px 8px;text-align:left">Status</th>'
+              f'<th style="padding:3px 8px;text-align:left">Priority</th>'
+              f'</tr></thead><tbody>{ticket_details}</tbody></table>'
             )
+          else:
+            jira_toggle = ""
+          rc_map_rows_html += (
+            '<tr>'
+            f'<td style="padding:6px 8px;border-bottom:1px solid #e2e8f0;vertical-align:top">{_tag_rc(rc)}{jira_toggle}</td>'
+            f'<td style="padding:6px 8px;border-bottom:1px solid #e2e8f0;vertical-align:top;width:140px">{release_control}</td>'
+            f'<td style="padding:6px 8px;border-bottom:1px solid #e2e8f0;vertical-align:top;width:130px">{status_badge}</td>'
+            '</tr>'
+          )
         # Add hint if present
         hint = s.get("hint", "")
         hint_html = ""
@@ -657,7 +1005,7 @@ def run():
         rc_section_rows += f"""
         <tr>
           <td><span style="background:{prio_col};color:white;border-radius:4px;padding:2px 8px;font-size:0.82em;font-weight:600">{prio_label}</span></td>
-          <td><strong>{s["name"]}</strong><br>{ai_badge}</td>
+          <td><strong>{s["name"]}</strong></td>
           <td colspan="3" style="padding:6px 8px">
             <table style="width:100%;border-collapse:collapse;font-size:0.86em;color:#334155;background:#f8fafc;border:1px solid #dbe7f0;border-radius:6px;overflow:hidden">
               <thead>
@@ -775,7 +1123,15 @@ def run():
     ticket_index_js = _json.dumps(ticket_index, ensure_ascii=False)
     rc_status_data_js = _json.dumps({"rc_status": rc_status_map, "selected_for_release": selected_for_release_map}, ensure_ascii=False)
     release_rc_keys_js = _json.dumps(sorted(release_rc_keys), ensure_ascii=False)
-    rc_status_history_data_js = _json.dumps({"tracking_history": rc_status_history}, ensure_ascii=False)
+    filtered_history = []
+    for entry in rc_status_history:
+      if not isinstance(entry, dict):
+        filtered_history.append(entry)
+        continue
+      e = dict(entry)
+      e["rc_status"] = _filter_blocked_rc_status_map(e.get("rc_status", {}))
+      filtered_history.append(e)
+    rc_status_history_data_js = _json.dumps({"tracking_history": filtered_history}, ensure_ascii=False)
     windows_user_js = _json.dumps(getpass.getuser(), ensure_ascii=False)
     jira_rc_flags: dict = {}
     jira_rc_statuses: dict = {}
@@ -816,17 +1172,14 @@ def run():
 
     mapped = sum(s["total"] for s in symptoms)
 
-    # Build Status Tracker - Overall counts from current rc_status.json
+    # Build shared overall status model from symptoms/root causes.
+    symptom_stats_base = _build_symptom_status_stats(sorted_symptoms, jira_sym_map, rc_status_map)
     global_status_counts = {"OnHold": 0, "InAnalysis": 0, "InProgress": 0, "Solved": 0}
-    for s in sorted_symptoms:
-      rc_list = s.get("root_causes", [])
-      jira_enriched = (jira_sym_map.get(s["name"]) or {}).get("root_causes_jira", [])
-      jira_by_rc = {r["text"]: r.get("jira_tickets", []) for r in jira_enriched}
-      for rc in rc_list:
-        raw_rc_entry = _lookup_rc_entry(rc_status_map.get(s["name"], {}), rc, "OnHold")
-        for rc_status in _collect_rc_statuses_for_counts(raw_rc_entry, jira_by_rc.get(rc, [])):
-          if rc_status in global_status_counts:
-            global_status_counts[rc_status] += 1
+    for stat in symptom_stats_base:
+      global_status_counts["Solved"] += stat.get("completed", 0)
+      global_status_counts["InProgress"] += stat.get("inprogress", 0)
+      global_status_counts["InAnalysis"] += stat.get("inanalysis", 0)
+      global_status_counts["OnHold"] += stat.get("onhold", 0)
     
     global_status_summary = ""
     for st_name, color in [("OnHold", "#9ca3af"), ("InAnalysis", "#f59e0b"), ("InProgress", "#3b82f6"), ("Solved", "#10b981")]:
@@ -834,27 +1187,228 @@ def run():
         pct = round(count / sum(global_status_counts.values()) * 100, 1) if sum(global_status_counts.values()) > 0 else 0
         global_status_summary += f'<div style="background:{color};color:white;border-radius:6px;padding:12px 16px;text-align:center"><div style="font-weight:600;font-size:1.2em">{count}</div><div style="font-size:0.8em;opacity:0.9">{st_name} ({pct}%)</div></div>'
 
-    # Build Status Tracker - Upcoming Release counts from latest history snapshot
+    # Build Status Tracker - Upcoming Release counts from selected Jira tickets in latest history snapshot
     latest_history_status_map = {}
     if rc_status_history:
       latest_history_entry = rc_status_history[-1] if isinstance(rc_status_history[-1], dict) else {}
       latest_history_status_map = latest_history_entry.get("rc_status", {}) if isinstance(latest_history_entry, dict) else {}
+    latest_history_status_map = _filter_blocked_rc_status_map(latest_history_status_map)
 
     release_status_counts = {"OnHold": 0, "InAnalysis": 0, "InProgress": 0, "Solved": 0}
     if isinstance(latest_history_status_map, dict):
       for _symptom_name, rcs_dict in latest_history_status_map.items():
         if not isinstance(rcs_dict, dict):
           continue
-        for rc_name, status in rcs_dict.items():
-          normalized_status = _history_rc_entry_status(status)
-          if normalized_status in release_status_counts:
-            release_status_counts[normalized_status] += 1
+        for rc_name, status_entry in rcs_dict.items():
+          for ticket_status in _selected_ticket_statuses(status_entry):
+            if ticket_status in release_status_counts:
+              release_status_counts[ticket_status] += 1
 
     release_status_summary = ""
     for st_name, color in [("OnHold", "#9ca3af"), ("InAnalysis", "#f59e0b"), ("InProgress", "#3b82f6"), ("Solved", "#10b981")]:
       count = release_status_counts.get(st_name, 0)
       pct = round(count / sum(release_status_counts.values()) * 100, 1) if sum(release_status_counts.values()) > 0 else 0
       release_status_summary += f'<div style="background:{color};color:white;border-radius:6px;padding:12px 16px;text-align:center"><div style="font-weight:600;font-size:1.2em">{count}</div><div style="font-size:0.8em;opacity:0.9">{st_name} ({pct}%)</div></div>'
+
+    # Build list of currently solved topics (RCs) from current snapshot.
+    solved_topics = []
+    for symptom_name, rc_entries in rc_status_map.items():
+      if not isinstance(rc_entries, dict):
+        continue
+      for rc_name, rc_entry in rc_entries.items():
+        if not isinstance(rc_entry, dict):
+          continue
+        tickets = rc_entry.get("jira_tickets", [])
+        ticket_count = len(tickets) if isinstance(tickets, list) else 0
+        if ticket_count > 0:
+          current_status = _derive_status_from_tickets(tickets)
+          source_label = f"Jira ({ticket_count})"
+        else:
+          current_status = _normalize_status(rc_entry.get("status", ""))
+          source_label = "RC"
+        if current_status != "Solved":
+          continue
+        solved_topics.append({
+          "symptom": symptom_name,
+          "rc": rc_name,
+          "action_type": str(rc_entry.get("action_type", "")).strip().upper() or "-",
+          "source": source_label,
+          "selected": _rc_selected_value(rc_entry, "No"),
+          "fix": "-",
+        })
+
+    # Enrich solved list with solved_issues.json records.
+    symptom_name_map = {
+      _normalize_rc_key(name): name
+      for name in set(list(rc_status_map.keys()) + [s.get("name", "") for s in sorted_symptoms])
+      if name
+    }
+
+    def _resolve_symptom_name(raw_name):
+      normalized = _normalize_rc_key(raw_name)
+      if normalized in symptom_name_map:
+        return symptom_name_map[normalized]
+      for known_key, known_name in symptom_name_map.items():
+        if normalized and (normalized in known_key or known_key in normalized):
+          return known_name
+      return str(raw_name or "Not mapped")
+
+    existing_solved_keys = {
+      (_normalize_rc_key(item.get("symptom", "")), _normalize_rc_key(item.get("rc", ""))): item
+      for item in solved_topics
+    }
+
+    rc_locations_by_key = {}
+    for sym_name, rc_entries in rc_status_map.items():
+      if not isinstance(rc_entries, dict):
+        continue
+      for rc_name in rc_entries.keys():
+        rc_key = _normalize_rc_key(rc_name)
+        if rc_key:
+          rc_locations_by_key.setdefault(rc_key, []).append((sym_name, rc_name))
+
+    def _append_fix_text(item, fix_text):
+      current_fix = str(item.get("fix", "")).strip()
+      if not fix_text or fix_text == "-":
+        return
+      if not current_fix or current_fix == "-":
+        item["fix"] = fix_text
+        return
+      existing_parts = [part.strip() for part in current_fix.split(" | ") if part.strip()]
+      if fix_text not in existing_parts:
+        existing_parts.append(fix_text)
+        item["fix"] = " | ".join(existing_parts)
+
+    for issue in solved_issues_data.get("solved_issues", []):
+      if not isinstance(issue, dict):
+        continue
+      issue_status = str(issue.get("status", "")).strip().lower()
+      if issue_status != "solved":
+        continue
+
+      issue_id = issue.get("id", "")
+      fix_text = str(issue.get("fix", "")).strip() or "-"
+      raw_rootcause = str(issue.get("fixed_rootcause", "")).strip()
+      rc_items = [item.strip() for item in raw_rootcause.split(",") if item.strip() and item.strip() != "-"]
+      symptom_items = issue.get("improvement_to_symptoms", [])
+      if not isinstance(symptom_items, list) or not symptom_items:
+        symptom_items = ["Not mapped"]
+
+      mapped_symptoms = [_resolve_symptom_name(sym_name) for sym_name in symptom_items]
+
+      if rc_items:
+        for rc_item in rc_items:
+          rc_item_key = _normalize_rc_key(rc_item)
+          target_locations = rc_locations_by_key.get(rc_item_key, [])
+          if target_locations:
+            for mapped_symptom, mapped_rc in target_locations:
+              dedupe_key = (_normalize_rc_key(mapped_symptom), _normalize_rc_key(mapped_rc))
+              existing_item = existing_solved_keys.get(dedupe_key)
+              if existing_item:
+                _append_fix_text(existing_item, fix_text)
+                continue
+              next_item = {
+                "symptom": mapped_symptom,
+                "rc": mapped_rc,
+                "action_type": _action_type_from_rc_name(mapped_rc) or "-",
+                "source": f"solved_issues.json #{issue_id}",
+                "selected": "Yes" if _normalize_rc_key(mapped_rc) in release_rc_keys else "No",
+                "fix": fix_text,
+              }
+              solved_topics.append(next_item)
+              existing_solved_keys[dedupe_key] = next_item
+          else:
+            for mapped_symptom in mapped_symptoms:
+              dedupe_key = (_normalize_rc_key(mapped_symptom), rc_item_key)
+              existing_item = existing_solved_keys.get(dedupe_key)
+              if existing_item:
+                _append_fix_text(existing_item, fix_text)
+                continue
+              next_item = {
+                "symptom": mapped_symptom,
+                "rc": _normalize_rc_name(rc_item) or rc_item,
+                "action_type": _action_type_from_rc_name(rc_item) or "-",
+                "source": f"solved_issues.json #{issue_id}",
+                "selected": "Yes" if rc_item_key in release_rc_keys else "No",
+                "fix": fix_text,
+              }
+              solved_topics.append(next_item)
+              existing_solved_keys[dedupe_key] = next_item
+      else:
+        for mapped_symptom in mapped_symptoms:
+          dedupe_key = (_normalize_rc_key(mapped_symptom), _normalize_rc_key(fix_text))
+          existing_item = existing_solved_keys.get(dedupe_key)
+          if existing_item:
+            _append_fix_text(existing_item, fix_text)
+            continue
+          next_item = {
+            "symptom": mapped_symptom,
+            "rc": "-",
+            "action_type": "-",
+            "source": f"solved_issues.json #{issue_id}",
+            "selected": "No",
+            "fix": fix_text,
+          }
+          solved_topics.append(next_item)
+          existing_solved_keys[dedupe_key] = next_item
+
+    import html as _html_lib
+    solved_topics.sort(key=lambda item: (item["symptom"].lower(), item["rc"].lower()))
+    if solved_topics:
+      solved_by_symptom = {}
+      for item in solved_topics:
+        solved_by_symptom.setdefault(item["symptom"], []).append(item)
+
+      # Keep the solved panel order aligned with the main symptom order (priority + volume).
+      symptom_display_order = [s.get("name", "") for s in sorted_symptoms if s.get("name")]
+      ordered_solved_symptoms = [name for name in symptom_display_order if name in solved_by_symptom]
+      ordered_solved_symptoms.extend(
+        sorted(
+          [name for name in solved_by_symptom.keys() if name not in set(ordered_solved_symptoms)],
+          key=lambda name: name.lower(),
+        )
+      )
+
+      solved_topics_rows = ""
+      for symptom_name in ordered_solved_symptoms:
+        items = solved_by_symptom[symptom_name]
+        rc_rows = "".join(
+          f'<tr>'
+          f'<td style="padding:6px 8px;border-bottom:1px solid #e2e8f0;color:#1f2937">{_html_lib.escape(item["rc"])}</td>'
+          f'<td style="padding:6px 8px;border-bottom:1px solid #e2e8f0;color:#5b6b7f">{_html_lib.escape(item.get("fix", "-"))}</td>'
+          f'</tr>'
+          for item in items
+        )
+        root_cause_table = (
+          '<table style="margin:0;border:1px solid #d9e2ec;border-radius:6px;overflow:hidden;background:white;width:100%;table-layout:fixed">'
+          '<colgroup><col style="width:38%"><col style="width:62%"></colgroup>'
+          '<thead><tr style="background:#eef2f7">'
+          '<th style="text-align:left;padding:6px 8px">Root Cause</th>'
+          '<th style="text-align:left;padding:6px 8px">Fix</th>'
+          '</tr></thead>'
+          f'<tbody>{rc_rows}</tbody>'
+          '</table>'
+        )
+        solved_topics_rows += (
+          '<tr>'
+          f'<td style="padding:12px 10px;vertical-align:middle;border-bottom:1px solid #d9e2ec;min-width:280px">'
+          f'<div style="font-size:1.05em;font-weight:700;color:#122033;margin-bottom:8px">{_html_lib.escape(symptom_name)}</div>'
+          '</td>'
+          f'<td style="padding:10px;vertical-align:top;border-bottom:1px solid #d9e2ec">{root_cause_table}</td>'
+          '</tr>'
+        )
+
+      solved_topics_html = (
+        '<table style="margin-top:0">'
+        '<thead><tr>'
+        '<th style="text-align:left;padding:8px 10px">Symptom</th>'
+        '<th style="text-align:left;padding:8px 10px">Root Causes</th>'
+        '</tr></thead>'
+        f'<tbody>{solved_topics_rows}</tbody>'
+        '</table>'
+      )
+    else:
+      solved_topics_html = '<div style="color:#888;font-style:italic;padding:10px 0">No solved topics in the current snapshot yet.</div>'
 
     # Build Status Timeline from History
     rc_timeline_html = ""
@@ -990,46 +1544,9 @@ def run():
         rc_timeline_html = '<div style="color:#888;font-style:italic;padding:16px">No historical data available yet. Weekly snapshots will appear here after running save_rc_status_snapshot.py.</div>'
         rc_timeline_chart_js = ""
 
-    # Build Symptom Status data for overall chart from current rc_status.json
+    # Build symptom status data for overall chart from shared symptom/root-cause counts.
     symptom_cards_html = ""
-    symptom_stats = []
-
-    for symptom in sorted_symptoms:
-        symptom_name = symptom.get("name", "")
-        rc_list = symptom.get("root_causes", [])
-        jira_enriched = (jira_sym_map.get(symptom_name) or {}).get("root_causes_jira", [])
-        jira_by_rc = {r["text"]: r.get("jira_tickets", []) for r in jira_enriched}
-
-        completed = 0
-        inprogress = 0
-        inanalysis = 0
-        onhold = 0
-
-        for rc in rc_list:
-            raw_rc_entry = _lookup_rc_entry(rc_status_map.get(symptom_name, {}), rc, "OnHold")
-            rc_statuses = _collect_rc_statuses_for_counts(raw_rc_entry, jira_by_rc.get(rc, []))
-            for rc_status in rc_statuses:
-                if rc_status == "Solved":
-                    completed += 1
-                elif rc_status == "InProgress":
-                    inprogress += 1
-                elif rc_status == "InAnalysis":
-                    inanalysis += 1
-                elif rc_status == "OnHold":
-                    onhold += 1
-
-        symptom_total = completed + inprogress + inanalysis + onhold
-        open_count = inanalysis + inprogress + onhold
-
-        symptom_stats.append({
-            "name": symptom_name,
-            "completed": completed,
-            "inprogress": inprogress,
-            "inanalysis": inanalysis,
-            "onhold": onhold,
-            "total": symptom_total,
-            "open": open_count,
-        })
+    symptom_stats = [dict(stat) for stat in symptom_stats_base]
     
     # Sort symptom cards by open issues
     symptom_stats.sort(key=lambda x: x['open'], reverse=True)
@@ -1067,7 +1584,7 @@ def run():
 
     # Upcoming release timeline data from history (always 20 ISO weeks)
     def _week_key_to_monday(week_key):
-      m = re.match(r"^(\d{{4}})-W(\d{{2}})$", str(week_key or "").strip())
+      m = re.match(r"^(\d{4})-W(\d{2})$", str(week_key or "").strip())
       if not m:
         return None
       year, week = int(m.group(1)), int(m.group(2))
@@ -1080,8 +1597,11 @@ def run():
       iso = dt_obj.isocalendar()
       return f"{iso.year}-W{iso.week:02d}"
 
+    def _empty_rel_counts():
+      return {"OnHold": 0, "InAnalysis": 0, "InProgress": 0, "Solved": 0}
+
     release_history_by_week = {}
-    for entry in rc_status_history:
+    for entry in sorted(rc_status_history, key=lambda item: _week_key_to_monday(item.get("week")) or datetime.fromisoformat(str(item.get("date") or "1970-01-01").replace("Z", "+00:00"))):
       week_key = entry.get("week", "")
       week_monday = _week_key_to_monday(week_key)
       if week_monday is None:
@@ -1096,38 +1616,33 @@ def run():
         week_key = _monday_to_week_key(week_monday)
 
       statuses = entry.get("rc_status", {})
-      rel_counts = {"OnHold": 0, "InAnalysis": 0, "InProgress": 0, "Solved": 0}
+      rel_counts = _empty_rel_counts()
       for _symptom_name, rcs_dict in statuses.items():
         if not isinstance(rcs_dict, dict):
           continue
-        for rc_name, status in rcs_dict.items():
-          normalized_status = _history_rc_entry_status(status)
-          if normalized_status in rel_counts:
-            rel_counts[normalized_status] += 1
+        for rc_name, status_entry in rcs_dict.items():
+          for ticket_status in _selected_ticket_statuses(status_entry):
+            if ticket_status in rel_counts:
+              rel_counts[ticket_status] += 1
 
-      release_history_by_week[week_key] = rel_counts
+      if week_key not in release_history_by_week:
+        release_history_by_week[week_key] = _empty_rel_counts()
+      for status_name, value in rel_counts.items():
+        release_history_by_week[week_key][status_name] += value
 
-    valid_week_mondays = [
-      _week_key_to_monday(k)
-      for k in release_history_by_week.keys()
-      if _week_key_to_monday(k) is not None
-    ]
-    if valid_week_mondays:
-      anchor_monday = max(valid_week_mondays)
-    else:
-      now = datetime.now()
-      anchor_monday = datetime.fromisocalendar(now.isocalendar().year, now.isocalendar().week, 1)
+    timeline_start_week = "2026-W36"
+    timeline_end_week = "2027-W13"
+    timeline_start_monday = _week_key_to_monday(timeline_start_week) or datetime.utcnow()
+    timeline_end_monday = _week_key_to_monday(timeline_end_week) or timeline_start_monday
 
     release_time_labels = []
     release_time_solved = []
     release_time_inprogress = []
     release_time_inanalysis = []
     release_time_onhold = []
-    start_monday = anchor_monday
-
-    for i in range(20):
-      week_monday = start_monday + timedelta(weeks=i)
-      week_key = _monday_to_week_key(week_monday)
+    timeline_week_cursor = timeline_start_monday
+    while timeline_week_cursor <= timeline_end_monday:
+      week_key = _monday_to_week_key(timeline_week_cursor)
       week_counts = release_history_by_week.get(
         week_key,
         {"OnHold": 0, "InAnalysis": 0, "InProgress": 0, "Solved": 0},
@@ -1137,13 +1652,35 @@ def run():
       release_time_inprogress.append(week_counts["InProgress"])
       release_time_inanalysis.append(week_counts["InAnalysis"])
       release_time_onhold.append(week_counts["OnHold"])
+      timeline_week_cursor += timedelta(weeks=1)
+
+    _default_release_milestones = [
+      {"week": "2026-W40", "label": "Release-Scope defined", "phase": "Planning and Refinement of Release Scope", "color": "#7c3aed"},
+      {"week": "2027-W07", "label": "SW-Freeze", "phase": "Implementation", "color": "#2563eb"},
+      {"week": "2027-W10", "label": "Testing finished", "phase": "Testing", "color": "#f59e0b"},
+      {"week": "2027-W12", "label": "SW-Release (Roll-Out)", "phase": "Documentation", "color": "#10b981"},
+    ]
+    _milestone_json_path = BASE_DIR / "output" / "release_milestones.json"
+    if _milestone_json_path.exists():
+      with open(_milestone_json_path, encoding="utf-8") as _mf:
+        release_milestones_data = json.load(_mf)
+    else:
+      release_milestones_data = _default_release_milestones
+    release_milestones_js = json.dumps(release_milestones_data, ensure_ascii=False)
+    _release_phase_order = []
+    for item in release_milestones_data:
+      phase = str(item.get("phase") or "").strip()
+      if phase and phase not in _release_phase_order:
+        _release_phase_order.append(phase)
+
+    release_milestone_band_html = ""
 
     rc_timeline_chart_js = f"""
   // Status Development by Symptom (scope-specific stacked bars)
   function createStatusBySymptomChart(canvasId, labels, solvedData, inProgressData, inAnalysisData, onHoldData) {{
     const ctx = document.getElementById(canvasId);
     if (!ctx) return;
-    new Chart(ctx, {{
+    return new Chart(ctx, {{
       type: 'bar',
       data: {{
         labels: labels,
@@ -1218,7 +1755,7 @@ def run():
     }});
   }}
 
-  function createReleaseOverTimeChart(canvasId, timeLabels, solvedData, inProgressData, inAnalysisData, onHoldData) {{
+  function createReleaseOverTimeChart(canvasId, timeLabels, solvedData, inProgressData, inAnalysisData, onHoldData, milestones) {{
     const ctx = document.getElementById(canvasId);
     if (!ctx) return;
 
@@ -1236,42 +1773,45 @@ def run():
       return dt;
     }}
 
-    function dateToWeekKey(dt) {{
-      const d = new Date(Date.UTC(dt.getUTCFullYear(), dt.getUTCMonth(), dt.getUTCDate()));
-      const dayNum = d.getUTCDay() || 7;
-      d.setUTCDate(d.getUTCDate() + 4 - dayNum);
-      const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-      const weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
-      return `${{d.getUTCFullYear()}}-W${{String(weekNo).padStart(2, '0')}}`;
+    function monthNameFromWeek(weekKey) {{
+      const dt = weekToDate(weekKey);
+      if (!dt) return '';
+      const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      return monthNames[dt.getUTCMonth()];
     }}
 
-    // Enforce exactly 20 weeks on time axis.
+    function weekNumberFromWeek(weekKey) {{
+      const match = String(weekKey || '').match(/W(\d{{2}})$/);
+      return match ? `${{match[1]}}` : '';
+    }}
+
+    function isoWeekKeyForDate(date) {{
+      const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+      const day = d.getUTCDay() || 7;
+      d.setUTCDate(d.getUTCDate() + 4 - day);
+      const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+      const week = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+      return `${{d.getUTCFullYear()}}-W${{String(week).padStart(2, '0')}}`;
+    }}
+
     const labels = Array.isArray(timeLabels) ? [...timeLabels] : [];
     const solved = Array.isArray(solvedData) ? [...solvedData] : [];
     const inProgress = Array.isArray(inProgressData) ? [...inProgressData] : [];
     const inAnalysis = Array.isArray(inAnalysisData) ? [...inAnalysisData] : [];
     const onHold = Array.isArray(onHoldData) ? [...onHoldData] : [];
+    const milestoneList = Array.isArray(milestones) ? milestones : [];
+    if (!labels.length) return;
 
-    if (labels.length > 20) {{
-      labels.splice(20);
-      solved.splice(20);
-      inProgress.splice(20);
-      inAnalysis.splice(20);
-      onHold.splice(20);
-    }}
+    const weekNumbers = labels.map(weekNumberFromWeek);
+    const tickLabels = labels.map((weekKey, index) => {{
+      const week = weekNumberFromWeek(weekKey);
+      const month = monthNameFromWeek(weekKey);
+      const previous = index > 0 ? monthNameFromWeek(labels[index - 1]) : '';
+      const monthText = month && month !== previous ? month : '';
+      return {{ week, monthText, monthStart: !!monthText, monthName: monthText }};
+    }});
 
-    while (labels.length < 20) {{
-      const last = labels.length ? labels[labels.length - 1] : null;
-      const lastDate = weekToDate(last);
-      const next = lastDate ? new Date(lastDate.getTime() + 7 * 86400000) : null;
-      labels.push(next ? dateToWeekKey(next) : `W+${{labels.length + 1}}`);
-      solved.push(0);
-      inProgress.push(0);
-      inAnalysis.push(0);
-      onHold.push(0);
-    }}
-
-    new Chart(ctx, {{
+    const chart = new Chart(ctx, {{
       type: 'bar',
       data: {{
         labels: labels,
@@ -1313,6 +1853,9 @@ def run():
       options: {{
         responsive: true,
         maintainAspectRatio: true,
+        layout: {{
+          padding: {{ bottom: 8 }}
+        }},
         plugins: {{
           legend: {{
             display: true,
@@ -1322,13 +1865,33 @@ def run():
               padding: 12,
               usePointStyle: true
             }}
-          }}
+          }},
+          tooltip: {{ enabled: false }}
         }},
         scales: {{
           x: {{
             stacked: true,
             title: {{ display: true, text: 'Time', font: {{ weight: '600' }} }},
-            grid: {{ display: false }}
+            grid: {{ display: false }},
+            ticks: {{
+              maxRotation: 45,
+              minRotation: 35,
+              autoSkip: false,
+              padding: 12,
+              color: '#334155',
+              font: {{ size: 9, weight: '600' }},
+              callback: function(value, index, values) {{
+                const label = labels[index];
+                if (!label) return '';
+                const date = weekToDate(label);
+                if (!date) return '';
+                return date.toLocaleDateString('de-DE', {{
+                  timeZone: 'UTC',
+                  day: '2-digit',
+                  month: '2-digit'
+                }});
+              }}
+            }}
           }},
           y: {{
             stacked: true,
@@ -1337,11 +1900,90 @@ def run():
             grid: {{ color: 'rgba(0, 0, 0, 0.06)' }}
           }}
         }}
-      }}
+      }},
+      plugins: [{{
+        id: 'releaseMilestoneMarker',
+        afterDraw(chart, args, options) {{
+          const xScale = chart.scales.x;
+          const yScale = chart.scales.y;
+          const ctx = chart.ctx;
+          const yTop = yScale.top;
+          const yBottom = yScale.bottom;
+
+          const todayWeekKey = isoWeekKeyForDate(new Date());
+          const todayIndex = labels.indexOf(todayWeekKey);
+          if (todayIndex >= 0) {{
+            const todayX = xScale.getPixelForValue(todayIndex);
+            ctx.save();
+            ctx.strokeStyle = '#111827';
+            ctx.fillStyle = '#111827';
+            ctx.lineWidth = 2;
+            ctx.setLineDash([7, 5]);
+            ctx.beginPath();
+            ctx.moveTo(todayX, yTop - 16);
+            ctx.lineTo(todayX, yBottom - 10);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            const headSize = 7;
+            ctx.beginPath();
+            ctx.moveTo(todayX, yTop - 18);
+            ctx.lineTo(todayX - headSize, yTop - 8);
+            ctx.lineTo(todayX + headSize, yTop - 8);
+            ctx.closePath();
+            ctx.fill();
+
+            ctx.font = '600 10px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'bottom';
+            ctx.fillText('Today', todayX, yTop - 22);
+            ctx.restore();
+          }}
+
+          if (!Array.isArray(milestoneList) || milestoneList.length === 0) return;
+
+          milestoneList.forEach((milestone, index) => {{
+            const weekKey = String(milestone && milestone.week || '');
+            const releaseIndex = labels.indexOf(weekKey);
+            if (releaseIndex < 0) return;
+
+            const x = xScale.getPixelForValue(releaseIndex);
+            const color = milestone && milestone.color || '#7c3aed';
+            const labelText = milestone && milestone.label ? String(milestone.label) : '';
+
+            ctx.save();
+            ctx.setLineDash([7, 5]);
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 2.5;
+            ctx.beginPath();
+            ctx.moveTo(x, yTop);
+            ctx.lineTo(x, yBottom + 12);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.arc(x, yTop + 12, 5.5, 0, Math.PI * 2);
+            ctx.fill();
+
+            if (labelText) {{
+              ctx.font = '600 10px sans-serif';
+              ctx.fillStyle = '#334155';
+              ctx.textAlign = 'left';
+              ctx.textBaseline = 'middle';
+              ctx.translate(x + 10, yTop + 12);
+              ctx.rotate(Math.PI / 2);
+              ctx.fillText(labelText, 0, 0);
+            }}
+
+            ctx.restore();
+          }});
+        }}
+      }}]
     }});
   }}
 
-  createStatusBySymptomChart(
+  window.overallStatusChart = createStatusBySymptomChart(
     'rc-timeline-chart-overall',
     {json.dumps(overall_chart_labels)},
     {json.dumps(overall_chart_solved)},
@@ -1350,19 +1992,27 @@ def run():
     {json.dumps(overall_chart_onhold)}
   );
 
-  createReleaseOverTimeChart(
+  window.releaseOverTimeChart = createReleaseOverTimeChart(
     'rc-timeline-chart-release',
     {json.dumps(release_time_labels)},
     {json.dumps(release_time_solved)},
     {json.dumps(release_time_inprogress)},
     {json.dumps(release_time_inanalysis)},
-    {json.dumps(release_time_onhold)}
+    {json.dumps(release_time_onhold)},
+    {release_milestones_js}
   );
 """
 
-    # Build unmatched-ticket category breakdown from Siroforce classified tickets
+    # Build unmatched-ticket category breakdown from Siroforce classified tickets.
+    # Use the actual Siroforce pipeline output path and also allow a local fallback
+    # so the render does not silently empty the section when the file is missing.
     _unmatched_section = ""
-    _classified_path = BASE_DIR.parent / "Siroforce_Evaluation" / "output" / "tickets_classified.json"
+    _classified_candidates = [
+        BASE_DIR.parent / "Siroforce_Evaluation" / "output" / "tickets_classified.json",
+        BASE_DIR.parent / "Siroforce_Evaluation" / "backup" / "tickets_classified.json",
+        BASE_DIR / "output" / "tickets_classified.json",
+    ]
+    _classified_path = next((p for p in _classified_candidates if p.exists()), _classified_candidates[0])
     if _classified_path.exists():
         with open(_classified_path, encoding="utf-8") as f:
             _classified = json.load(f)
@@ -1405,6 +2055,13 @@ def run():
       </thead>
       <tbody>{_cat_rows}</tbody>
     </table>
+  </section>"""
+    else:
+        _missing_source = str(_classified_candidates[0])
+        _unmatched_section = f"""
+  <section style="margin-bottom:28px">
+    <h2 style="font-size:1.1em;margin-bottom:4px;color:var(--accent)">Unmatched Tickets</h2>
+    <p style="font-size:0.83em;color:#888;margin-bottom:14px">Source file missing. Expected classified Siroforce output at: <strong>{_missing_source}</strong></p>
   </section>"""
 
     # Build R&D backlog section
@@ -1509,7 +2166,7 @@ def run():
 
     /* Summary */
     #summary {{ margin-bottom: 36px; }}
-    #summary h2, #overview h2 {{ font-size: 1.2em; margin-bottom: 16px; color: var(--accent); }}
+    #summary h2, #overview h2, #status-tracker h2 {{ font-size: 1.2em; margin-bottom: 16px; color: var(--accent); }}
 
     /* Keyword tooltip */
     [data-kw] {{ position: relative; cursor: help; border-bottom: 1px dashed #aaa; }}
@@ -1539,6 +2196,7 @@ def run():
                           color: var(--text); cursor: pointer; }}
     .filter-bar select:focus {{ outline: 2px solid var(--accent); }}
     .filter-row-hidden {{ display: none !important; }}
+    #status-chart-overall, #status-chart-release {{ width: 100%; max-width: 1100px; margin: 0 auto; }}
     /* Bug detail modal */
     #bug-modal {{ display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:1000;align-items:center;justify-content:center }}
     #bug-modal-inner {{ background:#fff;border-radius:10px;max-width:720px;width:92%;max-height:82vh;overflow-y:auto;padding:28px 32px;position:relative;box-shadow:0 8px 36px rgba(0,0,0,.28) }}
@@ -1694,9 +2352,9 @@ def run():
           <div style="margin-top:6px;border-top:1px solid #d0dde8;padding-top:6px;color:#888">Ticket Base: <strong>{jira_assigned + jira_unassigned:,}</strong></div>
         </div>
       </div>
-      <!-- Chart 3: Intermittent Connectivity HW vs SW -->
+      <!-- Chart 3: Release Scope -->
       <div style="background:#f8fafc;border:1px solid #d0dde8;border-radius:8px;padding:20px">
-        <h3 style="margin:0 0 16px 0;font-size:0.95em;color:#333">Release Scope: Stabilize the Connectivity</h3>
+        <h3 style="margin:0 0 16px 0;font-size:0.95em;color:#333">Release Scope</h3>
         <div style="width:200px;height:200px;margin:0 auto;position:relative">
           <canvas id="chart3" width="200" height="200"></canvas>
           <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none">
@@ -1704,6 +2362,7 @@ def run():
           </div>
         </div>
         <div style="margin-top:8px;text-align:center;font-size:0.82em;color:#555">
+          <span style="margin-right:12px"><span style="display:inline-block;width:10px;height:10px;background:#10b981;border-radius:2px;margin-right:3px"></span>Solved</span>
           <span style="margin-right:12px"><span style="display:inline-block;width:10px;height:10px;background:#16a34a;border-radius:2px;margin-right:3px"></span>CM</span>
           <span style="margin-right:12px"><span style="display:inline-block;width:10px;height:10px;background:#e67e22;border-radius:2px;margin-right:3px"></span>HW</span>
           <span style="margin-right:12px"><span style="display:inline-block;width:10px;height:10px;background:#2563eb;border-radius:2px;margin-right:3px"></span>SW</span>
@@ -1711,26 +2370,25 @@ def run():
         </div>
         <div style="margin-top:12px;font-size:0.82em;color:#555">
           <div style="display:flex;gap:16px;flex-wrap:wrap">
-            <span>CM: <strong>{ic_cm_total}</strong></span>
-            <span>HW: <strong>{ic_hw_total}</strong></span>
-            <span>SW: <strong>{ic_sw_total}</strong></span>
-            <span>Other Symptoms: <strong>{jira_assigned - ic_hw_total - ic_sw_total - ic_cm_total}</strong></span>
+            <span>Solved: <strong>{release_scope_solved}</strong></span>
+            <span>CM: <strong>{release_scope_cm}</strong></span>
+            <span>HW: <strong>{release_scope_hw}</strong></span>
+            <span>SW: <strong>{release_scope_sw}</strong></span>
+            <span>Other Symptoms: <strong>{release_scope_other}</strong></span>
           </div>
-          <div style="margin-top:6px;border-top:1px solid #d0dde8;padding-top:6px;color:#888">Ticket Base: <strong>{jira_assigned}</strong> matched</div>
+          <div style="margin-top:6px;border-top:1px solid #d0dde8;padding-top:6px;color:#888">Ticket Base: <strong>{release_scope_total}</strong> selected scope items</div>
         </div>
         <div style="margin-top:12px;font-size:0.8em;color:#444">
-          <div style="font-weight:600;margin-bottom:4px;color:#555">Top Root Causes &mdash; Symptom: Intermittent Connectivity:</div>
-          <ol style="margin:0;padding-left:18px;line-height:1.7">{ic_top3_html}</ol>
+          <div style="font-weight:600;margin-bottom:4px;color:#555">Top Selected Root Causes &mdash; Symptom: Intermittent Connectivity:</div>
+          <ol style="margin:0;padding-left:18px;line-height:1.7">{release_ic_top3_html}</ol>
         </div>
       </div>
     </div>
   </section>
 
   <!-- Status Tracker -->
-  <section>
-    <h2 style="border-left:6px solid #1a6b8a;padding-left:12px">Status Tracker
-      <span class="group-total">{sum(global_status_counts.values())} Status Entries</span>
-    </h2>
+  <section id="status-tracker">
+    <h2>Status Tracker</h2>
 
     <div class="status-scope-toggle">
       <button id="status-scope-btn-overall" class="status-scope-btn active" type="button" onclick="setStatusScope('overall')">Overall</button>
@@ -1760,8 +2418,15 @@ def run():
           <canvas id="rc-timeline-chart-overall" height="90"></canvas>
         </div>
         <div id="status-chart-release" style="display:none">
-          <canvas id="rc-timeline-chart-release" height="90"></canvas>
+          <canvas id="rc-timeline-chart-release" height="120"></canvas>
         </div>
+      </div>
+    </div>
+
+    <div style="margin-bottom:28px">
+      <div style="font-size:0.9em;font-weight:600;margin-bottom:12px;color:var(--muted);text-transform:uppercase">Currently Solved Topics</div>
+      <div style="background:#f8fafc;border:1px solid #d0dde8;border-radius:8px;padding:16px">
+        {solved_topics_html}
       </div>
     </div>
 
@@ -1810,7 +2475,7 @@ def run():
       <thead>
         <tr>
           <th style="width:110px">Priority</th>
-          <th style="width:260px">Symptom / AI Category</th>
+          <th style="width:260px">Symptom</th>
           <th>Root Causes</th>
           <th style="width:130px">Selected for Release</th>
           <th style="width:120px">Status</th>
@@ -1820,7 +2485,7 @@ def run():
     </table>
     <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-top:14px;padding:0 4px 4px 4px">
       <div style="font-size:0.88em;color:#475569;line-height:1.5">
-        {editable_rc_count} RCs without Jira Bugs can be updated via dropdown and written directly into rc_status.json and rc_status_history.json.
+        {editable_rc_count} RCs without Jira Bugs can be updated via dropdown and saved into rc_status_history.json.
       </div>
       <div style="display:flex;align-items:center;gap:12px;justify-content:flex-end;flex-wrap:wrap">
         <span id="status-save-message" style="font-size:0.88em;color:#475569"></span>
@@ -1925,16 +2590,16 @@ document.addEventListener('DOMContentLoaded', function() {{
     }}
   }});
 
-  // Chart 3: Intermittent Connectivity HW vs SW vs CM vs other assigned tickets
+  // Chart 3: Release scope selected breakdown
   const ctx3 = document.getElementById('chart3').getContext('2d');
   new Chart(ctx3, {{
     type: 'doughnut',
     data: {{
-      labels: ['HW', 'SW', 'CM', 'Other Symptoms'],
+      labels: ['Solved', 'CM', 'HW', 'SW', 'Other Symptoms'],
       datasets: [{{
-        data: [{ic_hw_total}, {ic_sw_total}, {ic_cm_total}, {jira_assigned - ic_hw_total - ic_sw_total - ic_cm_total}],
-        backgroundColor: ['#e67e22', '#2563eb', '#16a34a', '#94a3b8'],
-        borderColor: ['#d35400', '#1e40af', '#0d8659', '#64748b'],
+        data: [{release_scope_solved}, {release_scope_cm}, {release_scope_hw}, {release_scope_sw}, {release_scope_other}],
+        backgroundColor: ['#10b981', '#16a34a', '#e67e22', '#2563eb', '#94a3b8'],
+        borderColor: ['#0f9b6f', '#0d8659', '#d35400', '#1e40af', '#64748b'],
         borderWidth: 2
       }}]
     }},
@@ -2159,7 +2824,109 @@ function normalizeRcNameJs(text) {{
 }}
 
 function rcLookupKey(symptom, rc) {{
-  return `${{symptom}}\u0000${{normalizeRcKeyJs(rc)}}`;
+  return `${{symptom}}|${{normalizeRcKeyJs(rc)}}`;
+}}
+
+function collectStatusOverridesFromUi() {{
+  const overrides = new Map();
+  document.querySelectorAll('.rc-status-select').forEach((selectEl) => {{
+    overrides.set(rcLookupKey(selectEl.dataset.symptom, selectEl.dataset.rc), String(selectEl.value || ''));
+  }});
+  return overrides;
+}}
+
+function computeOverallSeriesFromCurrentState() {{
+  const overrides = collectStatusOverridesFromUi();
+  const bySymptom = new Map();
+
+  for (const [symptom, rcMap] of Object.entries((RC_STATUS_DATA && RC_STATUS_DATA.rc_status) || {{}})) {{
+    const counts = {{ Solved: 0, InProgress: 0, InAnalysis: 0, OnHold: 0 }};
+    const jiraFlagsByRc = (JIRA_RC_FLAGS && JIRA_RC_FLAGS[symptom]) || {{}};
+    const jiraTicketsByRc = (JIRA_RC_TICKETS && JIRA_RC_TICKETS[symptom]) || {{}};
+
+    for (const [rcName, rawEntry] of Object.entries(rcMap || {{}})) {{
+      const hasJira = Boolean(getByNormalizedRcKey(jiraFlagsByRc, rcName));
+      if (hasJira) {{
+        const ticketEntries = getByNormalizedRcKey(jiraTicketsByRc, rcName) || [];
+        for (const ticketEntry of ticketEntries) {{
+          const mapped = mapJiraTicketStatus(ticketEntry && ticketEntry.status);
+          if (mapped && Object.prototype.hasOwnProperty.call(counts, mapped)) {{
+            counts[mapped] += 1;
+          }}
+        }}
+        continue;
+      }}
+
+      const overrideKey = rcLookupKey(symptom, rcName);
+      const nextStatus = overrides.get(overrideKey) || statusFromRcEntry(rawEntry, 'OnHold') || 'OnHold';
+      const mappedStatus = mapJiraTicketStatus(nextStatus) || 'OnHold';
+      if (Object.prototype.hasOwnProperty.call(counts, mappedStatus)) {{
+        counts[mappedStatus] += 1;
+      }}
+    }}
+
+    bySymptom.set(symptom, counts);
+  }}
+
+  return bySymptom;
+}}
+
+function refreshOverallStatusChartFromControls() {{
+  const chart = window.overallStatusChart;
+  if (!chart || !chart.data || !Array.isArray(chart.data.labels)) return;
+
+  const seriesBySymptom = computeOverallSeriesFromCurrentState();
+  const labels = chart.data.labels;
+  const nextSolved = labels.map((name) => (seriesBySymptom.get(name) || {{}}).Solved || 0);
+  const nextInProgress = labels.map((name) => (seriesBySymptom.get(name) || {{}}).InProgress || 0);
+  const nextInAnalysis = labels.map((name) => (seriesBySymptom.get(name) || {{}}).InAnalysis || 0);
+  const nextOnHold = labels.map((name) => (seriesBySymptom.get(name) || {{}}).OnHold || 0);
+
+  (chart.data.datasets || []).forEach((dataset) => {{
+    if (!dataset || typeof dataset !== 'object') return;
+    if (dataset.label === 'Solved') dataset.data = nextSolved;
+    else if (dataset.label === 'InProgress') dataset.data = nextInProgress;
+    else if (dataset.label === 'InAnalysis') dataset.data = nextInAnalysis;
+    else if (dataset.label === 'OnHold') dataset.data = nextOnHold;
+  }});
+  chart.update();
+}}
+
+function wireOverallStatusChartLiveUpdates() {{
+  document.querySelectorAll('.rc-status-select').forEach((selectEl) => {{
+    selectEl.addEventListener('change', refreshOverallStatusChartFromControls);
+  }});
+}}
+
+function syncReleaseSelectionAcrossSameRootCause(changedSelect) {{
+  if (!changedSelect) return;
+  const targetRcKey = normalizeRcKeyJs(changedSelect.dataset && changedSelect.dataset.rc);
+  if (!targetRcKey) return;
+  const nextValue = String(changedSelect.value || 'No') === 'Yes' ? 'Yes' : 'No';
+
+  document.querySelectorAll('.rc-release-select').forEach((selectEl) => {{
+    if (selectEl === changedSelect) return;
+    const currentRcKey = normalizeRcKeyJs(selectEl.dataset && selectEl.dataset.rc);
+    if (currentRcKey === targetRcKey) {{
+      selectEl.value = nextValue;
+    }}
+  }});
+}}
+
+function wireReleaseSelectionSync() {{
+  document.querySelectorAll('.rc-release-select').forEach((selectEl) => {{
+    selectEl.addEventListener('change', () => syncReleaseSelectionAcrossSameRootCause(selectEl));
+  }});
+}}
+
+function getByNormalizedRcKey(rcMap, rcName) {{
+  if (!rcMap || typeof rcMap !== 'object') return undefined;
+  if (Object.prototype.hasOwnProperty.call(rcMap, rcName)) return rcMap[rcName];
+  const target = normalizeRcKeyJs(rcName);
+  for (const [storedRc, value] of Object.entries(rcMap)) {{
+    if (normalizeRcKeyJs(storedRc) === target) return value;
+  }}
+  return undefined;
 }}
 
 function getIsoWeek(date) {{
@@ -2185,9 +2952,11 @@ function buildRcStatusPayload() {{
   for (const [symptom, rcMap] of Object.entries((RC_STATUS_DATA && RC_STATUS_DATA.rc_status) || {{}})) {{
     nextPayload.rc_status[symptom] = {{}};
     nextPayload.selected_for_release[symptom] = {{}};
+    const jiraFlagsByRc = (JIRA_RC_FLAGS && JIRA_RC_FLAGS[symptom]) || {{}};
+    const jiraTicketsByRc = (JIRA_RC_TICKETS && JIRA_RC_TICKETS[symptom]) || {{}};
     for (const [rc, rawEntry] of Object.entries(rcMap || {{}})) {{
       const normalizedRcName = normalizeRcNameJs(rc);
-      const hasJira = Boolean(JIRA_RC_FLAGS[symptom] && JIRA_RC_FLAGS[symptom][rc]);
+      const hasJira = Boolean(getByNormalizedRcKey(jiraFlagsByRc, rc));
       const key = rcLookupKey(symptom, rc);
       const fallbackRelease = RELEASE_RC_KEYS.has(normalizeRcKeyJs(rc)) ? 'Yes' : 'No';
       const selectedState = selectedRelease.get(key) || fallbackRelease;
@@ -2195,7 +2964,7 @@ function buildRcStatusPayload() {{
       nextPayload.selected_for_release[symptom][normalizedRcName] = selectedState;
       let nextStatus = statusFromRcEntry(rawEntry, 'OnHold');
       if (hasJira) {{
-        const ticketEntries = (JIRA_RC_TICKETS[symptom] && JIRA_RC_TICKETS[symptom][rc]) || [];
+        const ticketEntries = getByNormalizedRcKey(jiraTicketsByRc, rc) || [];
         const jiraTicketList = [];
         for (const ticketEntry of ticketEntries) {{
           const ticketKey = String(ticketEntry && ticketEntry.key || '').trim();
@@ -2206,12 +2975,12 @@ function buildRcStatusPayload() {{
               key: ticketKey,
               status: mappedTicketStatus,
               jira_status: rawJiraStatus,
-              selected: selectedState,
             }});
           }}
         }}
         nextPayload.rc_status[symptom][normalizedRcName] = {{
           status: '',
+          selected: selectedState,
           action_type: actionType,
           jira_tickets: jiraTicketList,
         }};
@@ -2254,34 +3023,30 @@ function deriveJiraRcStatus(statuses) {{
 }}
 
 function buildHistoryRcStatusPayload(rcStatusPayload) {{
-  const historyRcStatus = {{}};
-  for (const [symptom, rcMap] of Object.entries((rcStatusPayload && rcStatusPayload.rc_status) || {{}})) {{
-    const symptomEntries = {{}};
-    for (const [rc, rcEntry] of Object.entries(rcMap || {{}})) {{
+  const nextRcStatus = cloneJson((rcStatusPayload && rcStatusPayload.rc_status) || {{}});
+  for (const rcMap of Object.values(nextRcStatus)) {{
+    if (!rcMap || typeof rcMap !== 'object') continue;
+    for (const rcEntry of Object.values(rcMap)) {{
       if (!rcEntry || typeof rcEntry !== 'object' || Array.isArray(rcEntry)) continue;
-
-      const ticketEntries = Array.isArray(rcEntry.jira_tickets) ? rcEntry.jira_tickets : null;
-      if (ticketEntries && ticketEntries.length) {{
-        const selectedTickets = ticketEntries
-          .filter((ticket) => ticket && String(ticket.selected || '').trim().toLowerCase() === 'yes')
-          .map((ticket) => cloneJson(ticket));
-        if (!selectedTickets.length) continue;
-
-        const nextEntry = cloneJson(rcEntry);
-        nextEntry.jira_tickets = selectedTickets;
-        symptomEntries[rc] = nextEntry;
-        continue;
+      const hasJiraTickets = Array.isArray(rcEntry.jira_tickets) && rcEntry.jira_tickets.length > 0;
+      if (hasJiraTickets) {{
+        rcEntry.status = '';
+        const legacySelected = Array.isArray(rcEntry.jira_tickets) && rcEntry.jira_tickets.some((ticket) => ticket && String(ticket.selected || '').trim().toLowerCase() === 'yes');
+        if (!('selected' in rcEntry)) {{
+          rcEntry.selected = legacySelected ? 'Yes' : 'No';
+        }}
+        if (Array.isArray(rcEntry.jira_tickets)) {{
+          rcEntry.jira_tickets = rcEntry.jira_tickets.map((ticket) => {{
+            if (!ticket || typeof ticket !== 'object') return ticket;
+            const nextTicket = cloneJson(ticket);
+            delete nextTicket.selected;
+            return nextTicket;
+          }});
+        }}
       }}
-
-      const rcSelected = String(rcEntry.selected || '').trim().toLowerCase();
-      if (rcSelected !== 'yes') continue;
-      symptomEntries[rc] = cloneJson(rcEntry);
-    }}
-    if (Object.keys(symptomEntries).length) {{
-      historyRcStatus[symptom] = symptomEntries;
     }}
   }}
-  return {{ rc_status: historyRcStatus }};
+  return {{ rc_status: nextRcStatus }};
 }}
 
 async function writeTextFile(dirHandle, fileName, content) {{
@@ -2401,7 +3166,6 @@ async function confirmStatus() {{
     rc_status: historyRcStatusPayload.rc_status,
   }});
 
-  const rcStatusText = JSON.stringify(rcStatusPayload, null, 2);
   const historyText = JSON.stringify(historyPayload, null, 2);
 
   button.disabled = true;
@@ -2411,24 +3175,21 @@ async function confirmStatus() {{
   try {{
     const targetDir = await ensureOutputDirHandle();
     if (targetDir) {{
-      await writeTextFile(targetDir, 'rc_status.json', rcStatusText);
       await writeTextFile(targetDir, 'rc_status_history.json', historyText);
       RC_STATUS_DATA.rc_status = rcStatusPayload.rc_status;
       RC_STATUS_DATA.selected_for_release = rcStatusPayload.selected_for_release;
       RC_STATUS_HISTORY.tracking_history = historyPayload.tracking_history;
-      messageEl.textContent = `Saved rc_status.json and rc_status_history.json at ${{timestamp}}.`;
+      messageEl.textContent = `Saved rc_status_history.json at ${{timestamp}}.`;
     }} else {{
-      downloadTextFile('rc_status.json', rcStatusText);
       downloadTextFile('rc_status_history.json', historyText);
-      messageEl.textContent = 'Browser does not allow direct file writes here. Downloaded updated rc_status.json and rc_status_history.json instead.';
+      messageEl.textContent = 'Browser does not allow direct file writes here. Downloaded updated rc_status_history.json instead.';
     }}
   }} catch (error) {{
     if (error && error.name === 'AbortError') {{
       messageEl.textContent = 'Save cancelled.';
     }} else {{
-      downloadTextFile('rc_status.json', rcStatusText);
       downloadTextFile('rc_status_history.json', historyText);
-      messageEl.textContent = 'Direct write failed. Downloaded updated rc_status.json and rc_status_history.json instead.';
+      messageEl.textContent = 'Direct write failed. Downloaded updated rc_status_history.json instead.';
     }}
   }} finally {{
     button.disabled = false;
@@ -2511,6 +3272,8 @@ function resetFilters() {{
 }}
 
 setStatusScope('overall');
+wireOverallStatusChartLiveUpdates();
+wireReleaseSelectionSync();
 resetFilters();
 </script>
 </body>

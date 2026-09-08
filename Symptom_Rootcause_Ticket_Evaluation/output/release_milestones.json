@@ -1,0 +1,32 @@
+[
+  {
+    "week": "2026-W37",
+    "label": "Ticket freeze",
+    "phase": "Check tickets and analyze and categories",
+    "color": "#dc2626"
+  },
+  {
+    "week": "2026-W40",
+    "label": "Release-Scope defined",
+    "phase": "Planning and Refinement of Release Scope",
+    "color": "#7c3aed"
+  },
+  {
+    "week": "2027-W07",
+    "label": "SW-Freeze",
+    "phase": "Implementation",
+    "color": "#2563eb"
+  },
+  {
+    "week": "2027-W10",
+    "label": "Testing finished",
+    "phase": "Testing",
+    "color": "#f59e0b"
+  },
+  {
+    "week": "2027-W13",
+    "label": "SW-Release (Roll-Out)",
+    "phase": "Documentation",
+    "color": "#10b981"
+  }
+]

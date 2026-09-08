@@ -10,9 +10,25 @@ from collections import defaultdict
 
 
 def normalize_status(status):
+    # Handle legacy scalar status as well as current dict-based RC entries.
+    if isinstance(status, dict):
+        explicit = (status.get("status") or "").strip()
+        if explicit:
+            status = explicit
+        else:
+            # Fallback to highest-priority status seen on linked Jira tickets.
+            jira_statuses = [
+                (t or {}).get("status")
+                for t in (status.get("jira_tickets") or [])
+                if isinstance(t, dict)
+            ]
+            priority = ("InAnalysis", "InProgress", "OnHold", "Solved")
+            status = next((s for s in priority if s in jira_statuses), "")
+
+    status = (status or "").strip()
     if status == "Completed":
         return "Solved"
-    return status or ""
+    return status
 
 def load_history():
     """Load rc_status_history.json"""

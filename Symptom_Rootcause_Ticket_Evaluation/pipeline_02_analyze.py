@@ -189,7 +189,7 @@ SYMPTOMS = [
         ],
     },
     {
-        "name": "Inconstant ready-for-exposure signaling (SW vs. Interface)",
+        "name": "Inconstant/wrong signaling (SW vs. Interface)",
         "priority": 3,
         "group": "Software / Update",
         "ai_category": "Imaging/Acquisition/Exposure, Software/Firmware/Driver",

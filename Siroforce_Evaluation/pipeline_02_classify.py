@@ -9,7 +9,9 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
+import urllib.request
 from collections import Counter
 from pathlib import Path
 
@@ -25,6 +27,153 @@ def normalize_text(value: object) -> str:
     if text == "#":
         return ""
     return re.sub(r"\s+", " ", text)
+
+
+def _load_category_catalog() -> tuple[list[str], list[str]]:
+    root = Path(__file__).resolve().parent
+    config_path = root / "categories.json"
+    primary_labels: list[str] = []
+    secondary_labels: list[str] = []
+    if config_path.exists():
+        try:
+            cfg = json.loads(config_path.read_text(encoding="utf-8"))
+            primary_labels = list((cfg.get("primary_categories") or {}).keys())
+            for section in (
+                "connectivity_subcategories",
+                "hardware_subcategories",
+                "software_subcategories",
+                "installation_subcategories",
+                "imaging_subcategories",
+                "spareparts_subcategories",
+                "warranty_subcategories",
+                "info_subcategories",
+                "unknown_subcategories",
+            ):
+                secondary_labels.extend((cfg.get(section) or {}).keys())
+        except Exception:
+            pass
+    if not primary_labels:
+        primary_labels = [
+            "Connectivity/Recognition",
+            "Hardware Defect/Physical Damage",
+            "Software/Firmware/Driver",
+            "Installation/Setup/Upgrade",
+            "Imaging/Acquisition/Exposure",
+            "Spare Parts/RMA/Logistics",
+            "Warranty/Part Number/Commercial",
+            "Info/Inquiry/How-to",
+            "Unknown/Other",
+        ]
+    if not secondary_labels:
+        secondary_labels = [
+            "Sensor Detection Failure (Persistent)",
+            "Sensor Detection Failure (Intermittent)",
+            "Remote Detection Failure (Persistent)",
+            "Remote Detection Failure (Intermittent)",
+            "Ambiguous Detection Failure (Sensor/Remote)",
+            "Sensor Failure",
+            "Cable Issue",
+            "Connector Issue",
+            "Remote Failure",
+            "Physical Damage",
+            "Driver",
+            "Firmware",
+            "Update/Version",
+            "Software",
+            "Install/Setup",
+            "Driver Install",
+            "Upgrade",
+            "Cannot Acquire Image",
+            "Image Quality",
+            "Exposure Issue",
+            "Imaging Issue",
+            "RMA Request",
+            "Spare Part Request",
+            "Logistics",
+            "Warranty",
+            "Part Number",
+            "Commercial Inquiry",
+            "General Inquiry",
+            "Other",
+        ]
+    return primary_labels, secondary_labels
+
+
+def _call_ollama_json(prompt: str, model: str = "gemma4:12b") -> dict | None:
+    base_url = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
+    endpoint = f"{base_url.rstrip('/')}/api/chat"
+    payload = {
+        "model": model,
+        "stream": False,
+        "messages": [{"role": "user", "content": prompt}],
+        "options": {"temperature": 0.1},
+    }
+    request = urllib.request.Request(
+        endpoint,
+        data=json.dumps(payload).encode("utf-8"),
+        headers={"Content-Type": "application/json"},
+        method="POST",
+    )
+    try:
+        with urllib.request.urlopen(request, timeout=120) as response:
+            response_text = response.read().decode("utf-8")
+    except Exception:
+        return None
+    try:
+        body = json.loads(response_text)
+        content = body.get("message", {}).get("content", "")
+        if not content:
+            return None
+        match = re.search(r"\{.*\}", content, re.S)
+        if match:
+            content = match.group(0)
+        parsed = json.loads(content)
+        return parsed
+    except Exception:
+        return None
+
+
+def classify_with_ollama(description: str, notes: str = "", summary: dict[str, str] | None = None) -> tuple[str, str] | None:
+    primaries, secondaries = _load_category_catalog()
+    summary = summary or generate_ticket_summary(notes, description)
+    problem = summary.get("problem", "n.a.") if summary else "n.a."
+    solution = summary.get("solution", "n.a.") if summary else "n.a."
+    problem = _summary_value(problem)
+    solution = _summary_value(solution)
+    prompt = (
+        "You are a ticket classifying assistant. "
+        "Return JSON only with exactly two keys: 'primary' and 'secondary'. "
+        "Use one label from the allowed primary categories and one label from the allowed secondary categories. "
+        "If unclear, use 'Unknown/Other' and 'Other'.\n\n"
+        f"Allowed primary categories: {json.dumps(primaries, ensure_ascii=False)}\n"
+        f"Allowed secondary categories: {json.dumps(secondaries, ensure_ascii=False)}\n\n"
+        f"Description: {normalize_text(description)}\n\n"
+        f"Problem summary: {problem}\n"
+        f"Solution summary: {solution}\n\n"
+        f"Ticket notes: {normalize_text(notes)[:4000]}"
+    )
+    result = _call_ollama_json(prompt)
+    if not result:
+        return None
+    primary = str(result.get("primary", "Unknown/Other")).strip()
+    secondary = str(result.get("secondary", "Other")).strip()
+    if not primary:
+        primary = "Unknown/Other"
+    if not secondary:
+        secondary = "Other"
+    if primary not in primaries:
+        primary = "Unknown/Other"
+    if secondary not in secondaries and secondary != "Other":
+        secondary = "Other"
+    return primary, secondary
+
+
+def print_progress(prefix: str, processed: int, total: int, extra: str = "") -> None:
+    if total <= 0:
+        return
+    pct = processed / total * 100
+    suffix = f" | {extra}" if extra else ""
+    print(f"\r[{prefix}] {processed}/{total} ({pct:.1f}%) bearbeitet{suffix}", end="", flush=True)
 
 
 def classify_record_type_group(record_type: str) -> str:
@@ -669,7 +818,15 @@ _SOFTWARE_DIAGNOSTIC_EVIDENCE_TERMS: list[str] = ["3 separate computers","only w
 _SOFTWARE_EOL_ADVISORY_TERMS: list[str] = ["drivers are eol","driver eol","legacy drivers not supported","old drivers not supported","tech notices of eol"]
 
 
-def classify_clarity(notes: str) -> str:
+def classify_clarity(notes: str, summary: dict[str, str] | None = None) -> str:
+    if summary:
+        summary_problem = _summary_value(summary.get("problem", "n.a."))
+        summary_solution = _summary_value(summary.get("solution", "n.a."))
+        summary_text = " ".join(
+            part for part in [summary_problem, summary_solution] if part and part.lower() not in {"n.a.", "n/a", "na", "none"}
+        )
+        if summary_text:
+            notes = f"Problem Description: {summary_problem}\nSolution Description: {summary_solution}\n{notes}"
     if not notes or len(notes) < 50:
         return "unclear"
     low = notes.lower()
@@ -1012,29 +1169,223 @@ def classify_solution_path(notes: str, description: str) -> str:
     return "Other resolved action"
 
 
-def classify_tickets(raw_tickets: list[dict]) -> tuple[list[dict], dict]:
+def _summary_value(value: object) -> str:
+    text = normalize_text(value)
+    if not text:
+        return "n.a."
+    lowered = text.lower().strip()
+    if lowered in {"n.a.", "n/a", "na", "none", "null", "-"}:
+        return "n.a."
+    return text
+
+
+def _extract_problem_solution_from_notes(notes_text: str) -> tuple[str, str]:
+    if not notes_text:
+        return "n.a.", "n.a."
+
+    problem = _extract_labeled_section(
+        notes_text,
+        "Problem Description",
+        ["Solution Description", "Resolution", "Internal Note", "Customer Communication"],
+    )
+    if not problem:
+        problem = _extract_labeled_section(
+            notes_text,
+            "Issue Description",
+            ["Solution Description", "Resolution", "Internal Note", "Customer Communication"],
+        )
+    if not problem:
+        problem = _extract_labeled_section(
+            notes_text,
+            "Troubleshooting Description",
+            ["Solution Description", "Resolution", "Internal Note", "Customer Communication"],
+        )
+
+    solution = _extract_labeled_section(
+        notes_text,
+        "Solution Description",
+        ["Problem Description", "Internal Note", "Customer Communication"],
+    )
+    if not solution:
+        solution = _extract_labeled_section(
+            notes_text,
+            "Resolution",
+            ["Problem Description", "Internal Note", "Customer Communication"],
+        )
+    if not solution:
+        solution = _extract_labeled_section(
+            notes_text,
+            "Customer Communication",
+            ["Problem Description", "Internal Note", "Solution Description"],
+        )
+
+    return _summary_value(problem), _summary_value(solution)
+
+
+def build_problem_solution_summary(notes_text: str, description: str = "") -> dict[str, str]:
+    notes = normalize_text(notes_text)
+    problem, solution = _extract_problem_solution_from_notes(notes)
+
+    if problem == "n.a." and description:
+        candidate = normalize_text(description)
+        if candidate and candidate.lower() not in {"n.a.", "n/a", "na", "none"}:
+            problem = candidate
+
+    if problem == "n.a." and solution != "n.a.":
+        problem = "n.a."
+    if solution == "n.a." and problem != "n.a.":
+        solution = "n.a."
+
+    return {
+        "problem": problem,
+        "solution": solution,
+    }
+
+
+def _call_llm_summary_api(notes_text: str, description: str = "") -> dict[str, str] | None:
+    api_key = os.getenv("LLM_API_KEY") or os.getenv("OPENAI_API_KEY")
+    if not api_key:
+        return None
+
+    endpoint = (
+        os.getenv("LLM_BASE_URL")
+        or os.getenv("OPENAI_BASE_URL")
+        or "https://api.openai.com/v1/chat/completions"
+    )
+    model = os.getenv("LLM_MODEL") or "gpt-4o-mini"
+    user_prompt = (
+        "Extract exactly two concise fields from the ticket notes: problem and solution. "
+        "Return valid JSON with keys 'problem' and 'solution'. "
+        "If no problem/solution is present, use 'n.a.'. "
+        "Do not add extra text or markdown.\n\n"
+        f"Description: {description}\n\nTicket notes:\n{notes_text}"
+    )
+
+    payload = {
+        "model": model,
+        "messages": [{"role": "user", "content": user_prompt}],
+        "temperature": 0.1,
+        "response_format": {"type": "json_object"},
+    }
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json",
+    }
+
+    request = urllib.request.Request(endpoint, data=json.dumps(payload).encode("utf-8"), headers=headers, method="POST")
+    try:
+        with urllib.request.urlopen(request, timeout=60) as response:
+            text = response.read().decode("utf-8")
+    except Exception:
+        return None
+
+    try:
+        data = json.loads(text)
+        content = data["choices"][0]["message"]["content"]
+        parsed = json.loads(content)
+        problem = _summary_value(parsed.get("problem", "n.a."))
+        solution = _summary_value(parsed.get("solution", "n.a."))
+        return {"problem": problem, "solution": solution}
+    except Exception:
+        return None
+
+
+def generate_ticket_summary(notes_text: str, description: str = "") -> dict[str, str]:
+    summary = build_problem_solution_summary(notes_text, description)
+    if os.getenv("LLM_API_KEY") or os.getenv("OPENAI_API_KEY"):
+        try:
+            llm_summary = _call_llm_summary_api(notes_text, description)
+            if llm_summary:
+                return llm_summary
+        except Exception:
+            pass
+    return summary
+
+
+def _ticket_id(ticket: dict) -> str:
+    for key in ("ticket_id", "id", "transaction_number"):
+        value = ticket.get(key)
+        if value is not None and str(value).strip():
+            return str(value).strip()
+    return ""
+
+
+def select_unclassified_batch(raw_tickets: list[dict], existing_tickets: list[dict] | None = None, batch_size: int = 500) -> list[dict]:
+    existing_ids: set[str] = set()
+    for ticket in existing_tickets or []:
+        ticket_id = _ticket_id(ticket)
+        if ticket_id:
+            existing_ids.add(ticket_id)
+
+    batch: list[dict] = []
+    for ticket in raw_tickets:
+        ticket_id = _ticket_id(ticket)
+        if ticket_id and ticket_id in existing_ids:
+            continue
+        batch.append(ticket)
+        if len(batch) >= max(1, batch_size):
+            break
+    return batch
+
+
+def classify_tickets(raw_tickets: list[dict], existing_tickets: list[dict] | None = None, batch_size: int = 500) -> tuple[list[dict], dict]:
+    if existing_tickets is not None:
+        raw_tickets = select_unclassified_batch(raw_tickets, existing_tickets, batch_size)
+
     classified: list[dict] = []
     refined_total = 0
     refined_by_primary: Counter[str] = Counter()
     refined_transitions: Counter[str] = Counter()
-    for t in raw_tickets:
-        desc  = t["description_text"]
+    total = len(raw_tickets)
+    ollama_name = os.getenv("OLLAMA_MODEL", "gemma4:12b")
+    ollama_enabled = True
+    processed = 0
+    for index, t in enumerate(raw_tickets, start=1):
+        desc = t["description_text"]
         notes = t["notes_text"]
-        cat4  = t.get("category_level_4", "")
-        p0, s0 = classify_description(desc, cat4=cat4)
-        bp, bs = p0, s0
-        p0, s0 = refine_subcategory_with_notes(p0, s0, notes, description=desc)
-        if p0 != bp or s0 != bs:
-            refined_total += 1
-            refined_by_primary[bp] += 1
-            refined_transitions[f"{bs} -> {s0}"] += 1
-        clarity = classify_clarity(notes)
+        cat4 = t.get("category_level_4", "")
+        llm_summary = generate_ticket_summary(notes, desc)
+        llm_result = None
+        if ollama_enabled:
+            try:
+                llm_result = classify_with_ollama(desc, notes, llm_summary)
+                if llm_result:
+                    processed += 1
+                    print_progress(
+                        "Ollama classify",
+                        processed,
+                        total,
+                        f"{t.get('transaction_number', index)} -> {llm_result[0]} / {llm_result[1]}",
+                    )
+            except Exception as exc:
+                print_progress("Ollama classify", processed + 1, total, f"fallback to keyword classification ({exc})")
+                llm_result = None
+        classification_source = "ollama" if llm_result else "keyword_fallback"
+        llm_classified = bool(llm_result)
+        if llm_result:
+            p0, s0 = llm_result
+            bp, bs = p0, s0
+        else:
+            p0, s0 = classify_description(desc, cat4=cat4)
+            bp, bs = p0, s0
+            p0, s0 = refine_subcategory_with_notes(p0, s0, notes, description=desc)
+            if p0 != bp or s0 != bs:
+                refined_total += 1
+                refined_by_primary[bp] += 1
+                refined_transitions[f"{bs} -> {s0}"] += 1
+            processed += 1
+            print_progress("Ollama classify", processed, total, f"{t.get('transaction_number', index)} -> keyword fallback")
+        clarity = classify_clarity(notes, llm_summary)
         domain, theme = classify_major_issue(s0, notes)
         spare_grp = classify_spare_part_group(desc, t.get("category_level_3", ""), t.get("category_level_4", "")) if p0 == "Spare Parts/RMA/Logistics" else ""
-        sol_path  = classify_solution_path(notes, desc) if clarity == "clear" else ""
+        sol_path = classify_solution_path(notes, desc) if clarity == "clear" else ""
         prob_desc = _extract_labeled_section(notes, "Problem Description",
                         ["Solution Description", "Internal Note", "Customer Communication"])
-        classified.append({**t, "desc_primary_raw": bp, "desc_secondary_raw": bs, "primary": p0, "secondary": s0, "clarity": clarity, "tickets": 1, "spare_part_group": spare_grp, "major_issue_domain": domain, "major_issue_theme": theme, "solution_path": sol_path, "problem_description": prob_desc})
+        if index % 50 == 0 or index == total:
+            print(f"\n[Ollama summary] {index}/{total}: {t.get('transaction_number', index)} -> problem: {llm_summary['problem'][:80]} | solution: {llm_summary['solution'][:80]}")
+        classified.append({**t, "desc_primary_raw": bp, "desc_secondary_raw": bs, "primary": p0, "secondary": s0, "clarity": clarity, "tickets": 1, "classification_source": classification_source, "llm_classified": llm_classified, "spare_part_group": spare_grp, "major_issue_domain": domain, "major_issue_theme": theme, "solution_path": sol_path, "problem_description": prob_desc, "problem_summary": llm_summary["problem"], "solution_summary": llm_summary["solution"]})
+    if total:
+        print()
     stats = {"total": len(classified), "notes_refined_total": refined_total, "refined_by_primary": dict(refined_by_primary.most_common()), "top_transitions": dict(refined_transitions.most_common(10))}
     return classified, stats
 
@@ -1044,6 +1395,8 @@ def main() -> None:
     parser.add_argument("--input",      default="output/tickets_raw.json")
     parser.add_argument("--categories", default="categories.json")
     parser.add_argument("--output",     default="output/tickets_classified.json")
+    parser.add_argument("--existing",   default="", help="Optional existing classified JSON to skip already classified tickets")
+    parser.add_argument("--batch-size", type=int, default=500, help="Anzahl Tickets pro LLM-Block")
     args = parser.parse_args()
     raw_path = Path(args.input)
     if not raw_path.exists():
@@ -1051,21 +1404,31 @@ def main() -> None:
     print(f"Lese Rohdaten: {raw_path}")
     raw_tickets = json.loads(raw_path.read_text(encoding="utf-8"))
     print(f"  {len(raw_tickets)} Tickets geladen")
+
+    existing_tickets: list[dict] = []
+    if args.existing:
+        existing_path = Path(args.existing)
+        if existing_path.exists():
+            existing_payload = json.loads(existing_path.read_text(encoding="utf-8"))
+            existing_tickets = existing_payload.get("tickets", [])
+            print(f"  {len(existing_tickets)} bereits klassifizierte Tickets geladen")
+
     cat_path = Path(args.categories)
     if cat_path.exists():
         load_and_apply_categories(cat_path)
         print(f"Kategorie-Konfiguration geladen: {cat_path}")
-    print("Klassifiziere Tickets ...")
-    classified, stats = classify_tickets(raw_tickets)
+    print(f"Klassifiziere naechsten Block von {args.batch_size} Tickets ...")
+    classified, stats = classify_tickets(raw_tickets, existing_tickets=existing_tickets, batch_size=args.batch_size)
+    output_tickets = existing_tickets + classified
     print(f"\nNotes-Refinement: {stats['notes_refined_total']} / {stats['total']} Tickets geaendert")
     for tr, cnt in list(stats["top_transitions"].items())[:8]:
         pct = cnt / max(stats["notes_refined_total"], 1) * 100
         print(f"  {tr}: {cnt} ({pct:.1f}%)")
     out = Path(args.output)
     out.parent.mkdir(parents=True, exist_ok=True)
-    payload = {"tickets": classified, "stats": stats}
+    payload = {"tickets": output_tickets, "stats": stats}
     out.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
-    print(f"\nGespeichert: {out.resolve()}")
+    print(f"\nGespeichert: {out.resolve()} ({len(output_tickets)} Tickets insgesamt)")
 
 
 if __name__ == "__main__":

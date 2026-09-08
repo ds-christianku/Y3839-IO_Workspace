@@ -1,0 +1,94 @@
+Ticket;expected symptom;expected rootcause
+Y3839-231;Intermittent Connectivity;Reconnection of sensor not stable
+Y3839-234;"No Power / ""Dying Boxes"" (USB module)";USB3 remote hardware failure
+Y3839-255;Images not transferred;Missing error handling in SW/FW
+Y3839-265;not assigned;
+Y3839-282;Images not transferred;Missing error handling in SW/FW
+Y3839-304;Inconstant/wrong signaling (SW vs. Interface);SW timing issue
+Y3839-305;Intermittent Connectivity;Missing error handling in SW/FW
+Y3839-307;Interface Update Issues;Missing error handling in SW/FW
+Y3839-308;not assigned;
+Y3839-309;not assigned;
+Y3839-340;not assigned;
+Y3839-373;Intermittent Connectivity;Missing error handling in SW/FW
+Y3839-382;IOSS Bugs;
+Y3839-383;Intermittent Connectivity;Loose micro-B USB interface (no cable clip used)
+Y3839-384;Images not transferred;IOSS Bug
+Y3839-422;not assigned;
+Y3839-425;not assigned;
+Y3839-426;not assigned;
+Y3839-471;Intermittent Connectivity;Missing error handling in SW/FW
+Y3839-478;Intermittent Connectivity;IOSS Bug
+Y3839-479;Intermittent Connectivity;Missing error handling in SW/FW
+Y3839-506;Interface Update Issues;IOSS Bug
+Y3839-510;Interface Update Issues;Missing error handling in SW/FW
+Y3839-511;not assigned;
+Y3839-513;Intermittent Connectivity;IOSS Bug
+Y3839-515;not assigned;
+Y3839-520;Images not transferred;IOSS Bug
+Y3839-521;Intermittent Connectivity;Missing error handling in SW/FW
+Y3839-522;Intermittent Connectivity;IOSS Bug
+Y3839-523;Previous (Patient) Image;IOSS Bug
+Y3839-524;Inconstant/wrong signaling (SW vs. Interface);State-machine mismatch in SW/FW (out-of-sync)
+Y3839-525;Inconstant/wrong signaling (SW vs. Interface);SW timing issue
+Y3839-526;--> in my opinion solved ?;
+Y3839-529;Images not transferred;IOSS Bug
+Y3839-530;unassigned;
+Y3839-533;Inconstant/wrong signaling (SW vs. Interface);Missing error handling in SW/FW
+Y3839-537;Intermittent Connectivity;Missing error handling in SW/FW
+Y3839-538;Intermittent Connectivity;Missing error handling in SW/FW
+Y3839-541;Previous (Patient) Image;Others currently unknown
+Y3839-545;Inconstant/wrong signaling (SW vs. Interface);State-machine mismatch in SW/FW (out-of-sync)
+Y3839-546;Inconstant/wrong signaling (SW vs. Interface);State-machine mismatch in SW/FW (out-of-sync)
+Y3839-547;Images not transferred;SW timing issue
+Y3839-549;Loosening Screws;Incorrect torque used during sensor cable exchange
+Y3839-555;Images not transferred;Sensor self-triggering
+Y3839-567;Inconstant/wrong signaling (SW vs. Interface);State-machine mismatch in SW/FW (out-of-sync)
+Y3839-568;Intermittent Connectivity; Missing Error handling in SW/FW
+Y3839-570;Images not transferred;State-machine mismatch in SW/FW (out-of-sync)
+Y3839-575;Intermittent Connectivity;Reconnection of sensor not stable
+Y3839-586;White Images;Sensor self-triggering
+Y3839-593;Images not transferred;Missing error handling in SW/FW
+Y3839-594;Intermittent Connectivity;Missing error handling in SW/FW
+Y3839-596;White Images;Sensor triggers by the influence of an electric field
+Y3839-598;Intermittent Connectivity;Driver conflicts (CDR vs IOSS)
+Y3839-599;Intermittent Connectivity;Reconnection of sensor not stable
+Y3839-607;Intermittent Connectivity;Missing error handling in SW/FW
+Y3839-611;Interface Update Issues;FW Bug
+Y3839-625;Interface Update Issues;FPGA Bug
+Y3839-631;Inconstant/wrong signaling (SW vs. Interface);FW Bug
+Y3839-639;Inconstant/wrong signaling (SW vs. Interface);FW Bug
+Y3839-657;Intermittent Connectivity;Reconnection of sensor not stable
+Y3839-661;Interface Update Issues;FW Bug
+Y3839-662;Previous (Patient) Image;No checkerboard support for AE sensor
+Y3839-663;DyingBoxes;Others currently unknown
+Y3839-664;Interface Update Issues;FW Bug
+Y3839-673;Interface Update Issues;IOSS not installed
+Y3839-689;Interface Update Issues;FW Bug
+Y3839-690;Intermittent Connectivity;Missing error handling in SW/FW
+Y3839-691;Intermittent Connectivity;Reconnection of sensor not stable
+Y3839-695;Y3839-695 has no impact to the electronic;
+Y3839-696;3rd Party Slowness (NAM);general slowness
+Y3839-698;Inconstant/wrong signaling (SW vs. Interface);FW Bug
+Y3839-699;not assigned;
+Y3839-702;not assigned;
+Y3839-705;not assigned;
+Y3839-706;Inconstant/wrong signaling (SW vs. Interface);SW Bug
+Y3839-709;not assigned;
+Y3839-710;not assigned;
+Y3839-711;Interface Update Issues;FW Bug
+Y3839-712;not assigned;
+Y3839-718;Intermittent Connectivity;Calibration file not transferred correctly
+Y3839-722;White Images;Sensor permanently armed (scattering X-Ray, background accumulation)
+Y3839-732;Intermittent Connectivity;IOSS Bug
+Y3839-733;Inconstant/wrong signaling (SW vs. Interface);Workflow sequence not correctly used by 3rd party SW
+Y3839-734;not assigned;
+Y3839-736;Inconstant/wrong signaling (SW vs. Interface);Workflow sequence not correctly used by 3rd party SW
+Y3839-Y731;Inconstant/wrong signaling (SW vs. Interface);FW bug
+Y3839-Y738;Images not transferred;Missing error handling in SW/FW
+Y3839-Y739;intermittent connectivity;others currently unknown
+Y3839-Y741;Inconstant/wrong signaling (SW vs. Interface);FPGA Bug
+Y3839-Y742;3rd Party Slowness (NAM);general slowness
+Y3839-Y744;Intermittent Connectivity;Reconnection of sensor not stable
+Y3839-Y745;Intermittent Connectivity;FPGA Bug
+

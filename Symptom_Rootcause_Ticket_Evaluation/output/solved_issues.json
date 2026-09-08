@@ -17,7 +17,7 @@
       "fixed_rootcause": "-",
       "status": "solved",
       "improvement_to_symptoms": [
-        "Previous Patient"
+        "Previous (Patient) Image"
       ]
     },
     {
@@ -43,7 +43,16 @@
     {
       "id": 5,
       "fix": "Stabilize firmware update",
-      "fixed_rootcause": "Firmware update bricked the USB3 remote, Circuit fault on the RAM (SW-solution), Power cycling the RAM during update corrupts the update file (SW-solution)",
+      "fixed_rootcause": "Firmware update bricked the USB3 remote",
+      "status": "solved",
+      "improvement_to_symptoms": [
+        "Interface Update Issue"
+      ]
+    },
+    {
+      "id": 9,
+      "fix": "SW/FW fix for the hardware error",
+      "fixed_rootcause": "Circuit fault on the RAM (SW-solution), Power cycling the RAM during update corrupts the update file (SW-solution)",
       "status": "solved",
       "improvement_to_symptoms": [
         "Interface Update Issue"

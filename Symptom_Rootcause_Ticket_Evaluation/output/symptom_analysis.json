@@ -27,7 +27,7 @@
         "Complaint": 34
       }
     },
-    "generated_at": "2026-09-02T17:15:29"
+    "generated_at": "2026-09-08T13:40:36"
   },
   "symptoms": [
     {
@@ -770,7 +770,8 @@
         "8001466130",
         "8001466272",
         "8001466470"
-      ]
+      ],
+      "root_causes_jira": []
     },
     {
       "name": "Intermittent Connectivity",
@@ -789,7 +790,6 @@
         "Missing error handling in SW/FW [SW]",
         "Electromagnetic interference (EMI) on system [HW]",
         "Insufficient power-supply [HW]",
-        "IOSS bugs [SW]",
         "Others currently unknown"
       ],
       "hint": "",
@@ -2677,7 +2677,8 @@
         "8001466393",
         "8001466459",
         "8001466550"
-      ]
+      ],
+      "root_causes_jira": []
     },
     {
       "name": "Previous (Patient) Image",
@@ -2893,7 +2894,8 @@
         "8001460183",
         "8001461257",
         "8001466101"
-      ]
+      ],
+      "root_causes_jira": []
     },
     {
       "name": "Images not transferred",
@@ -2902,7 +2904,6 @@
       "ai_category": "Connectivity/Recognition, Software/Firmware/Driver",
       "root_causes": [
         "USB module defect [HW]",
-        "Software timing error [SW]",
         "Software can trigger a FPGA reset [SW]",
         "Loose USB3 remote/sensor interface [HW]",
         "More than one USB3 remote connected to acquisition PC [CM]",
@@ -3173,7 +3174,8 @@
         "8001463088",
         "8001464027",
         "8001466147"
-      ]
+      ],
+      "root_causes_jira": []
     },
     {
       "name": "Loosening Screws",
@@ -3185,7 +3187,7 @@
         "Incorrect assembly (wrong torque used) [HW]",
         "Incorrect torque used during sensor cable exchange [CM]",
         "Vibration / sensor handling loosens the connection [HW]",
-        "Missing error handling Remote (FPGA) / Sensor (FPGA) [FW]",
+        "Missing error handling Remote (FPGA) / Sensor (FPGA) [SW]",
         "Others currently unknown"
       ],
       "hint": "",
@@ -3261,7 +3263,8 @@
         "8001446251",
         "8001453172",
         "8001462060"
-      ]
+      ],
+      "root_causes_jira": []
     },
     {
       "name": "No Power / \"Dying Boxes\" (USB module)",
@@ -3824,18 +3827,19 @@
         "8001464160",
         "8001464765",
         "8001466484"
-      ]
+      ],
+      "root_causes_jira": []
     },
     {
-      "name": "Inconstant ready-for-exposure signaling (SW vs. Interface)",
+      "name": "Inconstant/wrong signaling (SW vs. Interface)",
       "priority": 3,
       "group": "Software / Update",
       "ai_category": "Imaging/Acquisition/Exposure, Software/Firmware/Driver",
       "root_causes": [
         "SW timing issue [SW]",
         "Workflow sequence not correctly used by 3rd party SW [SW]",
-        "State-machine mismatch in SW/FW (out-of-sync) [FW]",
-        "Missing signals/state changes from USB3 remote to PC [FW]",
+        "State-machine mismatch in SW/FW (out-of-sync) [SW]",
+        "Missing signals/state changes from USB3 remote to PC [SW]",
         "Others currently unknown"
       ],
       "hint": "Acquisition SW must correctly display the system status.",
@@ -3947,7 +3951,8 @@
         "8001454059",
         "8001456734",
         "8001464598"
-      ]
+      ],
+      "root_causes_jira": []
     },
     {
       "name": "Overexposed images",
@@ -4009,7 +4014,8 @@
         "8001349650",
         "8001386894",
         "8001428291"
-      ]
+      ],
+      "root_causes_jira": []
     },
     {
       "name": "White Images",
@@ -4021,9 +4027,9 @@
         "Sensor self-triggering [HW]",
         "Sensor triggers by the influence of an electric field [HW]",
         "Sensor housing allows light to pass through [HW]",
-        "Wrong alignment X-Ray generator and sensor (user fault)",
+        "Wrong alignment X-Ray generator and sensor (user fault) [CM]",
         "Wrong X-Ray generator power [HW]",
-        "Sensor permanently armed (scattering X-Ray, background accumulation) [FW]",
+        "Sensor permanently armed (scattering X-Ray, background accumulation) [SW]",
         "Others currently unknown"
       ],
       "hint": "",
@@ -4164,7 +4170,8 @@
         "8001460300",
         "8001461095",
         "8001465350"
-      ]
+      ],
+      "root_causes_jira": []
     },
     {
       "name": "Interface Update Issues",
@@ -4293,7 +4300,8 @@
         "8001460199",
         "8001463803",
         "8001464541"
-      ]
+      ],
+      "root_causes_jira": []
     }
   ]
 }

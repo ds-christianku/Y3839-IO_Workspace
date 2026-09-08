@@ -190,23 +190,6 @@
     "url": "https://jira.dentsplysirona.com/browse/Y3839-673"
   },
   {
-    "key": "Y3839-698",
-    "summary": "On plug-in of incompatible sensor, Sensor LED lights up green before turning red",
-    "description": "+*Expected Result:*+\r\n\r\nThe Sensor Status Interface Lights up red on plug-in of an incompatible sensor (Xios XG Select / Schicke Elite)\r\n\r\n+*Actual Result:*+\r\n\r\nThe Sensor Status LED lights up green shortly before chaning to red\r\n\r\nSee \\\\10.244.128.96\\sw_systemtest\\Jira\\Y3839-698\\P1030529.MP4 for video",
-    "status": "Accepted",
-    "issuetype": "Bug",
-    "priority": "Medium",
-    "assignee": "Petek, Michael Alan",
-    "labels": [
-      "Team_ESDX",
-      "rated"
-    ],
-    "components": [
-      "Team_ESDX"
-    ],
-    "url": "https://jira.dentsplysirona.com/browse/Y3839-698"
-  },
-  {
     "key": "Y3839-672",
     "summary": "IOSS Smoketest - Sidexis",
     "description": "*Test goal:*\r\n * Perform an update of the USB3 Interface firmware from version 1.5.121 to the version under test (RC) and smoke-test functionality afterwards.\r\n * Successfully perform a single-shot exposure via IOSS.\r\n * Perform a multi-exposure (template) acquisition via IOSS with repeated sensor exchange between the individual exposures, to test for reconnection stability.\r\n * Verify correct display of the hardware details (sensor and USB3 interface firmware, sensor type, sensor serial number).\r\n\r\n*Precondition:*\r\n * USB3 Interface (currently at firmware 1.5.121) and at least 2 sensors available for exchange\r\n * IOSS configured with PMS application\r\n * Sidexis 4.4 installed",
@@ -319,23 +302,6 @@
     "url": "https://jira.dentsplysirona.com/browse/Y3839-689"
   },
   {
-    "key": "Y3839-702",
-    "summary": "Indication region in Sidexis is different to the one in indication dialog",
-    "description": "+*Workflow:*+\r\n * Start IOSS and select a viewset without defined region (single exposure).\r\n * Open indication dialog and select a frontal tooth for indication and save together with an indication snippet.\r\n * Change the viewset with defined region (bitewing).\r\n * Check inication dialog. Indications are same as before.\r\n * Perform an exposure and click on finish.\r\n * In Sidexis lightdesk check the indication by selecting the diagnosis tab.\r\n\r\n+*Expected behavior:*+\r\n\r\nThe indication shown in Sidexis is the same as in the indication dialog in the acquisition\r\n\r\n+*Actual behavior:*+\r\n\r\nIn Sidexis the indication shows the regions of the viewset, not the one displayed in the indication dialog while the acquisition.",
-    "status": "Accepted",
-    "issuetype": "Bug",
-    "priority": "Medium",
-    "assignee": "Beckhaus, Christian",
-    "labels": [
-      "Documentation",
-      "rated"
-    ],
-    "components": [
-      "TechFile"
-    ],
-    "url": "https://jira.dentsplysirona.com/browse/Y3839-702"
-  },
-  {
     "key": "Y3839-701",
     "summary": "Improvement of anatomic region odontogram and indication dialog.",
     "description": "h3. Reset of Odontogram in Template Exposures:\r\n * Reset removes all selected regions instead of reseting the initial state.\r\n\r\nh3. Reset of Odontogram in Mixed Dentition:\r\n * Removing last selected tooth manually or with reset, should not jump to the permanent dentition. \r\n\r\nh3. Position aid should be consistent and depend only on selected region:\r\n * in Bitewing viewset is no postiion aid loaded for selected frontal teeth\r\n * in Custom viewset with frontal teeth, and selected bitewing, show postion aid a \"template image\".\r\n\r\nh3. Reset of indications after viewset change:\r\n * Indications  should be reseted if viewset was changed.\r\n\r\nh3. Indication dialog should be independed from viewset:\r\n * Odontogram in indication dialog is active or inactive depend on pre-defined region in viewset.",
@@ -358,24 +324,6 @@
     "labels": [],
     "components": [],
     "url": "https://jira.dentsplysirona.com/browse/Y3839-687"
-  },
-  {
-    "key": "Y3839-664",
-    "summary": "Broken FPGA image still loaded after sensor unplugged",
-    "description": "*target behavior:*\r\n\r\nAfter unplugging the sensor, the FPGA should go back into the golden image\r\n\r\n*actual behavior:*\r\n\r\nThe FPGA stays in the sensor image even after unplugging the sensor\r\n\r\n*reproducibility:* \r\n_yes_\r\n\r\n_steps to reproduce:_\r\n\r\nPlug a sensor, Get Device Info (if Sensor Image and Golden Image have different versions), unplug the sensor and check Device Info again. It shows the FPGA Version of the sensor that was attached previously.\r\n\r\n*additional information:*\r\n\r\n...",
-    "status": "Open",
-    "issuetype": "Bug",
-    "priority": "Medium",
-    "assignee": "Petek, Michael Alan",
-    "labels": [
-      "Team_ESDX",
-      "rated"
-    ],
-    "components": [
-      "Team_ESDX",
-      "USB3-Remote-FW"
-    ],
-    "url": "https://jira.dentsplysirona.com/browse/Y3839-664"
   },
   {
     "key": "Y3839-663",
@@ -425,34 +373,6 @@
       "USB3-Remote-FW"
     ],
     "url": "https://jira.dentsplysirona.com/browse/Y3839-661"
-  },
-  {
-    "key": "Y3839-659",
-    "summary": "Broken FPGA image is not providing valid version info",
-    "description": "*Test goal:*\r\n * Validate that if an FPGA image is corrupted, the Cypress controller returns invalid version information for the corresponding image(s).\r\n\r\n_Implemented first in Firmware build 1.5.165_\r\n\r\n*Precondition:*\r\n * Velocity USB Test Client tool\r\n * USB Interface Module  (pre Installed Changelog Firmware 1.5.165-RC7 or higher) with unplugged Sensor\r\n * SironaUSBService and other 3rd Party Applications closed / disabled\r\n * Attached Broken FPGA Firmware Upgrade bin",
-    "status": "Accepted",
-    "issuetype": "Test",
-    "priority": "Medium",
-    "assignee": "Unassigned",
-    "labels": [],
-    "components": [
-      "USB3-Remote-FW"
-    ],
-    "url": "https://jira.dentsplysirona.com/browse/Y3839-659"
-  },
-  {
-    "key": "Y3839-660",
-    "summary": "FPGA upgrade does not timeout by false positive done signal",
-    "description": "*Test goal:*\r\n * verify sleep increase with oszilloskop\r\n\r\n*Precondition:*\r\n * Velocity USB Test Client tool\r\n * USB3 Interface Box (pre Installed Changelog Firmware 1.5.164-RC6 or higher)\r\n * Oscilloscope (Tektronix MSO 70404C)\r\n ** Ch1: FPGA_PROGRAM_Bn (connected to SW2 Pin2)\r\n ** Ch2: FPGA_Done (connected to R141 Pin1)\r\n ** Ch3: FPGA_INITn (connected to R143 Pin1)",
-    "status": "Accepted",
-    "issuetype": "Test",
-    "priority": "Medium",
-    "assignee": "Unassigned",
-    "labels": [],
-    "components": [
-      "USB3-Remote-FW"
-    ],
-    "url": "https://jira.dentsplysirona.com/browse/Y3839-660"
   },
   {
     "key": "Y3839-671",
@@ -554,41 +474,6 @@
     "url": "https://jira.dentsplysirona.com/browse/Y3839-522"
   },
   {
-    "key": "Y3839-568",
-    "summary": "Sidexis/IOSS: Viewport remains red after sensor reconnect, sensor shown twice in configuration app and Sidexis",
-    "description": "h2. Description\r\n\r\nDuring an acquisition session in {*}Sidexis with IOSS{*}, the intraoral sensor was unplugged and re-plugged. This resulted in an inconsistent system state with multiple symptoms.\r\nh2. Steps to Reproduce\r\n # Start an acquisition session in Sidexis with IOSS\r\n # Unplug the intraoral sensor during the session\r\n # Re-plug the sensor\r\n # Observe system behavior\r\n # Trigger an exposure\r\n # Repeat exposure multiple times\r\n\r\nh2. Observed Behavior\r\n\r\n*After sensor reconnect:*\r\n * The *USB3 interface rebooted multiple times* (LED alternates between orange and green)\r\n * After some time, the remote became ready and signaled *acquisition readiness*\r\n * The *IOSS viewport remains red* (no image, no ready state)\r\n * The *info area in IOSS (bottom)* shows no error message — empty, despite a problem being present\r\n * In the {*}Intraoral Sensor Configuration App{*}, the connected sensor is *shown twice*\r\n * In the {*}acquisition phase selection menu in Sidexis{*}, the sensor is also *listed twice*\r\n\r\n*After triggering exposures (observed via attached video):*\r\n * Upon triggering radiation, the viewport shows a *loading animation* and the info text states that image data is being received\r\n * The image *is actually delivered* successfully\r\n * After the first image arrives, *the next viewport turns red* in IOSS but with a loading animation. USB interface was ready for exposure.\r\n * The same image is received several times. Afterwards the viewport turns red without loading animation. \r\n * Triggert another exposure, which results in several images received\r\n\r\nh2. Expected Behavior\r\n * After reconnect, IOSS should re-initialize the sensor and set the viewport to ready (green)\r\n * If an error occurs, the info area in IOSS should display a meaningful error message\r\n * The sensor should appear only once in the configuration app and the Sidexis selection menu\r\n * Each viewport should only be filled by an actual exposure — no duplication of the last image",
-    "status": "Accepted",
-    "issuetype": "Bug",
-    "priority": "Medium",
-    "assignee": "Torpus, Sebastian",
-    "labels": [
-      "Team_DX5",
-      "rated"
-    ],
-    "components": [
-      "IOSS"
-    ],
-    "url": "https://jira.dentsplysirona.com/browse/Y3839-568"
-  },
-  {
-    "key": "Y3839-546",
-    "summary": "Exposure appears double in template acquisition",
-    "description": "+*Workflow:*+\r\n * USB remote was plugged in with Xios XG Supreme (S2) Sensor to PCX00177\r\n * Changed Sensor to Schick 33 (S2) [Same sensor type, only serial deviates]\r\n * Required to start IOSS-Service, as it was disabled for generating exposures via EagleSoft / CDR.\r\n * started a new Bitewing series for a newly created Patient\r\n * Exposure performed with 60kV 0,16s\r\n * Acquired Image appeared double in the template, one after the other\r\n * Series was finished to check the image(s)\r\n * Changed sensor-object situation\r\n * from the light box, resumed the template (clicked on empty viewbox, \"resume\")\r\n * xray was release was performed but no Image appeared in IOSS\r\n * Box was not Ready for exposure though the IOSS UI indicated so\r\n\r\n*+Evidence:+*\r\n\r\nAs can be seen in the attached screenshots both acquired images are identical. Only 1 Xray exposure was performed but two images were retrieved by IOSS --> The same images was retrieved two times \r\n\r\nFind additional data (DCMs) here: \\\\10.244.128.96\\sw_systemtest\\Jira\\Y3839-546",
-    "status": "Open",
-    "issuetype": "Bug",
-    "priority": "Medium",
-    "assignee": "Wenz, Steffen",
-    "labels": [
-      "Software",
-      "Team_DX5",
-      "rated"
-    ],
-    "components": [
-      "IOSS"
-    ],
-    "url": "https://jira.dentsplysirona.com/browse/Y3839-546"
-  },
-  {
     "key": "Y3839-584",
     "summary": "Standalone AE Update Tool completes a full firmware update (USB 3.0 / AE interface)",
     "description": "*Test goal*\r\nOne full happy-path update run on an outdated USB 3.0 / AE interface, verifying the complete flash sequence in a single execution: the new Cypress upgrade method is used, Cypress is flashed before the FPGA, the HyperRam is verified against the source image, the flashed FPGA version matches what the device reports, and the closing IOSS reminder is shown.\r\n\r\n_First introduced with version 3.2.4030.45721-RC1 but all steps can only be verified with 3.2.4073.XXXX-RC5_\r\n\r\n*Preconditions*\r\n * One USB3 Interface with a firmware version older than the version embedded in the tool, so that BOTH Cypress and FPGA are flashed\r\n * No sensor connected\r\n * AE USB Firmware Upgrade tool\r\n * Velocity USB Test Client (needed for the FPGA version cross-check in step 4)\r\n * IOSS installed but the IOSS service stopped\r\n * Non pre-existing Upgrade log at C:\\ProgramData\\Sirona\\Log\\AeFirmwareUpdate\\AeFirmwareUpdate.log",
@@ -615,21 +500,6 @@
       "External_Issue"
     ],
     "url": "https://jira.dentsplysirona.com/browse/Y3839-567"
-  },
-  {
-    "key": "Y3839-554",
-    "summary": "modify testplan for further firmware-versions",
-    "description": "Current testplan neither cover the realistic workflow nor covers the 3rd party testing.\r\n\r\nLesson learned:\r\n * Adapt the testplan for further versions\r\n ** include the most used 3rd party software (big three players)\r\n ** include realistic workflow (connect and disconnect sensor, firmware update testing with problematic boxes from York, etc.)",
-    "status": "To Do",
-    "issuetype": "Task",
-    "priority": "Medium",
-    "assignee": "Fournier, Niklas",
-    "labels": [],
-    "components": [
-      "Team_Systemtest",
-      "TechFile"
-    ],
-    "url": "https://jira.dentsplysirona.com/browse/Y3839-554"
   },
   {
     "key": "Y3839-548",
@@ -1299,34 +1169,6 @@
     "url": "https://jira.dentsplysirona.com/browse/Y3839-498"
   },
   {
-    "key": "Y3839-624",
-    "summary": "FPGA upgrade done does not lead to an power cycle",
-    "description": "*Test goal:*\r\n * Validate that the _upgrade done phase_ doesn´t lead an power cycle on _1.8V_FPGA_ Voltage Supply.\r\n\r\n*Precondition:*\r\n * Velocity USB Test Client tool\r\n * USB3 Interface Box (pre Installed Changelog Firmware 1.5.158-RC4 or higher)\r\n * Oscilloscope (Tektronix MSO 70404C)\r\n ** Ch1: FPGA_PROGRAM_Bn (connected to SW2 Pin2)\r\n ** Ch2: 1.8V_FPGA (connected to C140 Pin1)\r\n ** Ch3: FPGA_Done (connected to R141 Pin1)\r\n ** Ch4: FPGA_INITn (connected to R143 Pin1)\r\n * Changelog Firmware 1.5.158-RC4 or higher",
-    "status": "Accepted",
-    "issuetype": "Test",
-    "priority": "Medium",
-    "assignee": "Unassigned",
-    "labels": [],
-    "components": [
-      "USB3-Remote-FW"
-    ],
-    "url": "https://jira.dentsplysirona.com/browse/Y3839-624"
-  },
-  {
-    "key": "Y3839-618",
-    "summary": "Check for consistent firmware version is performed",
-    "description": "*Test goal:*\r\n * Firmware and FPGA versions should be checked for consistency. Inconsistent firmware and FPGA versions should be logged.\r\n\r\n_Implemented first in Firmware Build 1.5.163_\r\n\r\n*Precondition:*\r\n * Velocity USB Test Client tool\r\n * USB Interface Module  (pre Installed Changelog Firmware {_}1.5.163{_}-RC5 and corresponding FPGA image or higher) with unplugged Sensor\r\n * SironaUSBService and other 3rd Party Applications closed / disabled\r\n * Access to USB Interface device logs via Adafruit Breakout Board\r\n * Firmware 1.5.158-RC4 zip file or lower",
-    "status": "Accepted",
-    "issuetype": "Test",
-    "priority": "Medium",
-    "assignee": "Unassigned",
-    "labels": [],
-    "components": [
-      "USB3-Remote-FW"
-    ],
-    "url": "https://jira.dentsplysirona.com/browse/Y3839-618"
-  },
-  {
     "key": "Y3839-617",
     "summary": "Standalone AE Update Tool prevents upgrade when FW is newer",
     "description": "*Test goal*\nValidate that the update button is disabled when the USB3 Interface already runs a firmware version newer than the version embedded in the tool.\n\n_First introduced with version 3.2.4066.10188-RC4_\n\n*Preconditions*\n* USB3 Interface with a firmware version lower than the version under test (embedded in the tool)\n* Velocity USB Test Client\n* AE USB Firmware Upgrade tool\n* Non pre-existing Upgrade log at C:\\ProgramData\\Sirona\\Log\\AeFirmwareUpdate\\AeFirmwareUpdate.log\n* PC with installed IOSS",
@@ -1430,77 +1272,6 @@
     "labels": [],
     "components": [],
     "url": "https://jira.dentsplysirona.com/browse/Y3839-620"
-  },
-  {
-    "key": "Y3839-614",
-    "summary": "Irrelevant commands are ignored during upgrade",
-    "description": "*Test goal:*\r\n * During upgrade only commands should be processed that are relevant to perform the upgrade.\r\n\r\n \r\n\r\n_Implemented first in Firmware build 1.5.158_\r\n\r\n*Precondition:*\r\n * Velocity USB Test Client tool\r\n * USB Interface Module  (pre Installed Changelog Firmware 1.5.158-RC4 or higher) with unplugged Sensor\r\n * SironaUSBService and other 3rd Party Applications closed / disabled\r\n * Access to UBS Interface device logs via Adafruit Beakout Board\r\n * Firmware 1.5.158-RC4 zip file or higher",
-    "status": "Accepted",
-    "issuetype": "Test",
-    "priority": "Medium",
-    "assignee": "Unassigned",
-    "labels": [],
-    "components": [
-      "USB3-Remote-FW"
-    ],
-    "url": "https://jira.dentsplysirona.com/browse/Y3839-614"
-  },
-  {
-    "key": "Y3839-613",
-    "summary": "No data is appended in the flash memory behind the programming file",
-    "description": "*Test goal:*\r\n * After writing a new firmware image, if the firmware image size is not a multiple of the page size (256 bytes), the remaining bytes of the last page are filled with 0x00, consistent with the implementation in the USB Control Center.\r\n\r\n \r\n\r\n_Implemented first in Firmware build 1.5.156_\r\n\r\n*Precondition:*\r\n * No Sensor connected\r\n * Velocity USB Test Client tool\r\n * USB Interface Module\r\n * Binary Comparison Tool (e..g Beyond Compare 5, WinMerge, ...)\r\n * Firmware zip file 1.5.156 or newer\r\n * SironaUSBService and other 3rd Party Applications closed / disabled",
-    "status": "Accepted",
-    "issuetype": "Test",
-    "priority": "Medium",
-    "assignee": "Unassigned",
-    "labels": [],
-    "components": [
-      "USB3-Remote-FW"
-    ],
-    "url": "https://jira.dentsplysirona.com/browse/Y3839-613"
-  },
-  {
-    "key": "Y3839-612",
-    "summary": "FPGA is verifying programmed flash data",
-    "description": "*Test goal:*\r\n * Validate that the Verifying FPGA programming data function is correctly implemented\r\n\r\n_First introduced with firmware version 1.5.163-RC5_\r\n\r\n*Precondition:*\r\n * USB3 Interface SN:2067071, with flying wire connection between QSPI output (TP20) and LED_SENSOR_YLW DGND to pull the SO line to GND during readout.\r\n * Golden image 0.5.2 with triggering flash read-back error ([^bitfiles-0.5.2.zip])\r\n * Firmware 0.5.1 with disabled golden image reload prior to upgrade ([^Velocity.Firmware.v0.5.1_noGoldenReload.zip])\r\n * Access to device logs\r\n * Firmware zip of version under test",
-    "status": "Accepted",
-    "issuetype": "Test",
-    "priority": "Medium",
-    "assignee": "Unassigned",
-    "labels": [],
-    "components": [
-      "USB3-Remote-FPGA",
-      "USB3-Remote-FW"
-    ],
-    "url": "https://jira.dentsplysirona.com/browse/Y3839-612"
-  },
-  {
-    "key": "Y3839-609",
-    "summary": "Command read FPGA versions does not lead to an power cycle",
-    "description": "*Test goal:*\r\n * Validate that the _Read FPGA Versions_ command doesn´t lead an power cycle on _1.8V_FPGA_ Voltage Supply.\r\n\r\n*Precondition:*\r\n * Velocity USB Test Client tool\r\n * USB3 Interface Box (pre Installed Changelog Firmware 1.5.155-RC3 or higher)\r\n * Oscilloscope (Tektronix MSO 70404C)\r\n ** Ch1: FPGA_PROGRAM_Bn (connected to SW2 Pin2)\r\n ** Ch2: 1.8V_FPGA (connected to C140 Pin1)\r\n ** Ch3: FPGA_Done (connected to R141 Pin1)\r\n ** Ch4: FPGA_INITn (connected to R143 Pin1)",
-    "status": "Accepted",
-    "issuetype": "Test",
-    "priority": "Medium",
-    "assignee": "Unassigned",
-    "labels": [],
-    "components": [
-      "USB3-Remote-FW"
-    ],
-    "url": "https://jira.dentsplysirona.com/browse/Y3839-609"
-  },
-  {
-    "key": "Y3839-608",
-    "summary": "Command start upgrade does not lead to an power cycle",
-    "description": "*Test goal:*\r\n * Validate that the _start upgrade_ command doesn´t lead an power cycle on _1.8V_FPGA_ Voltage Supply.\r\n\r\n*Precondition:*\r\n * Velocity USB Test Client tool\r\n * USB3 Interface Box (pre Installed Changelog Firmware 1.5.154-RC2 or higher)\r\n * Oscilloscope (Tektronix MSO 70404C)\r\n ** Ch1: FPGA_PROGRAM_Bn (connected to SW2 Pin2)\r\n ** Ch2: 1.8V_FPGA (connected to C140 Pin1)\r\n ** Ch3: FPGA_Done (connected to R141 Pin1)\r\n ** Ch4: FPGA_INITn (connected to R143 Pin1)\r\n * Changelog Firmware 1.5.154-RC2 or higher",
-    "status": "Accepted",
-    "issuetype": "Test",
-    "priority": "Medium",
-    "assignee": "Unassigned",
-    "labels": [],
-    "components": [
-      "USB3-Remote-FW"
-    ],
-    "url": "https://jira.dentsplysirona.com/browse/Y3839-608"
   },
   {
     "key": "Y3839-653",
@@ -1635,34 +1406,6 @@
     "url": "https://jira.dentsplysirona.com/browse/Y3839-641"
   },
   {
-    "key": "Y3839-635",
-    "summary": "Reading FPGA versions does not lead to deadlock for bricked FPGA",
-    "description": "*Test goal:*\r\n * Requesting FPGA Versions does not lead to a deadlocked Cypress even for bricked FPGAs.\r\n\r\n \r\n\r\n_Implemented first in Firmware build 1.5.160_\r\n\r\n*Precondition:*\r\n * Velocity USB Test Client tool\r\n * USB Interface Module with firmware 1.5.160 or newer installed\r\n * SironaUSBService and other 3rd Party Applications closed / disabled",
-    "status": "Accepted",
-    "issuetype": "Test",
-    "priority": "Medium",
-    "assignee": "Unassigned",
-    "labels": [],
-    "components": [
-      "USB3-Remote-FW"
-    ],
-    "url": "https://jira.dentsplysirona.com/browse/Y3839-635"
-  },
-  {
-    "key": "Y3839-634",
-    "summary": "Interrupts are only processed when FPGA done loading the configuration",
-    "description": "*Test goal:*\r\n * interrupts caused by undefined signal transition has to be ignored during FPGA configuration\r\n\r\n*Precondition:*\r\n * USB3 Interface Box (pre Installed Changelog Firmware 1.5.163-RC5 or higher)\r\n * Switch connected to:\r\n ** FPGA_PROGRAM_Bn\r\n ** FPGA_INITn\r\n * Pushbutton connected to:\r\n ** GPIF_INT_TO_FX3\r\n * Oscilloscope (Tektronix MSO 70404C)\r\n ** Ch1: FPGA_PROGRAM_Bn (connected to SW2 Pin2)\r\n ** Ch2: FPGA_Done (connected to R141 Pin1)\r\n ** Ch3: FPGA_INITn (connected to R143 Pin1)\r\n ** Ch4: GPIF_INT_TO_FX3\r\n * Adapter-Board with seriell interface cable connected to USB3 Interface Box\r\n * Terminal Program (e.g. Putty)",
-    "status": "Accepted",
-    "issuetype": "Test",
-    "priority": "Medium",
-    "assignee": "Unassigned",
-    "labels": [],
-    "components": [
-      "USB3-Remote-FW"
-    ],
-    "url": "https://jira.dentsplysirona.com/browse/Y3839-634"
-  },
-  {
     "key": "Y3839-637",
     "summary": "Standalone AE Update Tool recovers a bricked device on a PC without the driver installed",
     "description": "*Test goal*\r\nA device with a bricked Cypress controller, on a PC where the WestBridge driver is not installed, is recovered by a normal update run - including the reconnect prompt that appears when the driver does not bind on the first try. Cancelling that prompt must fail the upgrade rather than hang.\r\n\r\n_First introduced with version 3.2.4073.12342-RC5_\r\n\r\n*Preconditions*\r\n * AE USB Firmware Upgrade tool\r\n * USB Interface with a bricked Cypress version, bricked from a device that was running an outdated firmware:\r\n ** Start the Velocity USB Test Client\r\n ** Enable Upgrade Mode\r\n ** Use the \"Brick Cypress Firmware (Test)\" button to brick the Cypress of the USB Interface\r\n ** Wait until the success message appears\r\n ** Close the Test Client and reconnect the USB Interface\r\n * WestBridge driver uninstalled:\r\n ** Open Device Manager\r\n ** Expand \"Universal Serial Bus devices\" and locate the \"WestBridge\" device\r\n ** Right click the device -> Properties -> Driver tab -> Uninstall Device -> Uninstall\r\n ** Wait until the driver is uninstalled, then reconnect the USB Interface\r\n ** The device should now appear in Device Manager like this:  !image-2026-07-22-09-19-42-386.png! (if it already looked like this, the driver was already uninstalled)\r\n * No sensor connected\r\n * Non pre-existing Upgrade log at C:\\ProgramData\\Sirona\\Log\\AeFirmwareUpdate\\AeFirmwareUpdate.log\r\n * PC with stopped IOSS service",
@@ -1712,23 +1455,6 @@
     "url": "https://jira.dentsplysirona.com/browse/Y3839-593"
   },
   {
-    "key": "Y3839-706",
-    "summary": "Documentation: rotation buttons are usable",
-    "description": "Single exposure acquisition finished automatically but the user has some time to click on rotation buttons (there are active for some period of time). If the rotation happend after appliance of a filter than is a image in Sidexis rotated too.",
-    "status": "Accepted",
-    "issuetype": "Bug",
-    "priority": "Medium",
-    "assignee": "Beckhaus, Christian",
-    "labels": [
-      "Documentation",
-      "rated"
-    ],
-    "components": [
-      "TechFile"
-    ],
-    "url": "https://jira.dentsplysirona.com/browse/Y3839-706"
-  },
-  {
     "key": "Y3839-684",
     "summary": "Firmware Recovery\t",
     "description": "*Test goal:*\r\n[IOPF-1590 - Firmware Recovery|https://alm-gb.dentsplysirona.com/polarion/#/project/IOPF/workitem?id=IOPF-1590]\r\n\r\nThe AE USB Firmware Upgrade tool shall be able to recover an AE USB interface that starts in boot mode because its firmware is damaged. The recovery shall restore the firmware version integrated in the tool; the version condition for an upgrade does not apply, because a device in boot mode reports no version. The recovery shall only be possible if exactly one device in boot mode is connected, and the tool shall warn that such a device cannot be identified with certainty.\r\n\r\n*Precondition:*\r\n\r\n* USB 3.0 interface with bricked cypress firmware\r\n* OS: Win 11 64-bit",
@@ -1751,34 +1477,6 @@
     "labels": [],
     "components": [],
     "url": "https://jira.dentsplysirona.com/browse/Y3839-683"
-  },
-  {
-    "key": "Y3839-606",
-    "summary": "Cypress init pin is not driving against FPGA init pin",
-    "description": "*Test goal:*\r\n * Validate that the Signal FPGA_INITn isn´t driven by Cypress during FPGA pulls this Signal to GND.\r\n\r\n*Precondition:*\r\n * Velocity USB Test Client tool\r\n * USB3 Interface Box (pre Installed Changelog Firmware 1.5.155-RC3 or higher)\r\n * Oscilloscope (Tektronix MSO 70404C)\r\n ** Ch1: FPGA_PROGRAM_Bn (connected to SW2 Pin2)\r\n ** Ch2: 1.8V_FPGA (connected to C140 Pin1)\r\n ** Ch3: FPGA_Done (connected to R141 Pin1)\r\n ** Ch4: FPGA_INITn (connected to R143 Pin1)",
-    "status": "Accepted",
-    "issuetype": "Test",
-    "priority": "Medium",
-    "assignee": "Unassigned",
-    "labels": [],
-    "components": [
-      "USB3-Remote-FW"
-    ],
-    "url": "https://jira.dentsplysirona.com/browse/Y3839-606"
-  },
-  {
-    "key": "Y3839-605",
-    "summary": "Valid patient image will not be overwritten before image data transfer",
-    "description": "*Test goal:*\r\n * Once a patient image has been received from the sensor and stored on the remote memory, the remote memory must not be erased until the patient image has been successfully transfered to the host.\r\n\r\n \r\n\r\n_Implemented first in Firmware build 1.5.152-RC1_\r\n\r\n*Precondition:*\r\n * Velocity USB Test Client tool\r\n * USB Interface Module with 1.5.152-RC1 or newer and sensor of any size attached\r\n * Ability to generate image by Xray exposure or modified light sensor\r\n * SironaUSBService and other 3rd Party Applications closed / disabled\r\n * ImageJ to inspect transferred image",
-    "status": "Accepted",
-    "issuetype": "Test",
-    "priority": "Medium",
-    "assignee": "Unassigned",
-    "labels": [],
-    "components": [
-      "USB3-Remote-FW"
-    ],
-    "url": "https://jira.dentsplysirona.com/browse/Y3839-605"
   },
   {
     "key": "Y3839-604",
@@ -1833,23 +1531,6 @@
     "labels": [],
     "components": [],
     "url": "https://jira.dentsplysirona.com/browse/Y3839-597"
-  },
-  {
-    "key": "Y3839-596",
-    "summary": "Sensor triggers due to electrostatic charge without x-ray and shows white image",
-    "description": "*target behavior:*\r\n\r\nonly x-ray triggers the sensor\r\n\r\n*actual behavior:*\r\nA new XIOS SENSOR XG SUPREME with the new AE Box triggers by itself whenever static electricity builds up—for example, when someone shuffles their shoes on the floor and then touches the sensor.\r\n\r\n*reproducibility:*\r\n\r\nunknown\r\n\r\n*additional information:*\r\n\r\nsee ticket #8001472421",
-    "status": "Open",
-    "issuetype": "Bug",
-    "priority": "Medium",
-    "assignee": "Damnik, Markus",
-    "labels": [
-      "Team_ELDX",
-      "rated"
-    ],
-    "components": [
-      "Team_ELDX"
-    ],
-    "url": "https://jira.dentsplysirona.com/browse/Y3839-596"
   },
   {
     "key": "Y3839-591",
@@ -1915,18 +1596,6 @@
       "TechFile"
     ],
     "url": "https://jira.dentsplysirona.com/browse/Y3839-494"
-  },
-  {
-    "key": "Y3839-451",
-    "summary": "Win11 core isolation issue with USB2.0 box",
-    "description": "As a task force leader I'd like to understand the background of the Win11 core isolation issue with USB2.0 box and which solutions to this issue exist.\r\n\r\nDisabeling the Win11 core isolation feature is only a fallback solution.\r\n\r\n+Question to be answered:+\r\n\r\nWould it be possibe to certifiy USB2.0 box driver  @ Microsoft to get this box running also under Win11 without disabeling the core isolation feature?",
-    "status": "IN PROGRESS",
-    "issuetype": "Story",
-    "priority": "Medium",
-    "assignee": "Roecher, Erik (External)",
-    "labels": [],
-    "components": [],
-    "url": "https://jira.dentsplysirona.com/browse/Y3839-451"
   },
   {
     "key": "Y3839-261",
@@ -2383,18 +2052,6 @@
     "url": "https://jira.dentsplysirona.com/browse/Y3839-184"
   },
   {
-    "key": "Y3839-183",
-    "summary": "USB3 Remote connection indication",
-    "description": "+*Test goal:*+\r\n\r\n[*IOPF-1014 - USB3 Remote connection indication*|https://alm-gb.dentsplysirona.net/polarion/#/project/IOPF/workitem?id=IOPF-1014]\r\n\r\nThe USB3 Remote must include a Connection Indicator with the following indications:\r\n * OFF = [No Power] The Connectivity Indicator will be off when the USB3 Remote is unplugged or not connected to a USB Host.\r\n * SOLID AMBER = [USB Connected] The Connectivity Indicator will be solid amber when the USB3 Remote is plugged into a USB port, but not connected to the imaging SW.\r\n * FLASHING (Pulsing) GREEN – [USB Host Connected] The Connectivity Indicator will pulse green (long ON and short OFF durations at 0.5-1.5Hz) when the USB Host software connects with the USB3 Remote.\r\n * SOLID GREEN – [Imaging SW Connected] The Connectivity Indicator will be solid green when the host imaging software, Sidexis, is properly configured, is connected to Sidexis App Services, and recognizes the Device.\r\n * BREATHING (Cycling) GREEN = [Ready for Acquisition] The Connectivity Indicator will cycle green (similar to the Smile LED on the Wallbox device, 1-4 Hz, approximately sinusoidal cycling of intensity) when the Device is ready to acquire an image.\r\n\r\n+*Precondition:*+\r\n * For step 1-3\r\n ** No Sidexis server / client\r\n ** IOSS installed and no connection to Sidexis server\r\n ** USB remote with connected sensor\r\n * For step 4\r\n ** Sidexis and IOSS installed and connection to Sidexis server established",
-    "status": "Accepted",
-    "issuetype": "Test",
-    "priority": "Medium",
-    "assignee": "Unassigned",
-    "labels": [],
-    "components": [],
-    "url": "https://jira.dentsplysirona.com/browse/Y3839-183"
-  },
-  {
     "key": "Y3839-186",
     "summary": "RA-IFU Patient Assignment\t",
     "description": "+*Test goal:*+\r\n\r\n[*IOPF-1077 - RA-IFU Patient Assignment*|https://alm-gb.dentsplysirona.net/polarion/#/project/IOPF/workitem?id=IOPF-1077]\r\n * User guide shall instruct the user on proper use of image capture, image storage and image retrieval within host application.",
@@ -2704,23 +2361,6 @@
     ],
     "components": [],
     "url": "https://jira.dentsplysirona.com/browse/Y3839-260"
-  },
-  {
-    "key": "Y3839-234",
-    "summary": "Connection Status LED lights up dimly when USB3 remote plugged in host PC",
-    "description": "*Reproduction steps:* \r\n * Ensure no sensor connected (shall remain unconnected)\r\n * Plug the USB3 remote with the micro-b ss cable to the host PC\r\n * Observe the sensor connection LED\r\n\r\n{color:#172b4d}+*Fault description:*+{color} \r\n\r\n-> Each time, after connecting the USB3 remote to the host PC, the sensor connection LED lights up weakly once in a pulsating red light when the status connection LED is turning solid GREEN. The LED is expected to be off and not powered.",
-    "status": "Accepted",
-    "issuetype": "Bug",
-    "priority": "Medium",
-    "assignee": "Torpus, Sebastian",
-    "labels": [
-      "rated"
-    ],
-    "components": [
-      "USB3-Remote-FW",
-      "USB3-Remote-HW"
-    ],
-    "url": "https://jira.dentsplysirona.com/browse/Y3839-234"
   },
   {
     "key": "Y3839-207",
@@ -3862,18 +3502,6 @@
     "url": "https://jira.dentsplysirona.com/browse/Y3839-64"
   },
   {
-    "key": "Y3839-493",
-    "summary": "CoreIsolationIssue",
-    "description": "",
-    "status": "Open",
-    "issuetype": "Epic",
-    "priority": "Medium",
-    "assignee": "Unassigned",
-    "labels": [],
-    "components": [],
-    "url": "https://jira.dentsplysirona.com/browse/Y3839-493"
-  },
-  {
     "key": "Y3839-95",
     "summary": "Produkt Dokumentation in Agile einpflegen",
     "description": "Zeichnungen in Agile einbinden\r\n\r\nLabeling-Doku ablegen",
@@ -4967,385 +4595,6 @@
     "url": "https://jira.dentsplysirona.com/browse/Y3839-16"
   },
   {
-    "key": "Y3839-144",
-    "summary": "Prepare and order sample Rev.4",
-    "description": "Procure components and provide to EMS ( Elmgrove)\r\n\r\nOrder sample PCB\r\n\r\nclarify availability of housing parts USB-C",
-    "status": "In QA",
-    "issuetype": "Story",
-    "priority": "Medium",
-    "assignee": "Beckhaus, Christian",
-    "labels": [],
-    "components": [],
-    "url": "https://jira.dentsplysirona.com/browse/Y3839-144"
-  },
-  {
-    "key": "Y3839-148",
-    "summary": "USB-C create project plan ",
-    "description": "",
-    "status": "In QA",
-    "issuetype": "Story",
-    "priority": "Medium",
-    "assignee": "Beckhaus, Christian",
-    "labels": [],
-    "components": [],
-    "url": "https://jira.dentsplysirona.com/browse/Y3839-148"
-  },
-  {
-    "key": "Y3839-705",
-    "summary": "IOSS Installer: Error Text Stays German Even if other languages is selected",
-    "description": "+*Expected Result:*+\r\n\r\nWhen a language is selected in the installer the entire UI switches to that language.\r\n\r\n+*Actual Result:*+\r\n\r\nThe Error Code and text are always displayed in german.\r\n\r\n+*Steps to Reproduce:*+\r\n\r\nWith the newest version of IOSS already installed run autorun.exe for the same version and try to install IOSS again. The Installer shows an error claiming the newest verison is already installed, the autorun window then displays an error which is always written in German.\r\n\r\n \r\n\r\nSee pictures for details",
-    "status": "Accepted",
-    "issuetype": "Bug",
-    "priority": "Medium",
-    "assignee": "Unassigned",
-    "labels": [
-      "Team_DX5"
-    ],
-    "components": [
-      "IOSS",
-      "Team_DX5"
-    ],
-    "url": "https://jira.dentsplysirona.com/browse/Y3839-705"
-  },
-  {
-    "key": "Y3839-598",
-    "summary": "USB3 Interface Stuck in Red LED State which requires PC Restart to Restore Connection",
-    "description": "+*Actual Behavior:*+\r\nThe USB interface is unable to establish a stable connection to Dentrix via CDR. Only a PC restart resolves the issue. Dentrix freezes at the \"Getting device ready\" screen; meanwhile, the sensor LED remains green while the interface LED is frozen in red status.\r\nDentrix was restarted, the device was unplugged/replugged multiple times, and the CDR app was closed via Task Manager and restarted — the issue persisted.\r\n\r\n+*Reproducibility:*+\r\nDuring an unplug/plug test of the sensor, the device sometimes restarted on its own (LED sequence changing green → red → green), even though it remained connected the entire time. On one occasion, this restart apparently did not complete successfully (sporadic behavior), causing the USB interface to get stuck in this state. Unplugging and replugging the device did not resolve it — only a full PC restart allowed the device to re-establish a stable connection.\r\n\r\n+*Additional Information:*+\r\nSee logs in attachment. The issue first occurred at 1:55 AM.\r\nSensor: Xios XG Supreme Gen1: 72012231\r\nUSB Interface: 2031530, FW: *1.5.152*\r\n\r\n+*Update:*+\r\nThe issue could also be reproduced with the new firmware version ({*}1.5.154{*}).",
-    "status": "Open",
-    "issuetype": "Bug",
-    "priority": "Medium",
-    "assignee": "Torpus, Sebastian",
-    "labels": [
-      "Team_ESDX"
-    ],
-    "components": [
-      "CDR",
-      "USB3-Remote-FW"
-    ],
-    "url": "https://jira.dentsplysirona.com/browse/Y3839-598"
-  },
-  {
-    "key": "Y3839-573",
-    "summary": "Dentrix/CDR: USB3 interface fails to reconnect to sensor after multiple plug cycles, sensor LED stays orange",
-    "description": "h2. Description\r\n\r\nAfter performing several reconnect cycles of the sensor in a *Dentrix with CDR integration* setup, the USB3 interface was unable to establish a connection to the sensor. The sensor LED remained *orange* (no connection), and the system did not recover without further intervention (serveral re-connections of the USB3 Interface).\r\nh2. Steps to Reproduce\r\n # Start acquisition session in Dentrix with CDR integration\r\n # Repeatedly unplug and re-plug the sensor\r\n # Observe the sensor LED after each reconnect\r\n\r\nh2. Observed Behavior\r\n * After several reconnect cycles, the USB3 interface no longer establishes a connection to the sensor\r\n * The *sensor LED remains orange* — no transition to green/breathing (ready state)\r\n * The system does not self-recover\r\n\r\nh2. Expected Behavior\r\n * The USB3 interface should reliably re-establish a connection to the sensor after each reconnect cycle\r\n * The sensor LED should transition to green/breathing (ready state) after a successful reconnect\r\n\r\nh2. Additional Information\r\n * Integration: Dentrix with CDR\r\n * Trigger: Multiple sensor / USB3 interface reconnect cycles\r\n * Timestamp in Log around *16:53*",
-    "status": "Open",
-    "issuetype": "Bug",
-    "priority": "Medium",
-    "assignee": "Alshamma, Rami (External)",
-    "labels": [],
-    "components": [
-      "CDR"
-    ],
-    "url": "https://jira.dentsplysirona.com/browse/Y3839-573"
-  },
-  {
-    "key": "Y3839-583",
-    "summary": "Dentrix/CDR: No image delivered after exposure following ~9 min wait in ready state",
-    "description": "After performing an exposure in *Dentrix* (CDR integration), the system completes the capture process but fails to deliver or display the resulting image. The issue occurred specifically after the system had been in the \"Ready for Exposure\" state for approximately *9 minutes* before the exposure was triggered.\r\nh2. Steps to Reproduce\r\n # Open Dentrix and perform an initial image capture — succeeds\r\n # Close and reopen Dentrix\r\n # Start a template exposure (multiple captures)\r\n # Complete the first two captures successfully\r\n # System enters *\"Ready for Exposure\"* state\r\n # Wait approximately *9 minutes* without triggering an exposure\r\n # Trigger the third capture\r\n # Observe whether an image is delivered\r\n\r\nh2. Observed Behavior\r\n * The first two captures in the series complete successfully\r\n * After waiting ~9 minutes in the ready state, the third exposure is performed\r\n * The capture process completes, but *no image is delivered or displayed* in Dentrix\r\n\r\nh2. Expected Behavior\r\n * After a successful exposure, the captured image should be delivered and displayed in Dentrix regardless of how long the system was in the ready state beforehand\r\n\r\nh2. Related issues\r\n * This issue might be related to Y3839-570 where no image was recorded after an exposure was performed in Eaglesoft.",
-    "status": "Open",
-    "issuetype": "Bug",
-    "priority": "Medium",
-    "assignee": "Kurz, Christian",
-    "labels": [],
-    "components": [
-      "CDR"
-    ],
-    "url": "https://jira.dentsplysirona.com/browse/Y3839-583"
-  },
-  {
-    "key": "Y3839-638",
-    "summary": "Dentrix/CDR: Dentrix shows \"Ready for exposure\" while Interface LED is orange",
-    "description": "*Description:*\r\nDentrix displays the device as \"Ready for exposure\" even though the interface LED is showing orange, indicating the box has likely lost its connection.\r\n\r\n*Steps to reproduce:*\r\n # Device is in \"Ready for exposure\" state.\r\n # Unplug and re-plug a sensor of a different type (\"AE Sensor\").\r\n # Then plug in another (different) sensor.\r\n # The box restarts during this process.\r\n\r\n{*}Observed behavior{*}{*}:{*}\r\nThe box restart likely causes a synchronization issue — Dentrix ends up showing \"Ready for exposure\" while the box actually remains disconnected.\r\n\r\n*Expected behavior:*\r\nDentrix should accurately reflect the box's connection state and not show \"Ready for exposure\" when the interface is disconnected (orange LED).\r\n\r\n*Note:*\r\nThe test was repeated identically but could not be reproduced.",
-    "status": "Open",
-    "issuetype": "Bug",
-    "priority": "Medium",
-    "assignee": "Unassigned",
-    "labels": [
-      "3rd-party-integration",
-      "Team_DX5"
-    ],
-    "components": [
-      "CDR",
-      "Team_DX5"
-    ],
-    "url": "https://jira.dentsplysirona.com/browse/Y3839-638"
-  },
-  {
-    "key": "Y3839-283",
-    "summary": "Sensor IEC and EN Performance Standards",
-    "description": "+*Test goal:*+ \r\n\r\n[IOPF-977 - Sensor IEC and EN Performance Standards|https://alm-gb.dentsplysirona.net/polarion/redirect/project/IOPF/workitem?id=IOPF-977]\r\n\r\nThe system will be designed to comply with all applicable IEC and EN standards. Applicable standards include, but may not be limited to: IEC 60601-1: “Medical Electrical Equipment” with collateral standards 60601-1-1,60601-1-2,60601-1-4.\r\nA CB Scheme report issued by an authorized testing lab will demonstrate compliance to the above standards including applicable National Deviations.",
-    "status": "Accepted",
-    "issuetype": "Test",
-    "priority": "Medium",
-    "assignee": "Unassigned",
-    "labels": [
-      "Non-functional"
-    ],
-    "components": [],
-    "url": "https://jira.dentsplysirona.com/browse/Y3839-283"
-  },
-  {
-    "key": "Y3839-160",
-    "summary": "RA Exposure readiness",
-    "description": "+*Test goal:*+\r\n\r\n[IOPF-1072 - RA Exposure readiness|https://alm-gb.dentsplysirona.net/polarion/redirect/project/IOPF/workitem?id=IOPF-1072]\r\n * IOSS shall indicate the systems acquisition readiness.\r\n\r\n+*Preconditions:*+\r\n * Sidexis4 and IOSS installed\r\n * Connected USB remote with sensor",
-    "status": "Accepted",
-    "issuetype": "Test",
-    "priority": "Medium",
-    "assignee": "Unassigned",
-    "labels": [],
-    "components": [
-      "IOSS"
-    ],
-    "url": "https://jira.dentsplysirona.com/browse/Y3839-160"
-  },
-  {
-    "key": "Y3839-699",
-    "summary": "Odontogram in indication dialog is active only if it's not predefined in viewset",
-    "description": "+*Intended:*+ \r\n\r\nMost likely intended behavior (according to requirement IOPF-475):\r\nOdontogram in indication dialog is only active, if regions are NOT pre-defined by the viewset and for custom templates (no matter if regions are predefined). \r\n\r\n+*Actual:*+ \r\n\r\n_1. Documentation mismatch:_\r\n\r\n[IOPF-1164 - Indications Dialog < IO Platform|https://alm-gb.dentsplysirona.com/polarion/#/project/IOPF/workitem?id=IOPF-1164] and [IOPF-475 - Indications < IO Platform|https://alm-gb.dentsplysirona.com/polarion/#/project/IOPF/workitem?id=IOPF-475] as well as its design [IOPF-764 - Indications < IO Platform|https://alm-gb.dentsplysirona.com/polarion/#/project/IOPF/workitem?id=IOPF-764] interfere: \r\n # [IOPF-1164|https://alm-gb.dentsplysirona.com/polarion/#/project/IOPF/workitem?id=IOPF-1164]: Anatomic region: only active for single exposure template\r\n # [IOPF-475 / |https://alm-gb.dentsplysirona.com/polarion/#/project/IOPF/workitem?id=IOPF-475] [IOPF-764|https://alm-gb.dentsplysirona.com/polarion/#/project/IOPF/workitem?id=IOPF-764]: Anatomical regions, including one or multiple teeth, if not already specified in the viewset",
-    "status": "Accepted",
-    "issuetype": "Bug",
-    "priority": "Medium",
-    "assignee": "Beckhaus, Christian",
-    "labels": [
-      "Documentation",
-      "rated"
-    ],
-    "components": [
-      "TechFile"
-    ],
-    "url": "https://jira.dentsplysirona.com/browse/Y3839-699"
-  },
-  {
-    "key": "Y3839-718",
-    "summary": "Corrupted Calibration file ",
-    "description": "h2. Description\r\n\r\nIt occurs sporadically that the calibration file is corrupted during the transfer from the remote to the PC. This issue was reported by several SF tickets (e.g. 8001293669, 8001379672, 8001356141, Logs from Dr. Mathes, ...).If the calib file is corrupted the signature looks always identical:\r\n\r\n*Signature: '\u0011?\u0011?\u0011?\u0011', Compression: 186, CalibSize: 3121723921, Date: \u0011?\u0011?\u0011?\u0011?, Version: 186.17, CRC: 3121723921*\r\n\r\nIf this issue occur a reconnect of the sensor does not help. A power-cycle of the USB remote is necessary.\r\nh2. Steps to Reproduce\r\n # Because it is sporadically a reconnection of the sensor might be lead to this issue\r\n\r\nh2. Observed Behavior\r\n * *Calibration file is corrupted -> no image can be taken*\r\n * *Power-cycle of the USB interface is neccesary* \r\n\r\nh2. Expected Behavior\r\n * If a sensor is connected to the USB3 remote the calibration file has to be send successfully to the PC\r\n\r\nh2. Additional Information\r\n * —",
-    "status": "Accepted",
-    "issuetype": "Bug",
-    "priority": "Medium",
-    "assignee": "Ding, Xiang",
-    "labels": [
-      "rated"
-    ],
-    "components": [
-      "USB3-Remote-FPGA"
-    ],
-    "url": "https://jira.dentsplysirona.com/browse/Y3839-718"
-  },
-  {
-    "key": "Y3839-106",
-    "summary": "Single Image Acquisition",
-    "description": "+*Test goal:*+\r\n\r\n[IOPF-480 - Single Image Acquisition < IOPF (dentsplysirona.net)|https://alm-gb.dentsplysirona.net/polarion/#/project/IOPF/workitem?id=IOPF-480]\r\n\r\nThe user must also be able to make a single image acquisition instead of choosing a viewset with multiple images.\r\n\r\n+*Preconditions:*+\r\n * Opened Sidexis4 with at least one patient\r\n * Connected USB remote with sensor",
-    "status": "Accepted",
-    "issuetype": "Test",
-    "priority": "Medium",
-    "assignee": "Unassigned",
-    "labels": [],
-    "components": [
-      "IOSS"
-    ],
-    "url": "https://jira.dentsplysirona.com/browse/Y3839-106"
-  },
-  {
-    "key": "Y3839-709",
-    "summary": "Endo horizontal and endo vertical templates do not contain predefined anatomic regions",
-    "description": "*Description:*\r\nDuring verification of the *Endo Horizontal* and *Endo Vertical* templates, it was observed that no predefined *anatomic regions* are assigned to the viewboxes.\r\n\r\n*Steps to Reproduce:*\r\n # Open the Endo Horizontal template in the Acquisition Web Application.\r\n # Open the corresponding template in Sidexis 4 Global Settings.\r\n # Verify the assigned anatomic regions.\r\n # Repeat the same steps for the Endo Vertical template.\r\n\r\n*Actual Result:*\r\nThe Endo Horizontal and Endo Vertical templates do not contain predefined anatomic regions.\r\n\r\n*Expected Result:*\r\nEither:\r\n * Predefined anatomic regions should be available for the viewboxes, or\r\n * The test case/documentation should be updated to indicate that these templates do not use predefined anatomic regions.",
-    "status": "Accepted",
-    "issuetype": "Bug",
-    "priority": "Medium",
-    "assignee": "Beckhaus, Christian",
-    "labels": [
-      "Documentation",
-      "rated"
-    ],
-    "components": [
-      "TechFile"
-    ],
-    "url": "https://jira.dentsplysirona.com/browse/Y3839-709"
-  },
-  {
-    "key": "Y3839-158",
-    "summary": "RA Exposure Indicator",
-    "description": "*Test goal:*\r\n\r\n[IOPF-1074 - RA Exposure Indicator|https://alm-gb.dentsplysirona.net/polarion/redirect/project/IOPF/workitem?id=IOPF-1074] (Origin: RA-3)\r\n * IOSS shall contain an exposure advisor which provides an indication of adequate exposure.\r\n\r\n*Preconditions:*\r\n * Sidexis and IOSS installed\r\n * USB remote and sensor connected",
-    "status": "Accepted",
-    "issuetype": "Test",
-    "priority": "Medium",
-    "assignee": "Unassigned",
-    "labels": [],
-    "components": [
-      "IOSS"
-    ],
-    "url": "https://jira.dentsplysirona.com/browse/Y3839-158"
-  },
-  {
-    "key": "Y3839-541",
-    "summary": "Negative effect of checkerboard pattern on image quality",
-    "description": "The checkerboard pattern from CAPA Previous Patient introduces increased graininess and dark edge shadows near fillings in intraoral images (see attached report).",
-    "status": "IN PROGRESS",
-    "issuetype": "Bug",
-    "priority": "Medium",
-    "assignee": "Ding, Xiang",
-    "labels": [
-      "rated"
-    ],
-    "components": [
-      "USB3-Remote-FPGA"
-    ],
-    "url": "https://jira.dentsplysirona.com/browse/Y3839-541"
-  },
-  {
-    "key": "Y3839-712",
-    "summary": "Documentation: Recovery references multiple unfinished acquisition sessions although only one session can exist",
-    "description": "*Action:*\r\n # Start Sidexis 4 and reach exposure readiness.\r\n # Create an unfinished acquisition session to trigger rescue mode.\r\n # Open the *Recovery* tab in the Configuration App.\r\n # Click {*}Refresh Sessions{*}.\r\n\r\n*Expected Result:*\r\nThe Recovery View displays all information defined in the requirements, including:\r\n * List of unfinished acquisition sessions\r\n * Creation date\r\n * Patient name\r\n * Template type\r\n * Sensor name\r\n * Number of images\r\n\r\n*Actual Result:*\r\nThe Recovery View does not display a {*}\"List of unfinished acquisition sessions\"{*}.\r\n\r\nHowever, this appears to be a requirement/documentation issue rather than a software defect. It is currently not possible to create more than one unfinished acquisition session. Once a rescue situation exists, no further acquisitions can be performed until the existing session has been recovered or discarded.",
-    "status": "Accepted",
-    "issuetype": "Bug",
-    "priority": "Medium",
-    "assignee": "Beckhaus, Christian",
-    "labels": [
-      "Documentation",
-      "rated"
-    ],
-    "components": [
-      "TechFile"
-    ],
-    "url": "https://jira.dentsplysirona.com/browse/Y3839-712"
-  },
-  {
-    "key": "Y3839-575",
-    "summary": "Sensor sporadically not detected after repeated USB3 Interface reconnect",
-    "description": "h2. Description\r\n\r\nAfter disconnecting and reconnecting the USB cable from the USB3 interface (box), the sensor is sporadically not detected. This prevents any exposure from being made. The issue resolves only after repeatedly unplugging and reconnecting the {*}sensor cable{*}. The issue has been reproduced across all software platforms.\r\nh2. Steps to Reproduce\r\n # Disconnect the USB cable from the USB3 interface (box)\r\n # Reconnect the USB cable\r\n # Observe whether the sensor is detected\r\n # Attempt to start an exposure\r\n # If the sensor is not detected, repeatedly unplug and re-plug the sensor cable until it is recognized\r\n\r\nh2. Observed Behavior\r\n * After reconnecting the USB cable to the USB3 interface, the sensor is *not recognized* by the system\r\n * Exposures cannot be started because the sensor is not detected\r\n * The sensor becomes functional again only after *multiple reconnection attempts of the sensor cable*\r\n * Reproducible across all software platforms (IOSS and CDR integration)\r\n\r\nh2. Expected Behavior\r\n * After reconnecting the USB cable, the system should immediately detect the sensor\r\n * The sensor should be fully operational without requiring repeated cable reconnections\r\n * Exposure functionality should remain uninterrupted after a USB reconnection event\r\n\r\nh2. Additional Information\r\n * Trigger: USB cable disconnect/reconnect from the USB3 interface box\r\n * Workaround: Repeatedly re-plug the sensor cable until the sensor is recognized\r\n * The issue could be reproduced on the Xios XG Supreme Gen 1 and Gen 2\r\n * Even if the sensor cable is unplugged first, the same behavior occurs as when the USB3 interface cable is disconnected first",
-    "status": "Open",
-    "issuetype": "Bug",
-    "priority": "Medium",
-    "assignee": "Kurz, Christian",
-    "labels": [
-      "rated"
-    ],
-    "components": [
-      "USB3-Remote-FPGA"
-    ],
-    "url": "https://jira.dentsplysirona.com/browse/Y3839-575"
-  },
-  {
-    "key": "Y3839-422",
-    "summary": "Applicable standards missing",
-    "description": "Coverage of the following standards is missing in the CB report:\r\n * Safety Testing: IEC 60601-1:2005 Ed.3+A1; *C1:2014*\r\n * Safety Testing 2nd ed: IEC 60601-1 *Ed. 2.0*\r\n * RoHS Directive 2011/65/EU",
-    "status": "IN PROGRESS",
-    "issuetype": "Bug",
-    "priority": "Medium",
-    "assignee": "Darmer, Frank",
-    "labels": [
-      "DOCU_BUG",
-      "rated"
-    ],
-    "components": [
-      "TechFile"
-    ],
-    "url": "https://jira.dentsplysirona.com/browse/Y3839-422"
-  },
-  {
-    "key": "Y3839-710",
-    "summary": "Remote Box is not usable after reinstall of IOSS/CDR Drivers",
-    "description": "*Workflow:*\r\n * Connect Remote Box to the PC with IOSS/CDR.\r\n * Uninstall IOSS/CDR\r\n * Disconnect Remote Box\r\n * Install IOSS/CDR again\r\n * Connect the same Box again\r\n\r\n*Observation:*\r\n\r\nReinstalling the drivers build into the IOSS/CDR package causes the following issues:\r\n * The Connection LED remains Orange and the Interface is not recognised by PC\r\n * Other USB3 Interfaces have no issues and can be used with the PC\r\n * The Remote Box is functional with another PCs with IOSS\r\n * Restart a PC after uninstall doesn't help\r\n\r\n*Workaround:*\r\n\r\nUpdating a driver over device-manger during connected issue-box resolve this problem.\r\n\r\nReinstalling a IOSS with the same box connected to PC resolve that problem too.",
-    "status": "Accepted",
-    "issuetype": "Bug",
-    "priority": "Medium",
-    "assignee": "Unassigned",
-    "labels": [
-      "rated"
-    ],
-    "components": [
-      "IOSS"
-    ],
-    "url": "https://jira.dentsplysirona.com/browse/Y3839-710"
-  },
-  {
-    "key": "Y3839-529",
-    "summary": "Saving image failed due to resources ; Image Loss",
-    "description": "During automated exposures of 1.5.148 with AE sensor S1 the automation stopped due to an Rescue after 63*12 =756 exposures (Single, Bitewing and Check-up).\r\n\r\nIt seems as if the previous Checkup-Template could not be completed successfully (see screenshot1). \r\nAfter leaving the session and starting another acquisition, the Rescue is shown (see screenshot2). \r\nResolving the rescue (it shows 4 of 7 exposures were saved successfully, see screenshot3), a re-transfer of all Images was working as expected.\r\n\r\nOn every next attempt to perform an exposure, IOSS and the USB3 remote to be ready for acquisition. *After radiation the image transfer fails,* which is indicated by an error message with red viewport and endless spinner. For every next attempt the behavior is the same.\r\n\r\nSidexis-Logs shows an error: \r\n{code:java}\r\n2026-01-30 19:41:11,068 [573       ] [ERROR] RemoteLogger - An error occurred while saving image e4f7c997-e978-4e7c-958d-bdbe0c7af253.\r\n{\r\n    \"headers\": {\r\n        \"normalizedNames\": {},\r\n        \"lazyUpdate\": null\r\n    },\r\n    \"status\": 500,\r\n    \"statusText\": \"OK\",\r\n    \"url\": \"https://localhost:43809/api/sidexis/session/f053fcb4-7784-444d-a4d0-4a485d78933c/images/e4f7c997-e978-4e7c-958d-bdbe0c7af253\",\r\n    \"ok\": false,\r\n    \"name\": \"HttpErrorResponse\",\r\n    \"message\": \"Http failure response for https://localhost:43809/api/sidexis/session/f053fcb4-7784-444d-a4d0-4a485d78933c/images/e4f7c997-e978-4e7c-958d-bdbe0c7af253: 500 OK\",\r\n    \"error\": {\r\n        \"message\": \"An error has occurred.\",\r\n        \"exceptionMessage\": \"Der Vorgang wurde erfolgreich beendet\",\r\n        \"exceptionType\": \"System.ComponentModel.Win32Exception\",\r\n        \"stackTrace\": \"   bei MS.Win32.UnsafeNativeMethods.RegisterClassEx(WNDCLASSEX_D wc_d)\\r\\n   bei MS.Win32.HwndWrapper..ctor(Int32 classStyle, Int32 style, Int32 exStyle, Int32 x, Int32 y, Int32 width, Int32 height, String name, IntPtr parent, HwndWrapperHook[] hooks)\\r\\n   bei System.Windows.Threading.Dispatcher..ctor()\\r\\n   bei System.Windows.Threading.Dispatcher.get_CurrentDispatcher()\\r\\n   bei System.Windows.Media.Imaging.BitmapDecoder..ctor(Stream bitmapStream, BitmapCreateOptions createOptions, BitmapCacheOption cacheOption, Guid expectedClsId)\\r\\n   bei System.Windows.Media.Imaging.PngBitmapDecoder..ctor(Stream bitmapStream, BitmapCreateOptions createOptions, BitmapCacheOption cacheOption)\\r\\n   bei Sirona.Schick.SidexisPlugin.WebApiService.Services.SidexisSession.<StoreImage>d__33.MoveNext()\\r\\n--- Ende der Stapelüberwachung vom vorhergehenden Ort, an dem die Ausnahme ausgelöst wurde ---\\r\\n   bei System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()\\r\\n   bei System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)\\r\\n   bei Sirona.Schick.SidexisPlugin.WebApiService.Controllers.SidexisController.<StoreImage>d__47.MoveNext()\\r\\n--- Ende der Stapelüberwachung vom vorhergehenden Ort, an dem die Ausnahme ausgelöst wurde ---\\r\\n   bei System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()\\r\\n   bei System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)\\r\\n   bei System.Threading.Tasks.TaskHelpersExtensions.<CastToObject>d__1`1.MoveNext()\\r\\n--- Ende der Stapelüberwachung vom vorhergehenden Ort, an dem die Ausnahme ausgelöst wurde ---\\r\\n   bei System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()\\r\\n   bei System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)\\r\\n   bei System.Web.Http.Controllers.ApiControllerActionInvoker.<InvokeActionAsyncCore>d__1.MoveNext()\\r\\n--- Ende der Stapelüberwachung vom vorhergehenden Ort, an dem die Ausnahme ausgelöst wurde ---\\r\\n   bei System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()\\r\\n   bei System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)\\r\\n   bei System.Web.Http.Controllers.ActionFilterResult.<ExecuteAsync>d__5.MoveNext()\\r\\n--- Ende der Stapelüberwachung vom vorhergehenden Ort, an dem die Ausnahme ausgelöst wurde ---\\r\\n   bei System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()\\r\\n   bei System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)\\r\\n   bei System.Web.Http.Filters.AuthorizationFilterAttribute.<ExecuteAuthorizationFilterAsyncCore>d__3.MoveNext()\\r\\n--- Ende der Stapelüberwachung vom vorhergehenden Ort, an dem die Ausnahme ausgelöst wurde ---\\r\\n   bei System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()\\r\\n   bei System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)\\r\\n   bei System.Web.Http.Filters.AuthorizationFilterAttribute.<ExecuteAuthorizationFilterAsyncCore>d__3.MoveNext()\\r\\n--- Ende der Stapelüberwachung vom vorhergehenden Ort, an dem die Ausnahme ausgelöst wurde ---\\r\\n   bei System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()\\r\\n   bei System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)\\r\\n   bei System.Web.Http.Controllers.AuthenticationFilterResult.<ExecuteAsync>d__5.MoveNext()\\r\\n--- Ende der Stapelüberwachung vom vorhergehenden Ort, an dem die Ausnahme ausgelöst wurde ---\\r\\n   bei System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()\\r\\n   bei System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)\\r\\n   bei System.Web.Http.Controllers.ExceptionFilterResult.<ExecuteAsync>d__6.MoveNext()\\r\\n--- Ende der Stapelüberwachung vom vorhergehenden Ort, an dem die Ausnahme ausgelöst wurde ---\\r\\n   bei System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()\\r\\n   bei System.Web.Http.Controllers.ExceptionFilterResult.<ExecuteAsync>d__6.MoveNext()\\r\\n--- Ende der Stapelüberwachung vom vorhergehenden Ort, an dem die Ausnahme ausgelöst wurde ---\\r\\n   bei System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()\\r\\n   bei System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)\\r\\n   bei System.Web.Http.Dispatcher.HttpControllerDispatcher.<SendAsync>d__15.MoveNext()\"\r\n    }\r\n} {code}\r\nWindows Event log does not show information to the time of occurrence. \r\n\r\nAdditional information can be found here: +\\\\10.244.128.96\\sw_systemtest\\Jira\\Y3839-529+",
-    "status": "Accepted",
-    "issuetype": "Bug",
-    "priority": "Medium",
-    "assignee": "Unassigned",
-    "labels": [
-      "Software",
-      "Team_DX5",
-      "rated"
-    ],
-    "components": [
-      "IOSS"
-    ],
-    "url": "https://jira.dentsplysirona.com/browse/Y3839-529"
-  },
-  {
-    "key": "Y3839-716",
-    "summary": "CDR-Integration Test of 1.5.165 - OpenDental",
-    "description": "",
-    "status": "To Do",
-    "issuetype": "Test Execution",
-    "priority": "Medium",
-    "assignee": "Unassigned",
-    "labels": [],
-    "components": [],
-    "url": "https://jira.dentsplysirona.com/browse/Y3839-716"
-  },
-  {
-    "key": "Y3839-393",
-    "summary": "7.13.3 Upgrade and Diagnostic Utility- Diagnostics",
-    "description": "*+Test Goal:+*\r\n * To verify that the functionality of the USB Interface test and the Senor test in the AE USB Interface Utility.\r\n\r\n*+Pre-conditions:+*\r\n * The Imaging Application is closed.\r\n * AE USB Interface Utility is closed.\r\n * AE Sensor USB Interface is connected.\r\n * No sensor is connected.\r\n * All AE Sensor USB Interface and sensor hardware has up to date firmware and FPGA.",
-    "status": "Accepted",
-    "issuetype": "Test",
-    "priority": "Medium",
-    "assignee": "Unassigned",
-    "labels": [],
-    "components": [],
-    "url": "https://jira.dentsplysirona.com/browse/Y3839-393"
-  },
-  {
-    "key": "Y3839-431",
-    "summary": "Stream Loss / Previous Patient",
-    "description": "+*Phenomena:*+ \r\n\r\nSeveral customer complained about part of the image:\r\n * is missing\r\n * shows big striped pattern\r\n * shows previous exposure structures\r\n * is missing image lines",
-    "status": "In QA",
-    "issuetype": "Bug",
-    "priority": "Medium",
-    "assignee": "Beckhaus, Christian",
-    "labels": [
-      "IntraOral",
-      "csc",
-      "rated"
-    ],
-    "components": [
-      "Sensor"
-    ],
-    "url": "https://jira.dentsplysirona.com/browse/Y3839-431"
-  },
-  {
-    "key": "Y3839-723",
-    "summary": "CDR-Integration Test of 1.5.140 - OpenDental",
-    "description": "",
-    "status": "To Do",
-    "issuetype": "Test Execution",
-    "priority": "Medium",
-    "assignee": "Unassigned",
-    "labels": [],
-    "components": [],
-    "url": "https://jira.dentsplysirona.com/browse/Y3839-723"
-  },
-  {
-    "key": "Y3839-594",
-    "summary": "Dentrix/CDR: The Sensor LED stays orange sporadically after unplugging the sensor",
-    "description": "During repeated plug-in and unplug cycles of the AE sensor (Supreme Gen1 is also affected), the Sensor LED indicator sporadically remains {*}orange{*}, even though {*}no sensor is connected anymore{*}. The behavior occurs frequently, but not consistently, making it sporadic and hard to reproduce deterministically. *The issue occurred on Tuesday, June 30th, 2026 at approximate 17:32:00 CET.*\r\n\r\n+*Actual Result*+\r\nThe Sensor LED continues to light up in orange after the sensor is unplugged.\r\nThe device behaves as if a sensor was still connected, even though no sensor is attached.\r\nThe issue appears often, but not every time.\r\n\r\n+*Expected Result*+\r\nAfter unplugging the sensor, the Sensor LED should immediately turn \"OFF\".\r\nThe system should correctly detect the absence of the sensor and show no active LED indication.\r\nNo sporadic or residual LED activity should occur.\r\n\r\n+*Remarks:*+\r\n[~Michael.Niederle@dentsplysirona.com] , [~Sebastian.Torpus@dentsplysirona.com]: the error could also be reproduced today using the new *FW Version* ({*}1.5.154){*} and an *Xios XG Supreme Gen 1* Sensor around 13:40 CET.\r\n\r\nPlease check the new attached Logs from {*}07.07.2026{*}.",
-    "status": "Open",
-    "issuetype": "Bug",
-    "priority": "Medium",
-    "assignee": "Ding, Xiang",
-    "labels": [],
-    "components": [
-      "CDR",
-      "USB3-Remote-FPGA"
-    ],
-    "url": "https://jira.dentsplysirona.com/browse/Y3839-594"
-  },
-  {
     "key": "Y3839-569",
     "summary": "Reproducing field issues with firmware version 1.5.148",
     "description": "h2. Overview\r\n\r\nThis Epic tracks bugs uncovered during internal efforts to *reproduce field-reported issues* following the release of *firmware version 1.5.148* for USB 3 interface.\r\n\r\nThe linked bugs are *not necessarily identical* to the issues reported by customers — they represent findings made during reproduction attempts in a lab/test environment. Some bugs may reflect related but distinct root causes; others may be coincidental discoveries made while setting up reproduction scenarios.\r\n\r\nField feedback reference: [https://wiki.dentsplysirona.com/spaces/IOXRAY/pages/505394012/Update+1.5.148+Feedback]\r\nh2.  \r\nh2. Field-Reported Issue Categories\r\nh3. 1. No Image / Image Quality Issues\r\n * Sensor not detected or no image after X-Ray\r\n * Root cause in investigated cases: incorrect screw torque on sensor cable connection\r\n * Fix: Retighten screws to specified torque (0.145 Nm / range: 0.127–0.155 Nm), replace cable if needed\r\n\r\nh3. 2. Incomplete Readout / Checkerboard Pattern\r\n * 'Incomplete readout' errors observed\r\n * Checkerboard artefact patterns reported\r\n * Seen across Gen1 and Gen2 sensors\r\n * In some cases: commands sent to box in wrong order (3rd-party integration issue)\r\n * Open: potential bugfix required in firmware or 3rd-party integration\r\n\r\nh3. 3. IOSS Crash / Error 8 / FPGA Reset Loop\r\n * IOSS crashes after which remote LEDs turn green; PC requires restart\r\n * High frequency of Error 8 occurrences, majority in combination with FPGA reset ({{{}Resetting Velocity FPGA...{}}})\r\n * Suspected root cause: state conflict caused by timing issue — GetStatus response received, then state interrupt (state=6), then payload from previous GetStatus read (state=5): resulting in state transition 5→6→5 triggering reset\r\n * Open: discussion with software team required\r\n\r\nh3. 4. White Image\r\n * only white image is delivered to the imaging software\r\n\r\n \r\nh2. Integration Environments Affected\r\n * Sidexis with IOSS\r\n * IOSS with Eaglesoft (24.20 and higher)\r\n * CDR with Dentrix / Eaglesoft (3rd-party integration)\r\n * Curve Dental with IOSS integration (not part of testing efforts)\r\n\r\nh2. Sensors used in testing efforts\r\n||Sensor Type||Generation||Sensor Serial||Cable Serial||Applied torque||\r\n|XIOS XG Supreme S2|1|72012231|6400009651|0.145 Nm|\r\n|XIOS XG Supreme S2|2|72019651|6400009653|0.145 Nm|\r\n|XIOS XG Supreme S0|2|70003913|6400009650|0.145 Nm|\r\n|XIOS XG Supreme S1|2|71021910|6400009656|0.145 Nm|\r\n|XIOS XG Supreme S 1\r\n(Faulty sensor from costumer)|1|71005409|6400009476|0.145 Nm|\r\n|Schick AE S1|3|17001202|XL15291 (old cable)|N/A|\r\nh2. USB3 Interfaces used in testing efforts\r\n||Interface Serial||Firmware||\r\n|2031530|1.5.148|\r\n|2000909|1.5.148|\r\n|2039767|1.5.148|\r\n|2038211|1.5.148|",
@@ -5375,37 +4624,6 @@
       "USB3-Remote-FW"
     ],
     "url": "https://jira.dentsplysirona.com/browse/Y3839-607"
-  },
-  {
-    "key": "Y3839-654",
-    "summary": "CDR Base Features Test — PMS-Independent Verification",
-    "description": "h2. Test Goal\r\n\r\nVerify that the intraoral CDR sensor interface correctly handles six distinct feature groups:\r\n # Calibration & Device Setup\r\n # Image Acquisition Modes\r\n # Automatic Features (Auto Take, Auto Acquire)\r\n # Sensor Type Differentiation\r\n # Image Enhancement Settings\r\n # Data Integrity & Round-Trip Verification\r\n\r\nThis test is PMS-agnostic and applies to any supported imaging system (Eaglesoft, Dentrix, Dexis etc).\r\nh2. Pre-conditions\r\n * Intraoral sensor (Schick AE/XIOS AE or Schick33/Supreme) connected to CDR interface\r\n * PMS system open (any supported version)\r\n * CDR driver initialized; sensor recognized\r\n * Calibration file NOT yet installed or deleted (to test auto-install in feature group 1)\r\n ** path C:\\ProgramData\\Schick Technologies\\CDR\\Sensors",
-    "status": "Draft",
-    "issuetype": "Test",
-    "priority": "Medium",
-    "assignee": "Unassigned",
-    "labels": [],
-    "components": [],
-    "url": "https://jira.dentsplysirona.com/browse/Y3839-654"
-  },
-  {
-    "key": "Y3839-691",
-    "summary": "Sensor detection not stable",
-    "description": "h2. Description\r\n\r\nSometimes the sensor is not detected by the remote, if sensor is connected to the remote. Result: Although the sensor is connected to the remote the sensor is not detected and the Sensor LED is still off. Customer has to reconnect the sensor.\r\nh2. Steps to Reproduce\r\n # Use Gen 1 sensor\r\n # Connect the sensor slowly into the remote\r\n # Sensor is connected to the remote but sensor LED is still off\r\n\r\nh2. Observed Behavior\r\n * Sensor is connected to the remote but will not be recognized by the remote\r\n\r\nh2. Expected Behavior\r\n * If the sensor is connected to the remote the sensor has to be detected.\r\n\r\nh2. Additional Informations\r\n\r\nSee confluence page: [Slow connection sensor (gen. 1) issue - Intra-Oral X-Ray - Confluence Dentsply Sirona|https://wiki.dentsplysirona.com/spaces/IOXRAY/pages/385745621/Slow+connection+sensor+gen.+1+issue]",
-    "status": "Open",
-    "issuetype": "Bug",
-    "priority": "Medium",
-    "assignee": "Petek, Michael Alan",
-    "labels": [
-      "Team_ESDX",
-      "rated"
-    ],
-    "components": [
-      "Team_ESDX",
-      "USB3-Remote-FPGA",
-      "USB3-Remote-FW"
-    ],
-    "url": "https://jira.dentsplysirona.com/browse/Y3839-691"
   },
   {
     "key": "Y3839-526",
@@ -5443,33 +4661,6 @@
     "url": "https://jira.dentsplysirona.com/browse/Y3839-657"
   },
   {
-    "key": "Y3839-722",
-    "summary": "CDR: Sensor remains armed (event detection not disabled) if integrator transitions from State 6 directly to State 3 (Idle) — stray exposures are silently captured",
-    "description": "h2. Summary\r\n\r\nCDR does not provide a fixed acquisition service like IOSS; instead, Dentsply Sirona ships a DLL that lets third-party integrators build their own control/workflow logic for the USB3 Interface. State 6 is the state in which the USB3 Interface signals to the PC that an image is ready for pickup. Because CDR integrators fully own the workflow, nothing enforces that event detection is disabled (SetEventDetection(False)) once the PC has read out that image: an integrator can transition directly from State 6 to State 3 (Idle) without ever disabling event detection, leaving the sensor armed.\r\n\r\nThe PC Connection LED cannot be used to detect this: its breathing pattern (LEDCONTROL state 5) is a separate command, only sent once the driver's internal state machine explicitly confirms reaching State 4. If a workflow skips this confirmation (as seen in the attached log), the LED never breathes and gives no indication that the sensor is still armed.\r\n\r\nWhile still armed, any radiation on the sensor produces a new, unattended image (State 5 -> State 6) with no PMS interaction. This stray image is then picked up as soon as the next acquisition phase is opened in the PMS.\r\nh2. Steps to Reproduce\r\n # Perform an exposure via CDR; the USB3 Interface enters State 6, signaling to the PC that an image is ready for pickup.\r\n # The PMS reads out the image, then transitions the workflow to State 3 (Idle) without sending SetEventDetection(False) (integrator does not implement disarm).\r\n # Apply radiation to the sensor while in this state - no PMS interaction, Connection LED gives no indication (not breathing, same as normal idle).\r\n # The sensor captures a new image (State 5 -> State 6), unattended.\r\n # Start a new acquisition phase in the PMS - the stray image is picked up.\r\n\r\n*Log evidence ({{{}VelocityUSB.log{}}}):* {{SetEventDetection(False)}} is sent only once at session start (08:08:17). From 08:09-08:14, State 5 -> 6 -> 3 repeats several times, re-armed each time via {{SetEventDetection(True)}} with no disarm in between. {{SetLedState(state: 5)}} (breathing) never appears, since no {{State: 4}} confirmation is ever logged for this flow - only {{state: 4}} (non-breathing).\r\nh2. Observed Behavior\r\n * CDR allows a State 6 -> State 3 transition without SetEventDetection(False), because the integrator fully owns the workflow logic (DLL-based, not a managed service as with IOSS).\r\n * The Connection LED does not reveal this: breathing depends on a separate confirmation path that this flow never triggers.\r\n * A subsequent, unrelated exposure is captured and silently picked up on the next acquisition.\r\n\r\nh2. Expected Behavior\r\n * The state machine should not allow State 6 -> State 3 without disabling event detection first.\r\n * *Recommendation:* enforce this on the firmware side - have the USB3 Interface automatically disable event detection on every State 6 -> State 3 transition, regardless of what the PC/integrator sends. This removes the dependency on correct third-party workflow implementation entirely.",
-    "status": "Accepted",
-    "issuetype": "Bug",
-    "priority": "Medium",
-    "assignee": "Petek, Michael Alan",
-    "labels": [],
-    "components": [
-      "CDR",
-      "USB3-Remote-FW"
-    ],
-    "url": "https://jira.dentsplysirona.com/browse/Y3839-722"
-  },
-  {
-    "key": "Y3839-519",
-    "summary": "USB interface FW updater tool",
-    "description": "*Test goal:*\r\n\r\n[IOPF-1576 - USB-interface-FW-updater-tool|https://alm-gb.dentsplysirona.com/polarion/#/project/IOPF/workitem?id=IOPF-1576]\r\nThere shall be an application that allows to update the firmware of a USB3 remote. The application shall run without prerequisites on a PC to which the USB3 remote that shall be updated is connected.\r\n\r\n*Precondition:*\r\n * connected AE USB interface and sensor\r\n * OS: Win 11 64-bit (without VCredist, dotNetCore.... ; only plain windows)",
-    "status": "Accepted",
-    "issuetype": "Test",
-    "priority": "Medium",
-    "assignee": "Unassigned",
-    "labels": [],
-    "components": [],
-    "url": "https://jira.dentsplysirona.com/browse/Y3839-519"
-  },
-  {
     "key": "Y3839-119",
     "summary": "Sidexis Integration",
     "description": "+*Test goal:*+\r\n\r\n[IOPF-757 - Sidexis Integration|https://alm-gb.dentsplysirona.net/polarion/redirect/project/IOPF/workitem?id=IOPF-757]\r\n * IOSS shall integrate itself into Sidexis 4 for image acquisitions and sensor configuration.\r\n * IOSS shall register a single device with Sidexis 4 called “Intraoral Sensors” using a generic icon.\r\n * When viewing the device configuration through Sidexis (settings gear icon), the software will display a menu of all connected remotes including sensor.\r\n\r\n \r\n\r\n[IOPF-1167 - Sensor List View|https://alm-gb.dentsplysirona.net/polarion/#/project/IOPF/workitem?id=IOPF-1167]\r\n * The sensor list view displays all connected devices / sensors and allows navigation into the sensor view\r\n\r\nOutput:\r\n * List of connected sensors\r\n\r\nActions:\r\n * Refresh Sensors: Updates the list of connected sensors.\r\n * Select Sensor: Navigates to the [IOPF-1174 - Velocity Sensor View|https://alm-gb.dentsplysirona.net/polarion/#/project/IOPF/workitem?id=IOPF-1174] of the selected device\r\n\r\n \r\n\r\n[IOPF-1174 - Velocity Sensor View|https://alm-gb.dentsplysirona.net/polarion/#/project/IOPF/workitem?id=IOPF-1174]\r\n * The sensor list view displays all connected sensors and allows navigation into the sensor view\r\n\r\nOutput:\r\n * Sensor information\r\n * Model\r\n * Serial number\r\n * Size\r\n * Firmware version\r\n * Status: Available, InUse, Error, Unavailable\r\n * AE USB interface version\r\n * AE USB interface update status: Update available, up to date\r\n * Sensor update status: Update available, up to date\r\n * USB interface test result\r\n * Sensor test result\r\n * Busy dialog: Displayed while actions of the velocity sensor view are executed. Informs user not to unplug the device.\r\n * AE USB Interface Update result dialog\r\n * Sensor Update result dialog\r\n * Manual Update result dialog\r\n\r\nAction: \r\n * Back: Navigates back to the sensor list view\r\n\r\n \r\n\r\n+*Preconditions:*+\r\n * Sidexis4 installed\r\n * IOSS installed\r\n * Connected USB remotes with sensors",
@@ -5494,20 +4685,6 @@
     "labels": [],
     "components": [],
     "url": "https://jira.dentsplysirona.com/browse/Y3839-717"
-  },
-  {
-    "key": "Y3839-721",
-    "summary": "CDR sensor size detection",
-    "description": "*Test goals:*\r\nVerify that all sensor sizes are correctly recognized via CDR, with correct metadata (e.g., size, dimensions, type, etc.) reported for each, and that Exposure can be performed without issues across all recognized sensors.\r\n\r\n*Precondition:*\r\n * Connected USB remote\r\n * Min. 3x different authorized sensors of 3 different sizes (0, 1, 2), any generation\r\n * PMS and CDR installed\r\n\r\n_#table image dimenions for binned and unbinned configuration_\r\n||Size||Dimensions [mm]||Dimensions [pixels]||Binned Dimensions [pixels]||Sample Image ||\r\n|*0*|19.0x25.9|1200x1600|600x800|!s0.png|width=235,height=79!|\r\n|*1*|21.04x31.9|1336x2000|668x1000|!s1.png|width=249,height=89!|\r\n|*2*|26.62x37.94|1708x2400|854x1200|!s2.png|width=243,height=109!|",
-    "status": "Accepted",
-    "issuetype": "Test",
-    "priority": "Medium",
-    "assignee": "Unassigned",
-    "labels": [],
-    "components": [
-      "CDR"
-    ],
-    "url": "https://jira.dentsplysirona.com/browse/Y3839-721"
   },
   {
     "key": "Y3839-733",
@@ -5562,20 +4739,6 @@
     "url": "https://jira.dentsplysirona.com/browse/Y3839-719"
   },
   {
-    "key": "Y3839-571",
-    "summary": "Eaglesoft/Dentrix [CDR]: \"Unable to take X-Ray\" error after switching to AE sensor, no image acquired",
-    "description": "After switching to an *AE (Gen3/AE) sensor* in an *Eaglesoft with CDR integration* setup, exposures consistently fail with an error despite the system signaling readiness beforehand. The same incorrect behavior was also observed on the *Dentrix (CDR)* platform, which indicates that this is a general {*}CDR issue{*}.\r\nh2. Steps to Reproduce\r\n # Set up acquisition session in Eaglesoft with CDR integration\r\n # Switch the connected sensor to an AE sensor\r\n # Observe that the viewport signals exposure readiness\r\n # Observe that the USB3 interface connection LED is *breathing* (indicates exposure readiness)\r\n # Trigger an exposure\r\n # Confirm the error prompt\r\n # Trigger a second exposure\r\n\r\nh2. Observed Behavior\r\n * Viewport and USB3 interface connection LED correctly signal *exposure readiness* (LED breathing)\r\n * After triggering the exposure, Eaglesoft briefly shows *\"Reading image\"*\r\n * Eaglesoft then prompts the error message: *\"Unable to take X-Ray\"*\r\n * After confirming the error, the viewport and USB3 interface return to the ready state\r\n * A second exposure attempt results in the *same error* — the issue is persistent and not a one-time occurrence\r\n\r\nh2. Expected Behavior\r\n * After switching to an AE sensor and with the system signaling readiness, an exposure should be acquired and the image delivered successfully\r\n\r\nh2. Additional Information\r\n * Integration: Eaglesoft with CDR\r\n * Sensor type: AE (Gen3/AE)",
-    "status": "Open",
-    "issuetype": "Bug",
-    "priority": "Medium",
-    "assignee": "Kurz, Christian",
-    "labels": [],
-    "components": [
-      "CDR"
-    ],
-    "url": "https://jira.dentsplysirona.com/browse/Y3839-571"
-  },
-  {
     "key": "Y3839-714",
     "summary": "CDR-Integration Test of 1.5.165 - EagleSoft",
     "description": "",
@@ -5602,6 +4765,30 @@
     "url": "https://jira.dentsplysirona.com/browse/Y3839-732"
   },
   {
+    "key": "Y3839-654",
+    "summary": "CDR Base Features Test — PMS-Independent Verification",
+    "description": "h2. Test Goal\r\n\r\nVerify that the intraoral CDR sensor interface correctly handles six distinct feature groups:\r\n # Calibration & Device Setup\r\n # Image Acquisition Modes\r\n # Automatic Features (Auto Take, Auto Acquire)\r\n # Sensor Type Differentiation\r\n # Image Enhancement Settings\r\n # Data Integrity & Round-Trip Verification\r\n\r\nThis test is PMS-agnostic and applies to any supported imaging system (Eaglesoft, Dentrix, Dexis etc).\r\nh2. Pre-conditions\r\n * Intraoral sensor (Schick AE/XIOS AE or Schick33/Supreme) connected to CDR interface\r\n * PMS system open (any supported version)\r\n * CDR driver initialized; sensor recognized\r\n * Calibration file NOT yet installed or deleted (to test auto-install in feature group 1)\r\n ** path C:\\ProgramData\\Schick Technologies\\CDR\\Sensors",
+    "status": "Draft",
+    "issuetype": "Test",
+    "priority": "Medium",
+    "assignee": "Unassigned",
+    "labels": [],
+    "components": [],
+    "url": "https://jira.dentsplysirona.com/browse/Y3839-654"
+  },
+  {
+    "key": "Y3839-519",
+    "summary": "USB interface FW updater tool",
+    "description": "*Test goal:*\r\n\r\n[IOPF-1576 - USB-interface-FW-updater-tool|https://alm-gb.dentsplysirona.com/polarion/#/project/IOPF/workitem?id=IOPF-1576]\r\nThere shall be an application that allows to update the firmware of a USB3 remote. The application shall run without prerequisites on a PC to which the USB3 remote that shall be updated is connected.\r\n\r\n*Precondition:*\r\n * connected AE USB interface and sensor\r\n * OS: Win 11 64-bit (without VCredist, dotNetCore.... ; only plain windows)",
+    "status": "Accepted",
+    "issuetype": "Test",
+    "priority": "Medium",
+    "assignee": "Unassigned",
+    "labels": [],
+    "components": [],
+    "url": "https://jira.dentsplysirona.com/browse/Y3839-519"
+  },
+  {
     "key": "Y3839-721",
     "summary": "CDR sensor size detection",
     "description": "*Test goals:*\r\nVerify that all sensor sizes are correctly recognized via CDR, with correct metadata (e.g., size, dimensions, type, etc.) reported for each, and that Exposure can be performed without issues across all recognized sensors.\r\n\r\n*Precondition:*\r\n * Connected USB remote\r\n * Min. 3x different authorized sensors of 3 different sizes (0, 1, 2), any generation\r\n * PMS and CDR installed\r\n\r\n_#table image dimenions for binned and unbinned configuration_\r\n||Size||Dimensions [mm]||Dimensions [pixels]||Binned Dimensions [pixels]||Sample Image ||\r\n|*0*|19.0x25.9|1200x1600|600x800|!s0.png|width=235,height=79!|\r\n|*1*|21.04x31.9|1336x2000|668x1000|!s1.png|width=249,height=89!|\r\n|*2*|26.62x37.94|1708x2400|854x1200|!s2.png|width=243,height=109!|",
@@ -5616,18 +4803,6 @@
     "url": "https://jira.dentsplysirona.com/browse/Y3839-721"
   },
   {
-    "key": "Y3839-713",
-    "summary": "CDR-Integration Test of 1.5.165",
-    "description": "Tests for checking the behavior of FW_1.5.165 in CDR Environments. \r\n\r\nCurrent available 3rdPartySoftware: \r\n * Petterson EagleSoft CDR\r\n\\\\10.244.128.96\\install\\Competitors\\Petterson Eaglesoft\\NICHT_LOESCHEN_SOFTWARE_2026\r\n\r\n * Dentrix CDR\r\n\\\\10.244.128.96\\install\\Competitors\\Dentrix\\Dentrix G7.5\r\n\r\n * Open Dental \r\n\\\\10.244.128.96\\install\\Competitors\\Open Dental\r\n\\\\10.244.128.96\\install\\Competitors\\Schick\\CDR_Dicom3.5Sp1\r\nInstall Manual: [Open Dental Software - Schick CDR Dicom Bridge|https://www.opendental.com/manual/bridgeschick.html]\r\n * EnvistaDTX Studio\r\n\\\\10.244.128.96\\install\\Competitors\\Envista DXT Studio",
-    "status": "In Review",
-    "issuetype": "Test Plan",
-    "priority": "Medium",
-    "assignee": "Beckhaus, Christian",
-    "labels": [],
-    "components": [],
-    "url": "https://jira.dentsplysirona.com/browse/Y3839-713"
-  },
-  {
     "key": "Y3839-155",
     "summary": "Provide Calibration Data",
     "description": "+*Test goal:*+\r\n\r\n[IOPF-725 - Provide Calibration Data < IOPF (dentsplysirona.net)|https://alm-gb.dentsplysirona.net/polarion/#/project/IOPF/workitem?id=IOPF-725]\r\n\r\nTo provide calibration data on request when connecting a sensor via USB Remote to the computer.\r\n * The calibration data shall be read out from the sensor.\r\n * Also, the calibration data shall be transferred to the IOSS.\r\n\r\n+*Preconditions:*+\r\n * Sidexis4 4.4 installed\r\n * IOSS test version installed\r\n * USB 3.0 remote connected to host PC\r\n\r\n+*Hint:*+\r\n * The sensor infomation can be found in the logs after 'Request command 0x2 [...]'.",
@@ -5640,9 +4815,756 @@
     "url": "https://jira.dentsplysirona.com/browse/Y3839-155"
   },
   {
+    "key": "Y3839-731",
+    "summary": "Inconsistent Blinking of LEDs at boot",
+    "description": "+*Summary*+\r\n\r\nWhen the USB3 Interface is plugged in with Dentrix CDR running the PC and Sensor LED Blink inconsistently. The most common pattern is with the PC LED starting out red and then turning green, while the Sensor LED stays solid orange, then after a while it blinks 5 times and then turns off. Sometimes the blinking of the Sensor LED starts earlier.\r\n\r\nSee \\\\10.244.128.96\\sw_systemtest\\_ToBeArchived\\Y3839\\USB3 Interface Firmware 1.5.165\\Systemtest\\Y3839-731 for video.\r\n\r\n+*Steps to Reproduce*+\r\n # Start Windows 11 Pro machine with Dentrix installed.\r\n # Ensure the CDR process (Dentrix CDR integration) is running.\r\n # Plug in the USB3 Interface (FW 1.5.165, S/N 20039767) — no AE sensor connected.\r\n # Observe the LED behavior on the USB3 Interface.\r\n\r\n+*Expected Behavior*+\r\n * PC Connection LED: green.\r\n * Sensor Connection LED: *off* (no sensor connected).\r\n * Cypress enumerates the FPGA successfully on every plug-in attempt, regardless of whether the CDR process is running.",
+    "status": "Accepted",
+    "issuetype": "Bug",
+    "priority": "Medium",
+    "assignee": "Petek, Michael Alan",
+    "labels": [],
+    "components": [
+      "CDR",
+      "USB3-Remote-FPGA"
+    ],
+    "url": "https://jira.dentsplysirona.com/browse/Y3839-731"
+  },
+  {
+    "key": "Y3839-546",
+    "summary": "Exposure appears double in template acquisition",
+    "description": "+*Workflow:*+\r\n * USB remote was plugged in with Xios XG Supreme (S2) Sensor to PCX00177\r\n * Changed Sensor to Schick 33 (S2) [Same sensor type, only serial deviates]\r\n * Required to start IOSS-Service, as it was disabled for generating exposures via EagleSoft / CDR.\r\n * started a new Bitewing series for a newly created Patient\r\n * Exposure performed with 60kV 0,16s\r\n * Acquired Image appeared double in the template, one after the other\r\n * Series was finished to check the image(s)\r\n * Changed sensor-object situation\r\n * from the light box, resumed the template (clicked on empty viewbox, \"resume\")\r\n * xray was release was performed but no Image appeared in IOSS\r\n * Box was not Ready for exposure though the IOSS UI indicated so\r\n\r\n*+Evidence:+*\r\n\r\nAs can be seen in the attached screenshots both acquired images are identical. Only 1 Xray exposure was performed but two images were retrieved by IOSS --> The same images was retrieved two times \r\n\r\nFind additional data (DCMs) here: \\\\10.244.128.96\\sw_systemtest\\Jira\\Y3839-546",
+    "status": "Open",
+    "issuetype": "Bug",
+    "priority": "Medium",
+    "assignee": "Wenz, Steffen",
+    "labels": [
+      "Software",
+      "Team_DX5",
+      "rated"
+    ],
+    "components": [
+      "IOSS"
+    ],
+    "url": "https://jira.dentsplysirona.com/browse/Y3839-546"
+  },
+  {
+    "key": "Y3839-739",
+    "summary": "Interface goes into reboot loop when Gen 2 sensor is plugged",
+    "description": "This phenomena was seen during box recovery testing in York with interface 2067138 and also during initial setup of the USB C prototypes. When plugging in a sensor, the USB3 interface goes into a reboot loop. The logs continuously show the following error during step 3: Writing and verifying parameters:\r\n\r\nTimeout is expired, didn't get SENSOR_G1/G2_WRITE_RESPONSE_RECEIVED (status = 0xC9)\r\n\r\n\r\nThe error persisted across both FW 1.5.165 and after a downgrade to 1.5.148.",
+    "status": "Open",
+    "issuetype": "Bug",
+    "priority": "Medium",
+    "assignee": "Petek, Michael Alan",
+    "labels": [],
+    "components": [
+      "USB3-Remote-FPGA",
+      "USB3-Remote-FW"
+    ],
+    "url": "https://jira.dentsplysirona.com/browse/Y3839-739"
+  },
+  {
+    "key": "Y3839-738",
+    "summary": "Unplugging Sensor in State Image Ready Leads To Image Loss",
+    "description": "After taking an X-Ray and reaching State 6 (Image Data Ready), if the sensor is unplugged while being in State 6, we instantly go back to State 3 (Not Ready), leading to the PC being unable to retrieve the Image in the normal intented way. The sensor unplugging must happen before the PC requests the image for the error to occur.",
+    "status": "Open",
+    "issuetype": "Bug",
+    "priority": "Medium",
+    "assignee": "Petek, Michael Alan",
+    "labels": [],
+    "components": [
+      "USB3-Remote-FW"
+    ],
+    "url": "https://jira.dentsplysirona.com/browse/Y3839-738"
+  },
+  {
+    "key": "Y3839-737",
+    "summary": "Check for CDR Autodetect Server",
+    "description": "h3. Problem\n\nBefore entering exposure readiness, IOSS should check whether the CDR \"USB Auto Detect Server\" process ({{AutoDetectServer.exe}}) is running. This CDR process competes with IOSS for the intraoral hardware (USB Interfaces and sensors) — both try to access the same USB Interface at the same time. This can and will ultimately lead to problems in the exposure workflow and, in the worst case, result in the loss of the image.\n\nCDR is not listed as an installed program, so it is not apparent to the user that CDR is still present on the system.\n\nh3. Field relevance\n\nThis scenario is highly relevant for the field. Many customers still run PMS (Practice Management System) solutions that offer a CDR integration. When such a customer switches to IOSS, exactly this situation can occur: CDR remnants are left on the system because it is hard for the customer to recognize that CDR is still present (it is not listed as an installed program). The leftover CDR AutoDetect process then keeps competing with IOSS for the USB Interfaces and sensors, so this is not an edge case but an expected migration path that will affect real installations.\n\nh3. The competing process\n* Display name: USB Auto Detect Server (system-tray UI: \"CDR AutoDetect Monitor\")\n* Executable: {{AutoDetectServer.exe}}\n* Location: {{C:\\Program Files (x86)\\Schick Technologies\\Shared Files\\}}\n\n!image-2026-08-27-09-51-32-681.png!\n\nh3. Proposed ToDos\n# Implement a watcher for this process that either prompts the user with an error that a competing process was detected and blocks exposure while the process is running, or shuts the process down when detected.\n# Advise the user to uninstall CDR remnants.\n# Give the user the option to remove CDR remnants — e.g. via a button in the Config App, or even in the IOSS installer.\n\nh3. Background — What CDR AutoDetect is\n\n_What it is:_ CDR AutoDetect is the Schick/Dentsply Sirona mechanism that makes a connected Schick USB Interface and sensor available to the CDR imaging program. It instantly recognizes when a Schick USB device (or a paired Schick WiFi Interface) is connected, marks it as \"known\", and tells the imaging software to start using it, so the user never has to pick the device manually. Supported devices: Schick 33/Elite USB interfaces, AE USB interfaces, paired WiFi interfaces, standard (CDR) and high-speed (CDR Remote HS) remote modules, and Wireless/SDX interfaces. Special case: the CDR2000 USB Remote Module is only recognized when both the USB device and the sensor are connected.\n\n_How to recognize it:_ A Windows system-tray icon appears. Double-clicking it, or clicking the brief pop-up notification that shows when a device is plugged in, opens the \"CDR AutoDetect Monitor\" dialog listing all known connected Schick devices; the highlighted one is active, and Select Device switches it. Underlying process (internal knowledge, not named in the user guides): {{AutoDetectServer.exe}} in {{C:\\Program Files (x86)\\Schick Technologies\\Shared Files\\}}.\n\n_Third-party context:_ CDR AutoDetect separates device discovery/selection from image acquisition. Third-party integrators build their acquisition logic on the CDR DLL (e.g. {{acq32.dll}} per SW-041), which only handles capturing an image and says nothing about how the USB Interface and sensor become available. AutoDetect fills that gap: it presents and auto-selects the active device on the workstation, so integrators do not each implement their own USB discovery or device-switching. Note that a third-party developer is not strictly required to use the AutoDetect server — it is not mandatory — but it can be assumed that most integrations do use it, since it is the standard mechanism for device discovery and switching. When AutoDetect is disabled, the manual Hardware-Type drop-down is the fallback.\n\nh3. References\n# Schick USB Module and Sensors User Guide — P/N 100003870 Rev. 5 (Dentsply Sirona, 2020), §4.3 \"AutoDetect\" (§4.3.1 Enabling, §4.3.2 Disabling, §4.3.3 How Schick Devices are Detected, §4.3.4 Changing Schick USB Devices).\n# Schick AE USB Support for CDR User Guide — P/N 100008347 Rev. 2 (Dentsply Sirona, 2021), §5.1 \"AutoDetect\".\n# SW-041 — CDR Programmer's Guide: Using the Win32 X-ray Acquisition Library (Schick Technologies, Rev. -, 1998).",
+    "status": "To Do",
+    "issuetype": "New Feature",
+    "priority": "Medium",
+    "assignee": "Unassigned",
+    "labels": [
+      "Team_DX5"
+    ],
+    "components": [
+      "IOSS"
+    ],
+    "url": "https://jira.dentsplysirona.com/browse/Y3839-737"
+  },
+  {
+    "key": "Y3839-741",
+    "summary": "Sensor LED is green even if sensor is not responding",
+    "description": "Sensor LED does not always go amber when the sensor is not responding generally anymore.",
+    "status": "Open",
+    "issuetype": "Bug",
+    "priority": "Medium",
+    "assignee": "Ding, Xiang",
+    "labels": [],
+    "components": [
+      "USB3-Remote-FPGA",
+      "USB3-Remote-FW"
+    ],
+    "url": "https://jira.dentsplysirona.com/browse/Y3839-741"
+  },
+  {
+    "key": "Y3839-722",
+    "summary": "USB3 Interface firmware: Event detection is not disabled on State 6 → State 3 transition — sensor remains armed for unattended exposures",
+    "description": "h2. Summary\n\nThe USB3 Interface firmware does not disable event detection when the device transitions from State 6 (image ready for pickup) to State 3 (Idle) — the sensor remains armed. Neither CDR nor IOSS actively sends {{SetEventDetection(False)}} after reading out an image, so this cannot be relied upon at the software layer; it needs to be guaranteed by the firmware itself, regardless of what the PC/integrator sends.\n\nWhile armed, any radiation on the sensor produces a new, unattended image (State 5 → State 6) with no PMS interaction. The PC Connection LED gives no indication of this: its breathing pattern (LEDCONTROL state 5) is a separate command, only sent once the driver's internal state machine explicitly confirms reaching State 4 — a confirmation this flow never triggers.\n\nh2. Steps to Reproduce\n# Perform an exposure via CDR; the USB3 Interface enters State 6, signaling to the PC that an image is ready for pickup.\n# The PMS reads out the image, then transitions the workflow to State 3 (Idle) without the integration ever sending {{SetEventDetection(False)}}.\n# Apply radiation to the sensor while in this state — no PMS interaction, Connection LED gives no indication (not breathing, same as normal idle).\n# The sensor captures a new image (State 5 → State 6), unattended.\n# Start a new acquisition phase in the PMS — CDR picks up the stray image and delivers it as a real exposure. (On IOSS, this specific consequence is normally masked because the PMS-driven session discards a pre-existing State 6 image at session start, but the underlying firmware behavior — leaving the sensor armed — is the same; it can be demonstrated directly via the API, e.g. via Postman, bypassing the PMS.)\n\n*Log evidence ({{VelocityUSB.log}}):* {{SetEventDetection(False)}} is sent only once at session start (08:08:17). From 08:09–08:14, State 5 → 6 → 3 repeats several times, re-armed each time via {{SetEventDetection(True)}} with no disarm in between. {{SetLedState(state: 5)}} (breathing) never appears, since no {{State: 4}} confirmation is ever logged for this flow — only {{state: 4}} (non-breathing).\n\nh2. Observed Behavior\n* Event detection is not disabled by the firmware on the State 6 → State 3 transition.\n* Neither CDR nor IOSS sends {{SetEventDetection(False)}} themselves after readout — on IOSS this is only visible via direct API calls (Postman), not through normal PMS usage.\n* The Connection LED gives no indication that the sensor is still armed, since breathing depends on a separate confirmation path this flow never triggers.\n* On CDR, the unattended image is silently picked up as soon as the next acquisition phase starts.\n\nh2. Expected Behavior\n* On the State 6 → State 3 transition, event detection should be automatically disabled by the firmware, regardless of what the PC/integrator sends.\n* *Recommendation:* implement this at the firmware level in the USB3 Interface. Since neither CDR nor IOSS disables it themselves, this must be guaranteed by the firmware, independent of any software layer.",
+    "status": "Accepted",
+    "issuetype": "Bug",
+    "priority": "Medium",
+    "assignee": "Petek, Michael Alan",
+    "labels": [],
+    "components": [
+      "CDR",
+      "USB3-Remote-FW"
+    ],
+    "url": "https://jira.dentsplysirona.com/browse/Y3839-722"
+  },
+  {
+    "key": "Y3839-736",
+    "summary": "IOSS - Eaglesoft: Bitewing Series - same exposure is loaded in two frames and stuck at taking the exposure for the third frame",
+    "description": "*Preconditions:*\r\n * IOSS V3.2.4024.52346\r\n * Eaglesoft V25.20.03\r\n\r\n*Steps to reproduce:*\r\n * In Eaglesoft perform an 4 Bitewing series exposure with any IOSS sensor\r\n * Take the first image and wait for loading the image in the first frame\r\n * Don't take the next image - wait for what further happens\r\n\r\n*Actual result:*\r\n * The first taken image will load to the first frame of the series.\r\n * The second frame gets activated and after a view seconds the first taken image gets loaded in the second frame also\r\n * Try to perform an exposure in the third frame\r\n * The USB-Interface shows breathing Exposure ready LED\r\n * No further exposure can be performed\r\n * Eaglesoft stucks and has to be terminated over the taskmanager\r\n\r\n*Expected result:*\r\n * For each frame one image has to be performed\r\n * The same image is not loaded twice. It is loaded only in the frame where it is performed for\r\n * For all frames exposures can be performed\r\n\r\n*Related issue:*\r\nIn Y3839-546 the same behavior was observed, but with Sidexis and IOSS.\r\n\r\n*Hint:*\r\n\r\nIssues seen at 26.08.2026 07:17 and about 08:50 CEST (see logs and video).\r\n\r\n*Attachments:*\r\n\r\nIn bug folder (\\\\10.244.128.96\\sw_systemtest\\Jira\\Y3839-736):\r\n * Video\r\n * Eaglesoft logs\r\n * IntraoralSensorSoftware.log",
+    "status": "Accepted",
+    "issuetype": "Bug",
+    "priority": "Medium",
+    "assignee": "Fournier, Niklas",
+    "labels": [
+      "Team_DX5"
+    ],
+    "components": [
+      "CDR",
+      "IOSS",
+      "USB3-Remote-FW"
+    ],
+    "url": "https://jira.dentsplysirona.com/browse/Y3839-736"
+  },
+  {
+    "key": "Y3839-705",
+    "summary": "IOSS Installer: Error Text Stays German Even if other languages is selected",
+    "description": "+*Expected Result:*+\r\n\r\nWhen a language is selected in the installer the entire UI switches to that language.\r\n\r\n+*Actual Result:*+\r\n\r\nThe Error Code and text are always displayed in german.\r\n\r\n+*Steps to Reproduce:*+\r\n\r\nWith the newest version of IOSS already installed run autorun.exe for the same version and try to install IOSS again. The Installer shows an error claiming the newest verison is already installed, the autorun window then displays an error which is always written in German.\r\n\r\n \r\n\r\nSee pictures for details",
+    "status": "Accepted",
+    "issuetype": "Bug",
+    "priority": "Medium",
+    "assignee": "Unassigned",
+    "labels": [
+      "Team_DX5",
+      "rated"
+    ],
+    "components": [
+      "IOSS",
+      "Team_DX5"
+    ],
+    "url": "https://jira.dentsplysirona.com/browse/Y3839-705"
+  },
+  {
+    "key": "Y3839-183",
+    "summary": "USB3 Remote connection indication",
+    "description": "+*Test goal:*+\r\n\r\n[*IOPF-1014 - USB3 Remote connection indication*|https://alm-gb.dentsplysirona.net/polarion/#/project/IOPF/workitem?id=IOPF-1014]\r\n\r\nThe USB3 Remote must include a Connection Indicator with the following indications:\r\n * OFF = [No Power] The Connectivity Indicator will be off when the USB3 Remote is unplugged or not connected to a USB Host.\r\n * SOLID AMBER = [USB Connected] The Connectivity Indicator will be solid amber when the USB3 Remote is plugged into a USB port, but not connected to the imaging SW.\r\n * FLASHING (Pulsing) GREEN – [USB Host Connected] The Connectivity Indicator will pulse green (long ON and short OFF durations at 0.5-1.5Hz) when the USB Host software connects with the USB3 Remote.\r\n * SOLID GREEN – [Imaging SW Connected] The Connectivity Indicator will be solid green when the host imaging software, Sidexis, is properly configured, is connected to Sidexis App Services, and recognizes the Device.\r\n * BREATHING (Cycling) GREEN = [Ready for Acquisition] The Connectivity Indicator will cycle green (similar to the Smile LED on the Wallbox device, 1-4 Hz, approximately sinusoidal cycling of intensity) when the Device is ready to acquire an image.\r\n\r\n+*Precondition:*+\r\n * For step 1-3\r\n ** No Sidexis server / client\r\n ** IOSS installed and no connection to Sidexis server\r\n ** USB remote with connected sensor\r\n * For step 4\r\n ** Sidexis and IOSS installed and connection to Sidexis server established",
+    "status": "Accepted",
+    "issuetype": "Test",
+    "priority": "Medium",
+    "assignee": "Unassigned",
+    "labels": [],
+    "components": [],
+    "url": "https://jira.dentsplysirona.com/browse/Y3839-183"
+  },
+  {
+    "key": "Y3839-664",
+    "summary": "FPGA image still loaded after sensor unplugged",
+    "description": "*target behavior:*\r\n\r\nAfter unplugging the sensor, the FPGA should go back into the golden image\r\n\r\n*actual behavior:*\r\n\r\nThe FPGA stays in the sensor image even after unplugging the sensor\r\n\r\n*reproducibility:* \r\n_yes_\r\n\r\n_steps to reproduce:_\r\n\r\nPlug a sensor, Get Device Info (if Sensor Image and Golden Image have different versions), unplug the sensor and check Device Info again. It shows the FPGA Version of the sensor that was attached previously.\r\n\r\n*additional information:*\r\n\r\n...",
+    "status": "Open",
+    "issuetype": "Bug",
+    "priority": "Medium",
+    "assignee": "Petek, Michael Alan",
+    "labels": [
+      "Team_ESDX",
+      "rated"
+    ],
+    "components": [
+      "Team_ESDX",
+      "USB3-Remote-FW"
+    ],
+    "url": "https://jira.dentsplysirona.com/browse/Y3839-664"
+  },
+  {
+    "key": "Y3839-713",
+    "summary": "CDR-Integration Test of 1.5.165",
+    "description": "Tests for checking the behavior of FW_1.5.165 in CDR Environments. \r\n\r\nCurrent available 3rdPartySoftware: \r\n * Petterson EagleSoft CDR\r\n\\\\10.244.128.96\\install\\Competitors\\Petterson Eaglesoft\\NICHT_LOESCHEN_SOFTWARE_2026\r\n\r\n * Dentrix CDR\r\n\\\\10.244.128.96\\install\\Competitors\\Dentrix\\Dentrix G7.5\r\n\r\n * Open Dental \r\n\\\\10.244.128.96\\install\\Competitors\\Open Dental\r\n\\\\10.244.128.96\\install\\Competitors\\Schick\\CDR_Dicom3.5Sp1\r\nInstall Manual: [Open Dental Software - Schick CDR Dicom Bridge|https://www.opendental.com/manual/bridgeschick.html]\r\n * EnvistaDTX Studio\r\n\\\\10.244.128.96\\install\\Competitors\\Envista DXT Studio",
+    "status": "Accepted",
+    "issuetype": "Test Plan",
+    "priority": "Medium",
+    "assignee": "Unassigned",
+    "labels": [],
+    "components": [],
+    "url": "https://jira.dentsplysirona.com/browse/Y3839-713"
+  },
+  {
+    "key": "Y3839-283",
+    "summary": "Sensor IEC and EN Performance Standards",
+    "description": "+*Test goal:*+ \r\n\r\n[IOPF-977 - Sensor IEC and EN Performance Standards|https://alm-gb.dentsplysirona.net/polarion/redirect/project/IOPF/workitem?id=IOPF-977]\r\n\r\nThe system will be designed to comply with all applicable IEC and EN standards. Applicable standards include, but may not be limited to: IEC 60601-1: “Medical Electrical Equipment” with collateral standards 60601-1-1,60601-1-2,60601-1-4.\r\nA CB Scheme report issued by an authorized testing lab will demonstrate compliance to the above standards including applicable National Deviations.",
+    "status": "Accepted",
+    "issuetype": "Test",
+    "priority": "Medium",
+    "assignee": "Unassigned",
+    "labels": [
+      "Non-functional"
+    ],
+    "components": [],
+    "url": "https://jira.dentsplysirona.com/browse/Y3839-283"
+  },
+  {
+    "key": "Y3839-718",
+    "summary": "Corrupted Calibration file ",
+    "description": "h2. Description\r\n\r\nIt occurs sporadically that the calibration file is corrupted during the transfer from the remote to the PC. This issue was reported by several SF tickets (e.g. 8001293669, 8001379672, 8001356141, Logs from Dr. Mathes, ...).If the calib file is corrupted the signature looks always identical:\r\n\r\n*Signature: '\u0011?\u0011?\u0011?\u0011', Compression: 186, CalibSize: 3121723921, Date: \u0011?\u0011?\u0011?\u0011?, Version: 186.17, CRC: 3121723921*\r\n\r\nIf this issue occur a reconnect of the sensor does not help. A power-cycle of the USB remote is necessary.\r\nh2. Steps to Reproduce\r\n # Because it is sporadically a reconnection of the sensor might be lead to this issue\r\n\r\nh2. Observed Behavior\r\n * *Calibration file is corrupted -> no image can be taken*\r\n * *Power-cycle of the USB interface is neccesary* \r\n\r\nh2. Expected Behavior\r\n * If a sensor is connected to the USB3 remote the calibration file has to be send successfully to the PC\r\n\r\nh2. Additional Information\r\n * —",
+    "status": "Accepted",
+    "issuetype": "Bug",
+    "priority": "Medium",
+    "assignee": "Ding, Xiang",
+    "labels": [
+      "rated"
+    ],
+    "components": [
+      "USB3-Remote-FPGA"
+    ],
+    "url": "https://jira.dentsplysirona.com/browse/Y3839-718"
+  },
+  {
+    "key": "Y3839-106",
+    "summary": "Single Image Acquisition",
+    "description": "+*Test goal:*+\r\n\r\n[IOPF-480 - Single Image Acquisition < IOPF (dentsplysirona.net)|https://alm-gb.dentsplysirona.net/polarion/#/project/IOPF/workitem?id=IOPF-480]\r\n\r\nThe user must also be able to make a single image acquisition instead of choosing a viewset with multiple images.\r\n\r\n+*Preconditions:*+\r\n * Opened Sidexis4 with at least one patient\r\n * Connected USB remote with sensor",
+    "status": "Accepted",
+    "issuetype": "Test",
+    "priority": "Medium",
+    "assignee": "Unassigned",
+    "labels": [],
+    "components": [
+      "IOSS"
+    ],
+    "url": "https://jira.dentsplysirona.com/browse/Y3839-106"
+  },
+  {
+    "key": "Y3839-158",
+    "summary": "RA Exposure Indicator",
+    "description": "*Test goal:*\r\n\r\n[IOPF-1074 - RA Exposure Indicator|https://alm-gb.dentsplysirona.net/polarion/redirect/project/IOPF/workitem?id=IOPF-1074] (Origin: RA-3)\r\n * IOSS shall contain an exposure advisor which provides an indication of adequate exposure.\r\n\r\n*Preconditions:*\r\n * Sidexis and IOSS installed\r\n * USB remote and sensor connected",
+    "status": "Accepted",
+    "issuetype": "Test",
+    "priority": "Medium",
+    "assignee": "Unassigned",
+    "labels": [],
+    "components": [
+      "IOSS"
+    ],
+    "url": "https://jira.dentsplysirona.com/browse/Y3839-158"
+  },
+  {
+    "key": "Y3839-541",
+    "summary": "Negative effect of checkerboard pattern on image quality",
+    "description": "The checkerboard pattern from CAPA Previous Patient introduces increased graininess and dark edge shadows near fillings in intraoral images (see attached report).",
+    "status": "IN PROGRESS",
+    "issuetype": "Bug",
+    "priority": "Medium",
+    "assignee": "Ding, Xiang",
+    "labels": [
+      "rated"
+    ],
+    "components": [
+      "USB3-Remote-FPGA"
+    ],
+    "url": "https://jira.dentsplysirona.com/browse/Y3839-541"
+  },
+  {
+    "key": "Y3839-160",
+    "summary": "RA Exposure readiness",
+    "description": "+*Test goal:*+\r\n\r\n[IOPF-1072 - RA Exposure readiness|https://alm-gb.dentsplysirona.net/polarion/redirect/project/IOPF/workitem?id=IOPF-1072]\r\n * IOSS shall indicate the systems acquisition readiness.\r\n\r\n+*Preconditions:*+\r\n * Sidexis4 and IOSS installed\r\n * Connected USB remote with sensor",
+    "status": "Accepted",
+    "issuetype": "Test",
+    "priority": "Medium",
+    "assignee": "Unassigned",
+    "labels": [],
+    "components": [
+      "IOSS"
+    ],
+    "url": "https://jira.dentsplysirona.com/browse/Y3839-160"
+  },
+  {
+    "key": "Y3839-144",
+    "summary": "Prepare and order sample Rev.4",
+    "description": "Procure components and provide to EMS ( Elmgrove)\r\n\r\nOrder sample PCB\r\n\r\nclarify availability of housing parts USB-C",
+    "status": "In QA",
+    "issuetype": "Story",
+    "priority": "Medium",
+    "assignee": "Beckhaus, Christian",
+    "labels": [],
+    "components": [],
+    "url": "https://jira.dentsplysirona.com/browse/Y3839-144"
+  },
+  {
+    "key": "Y3839-148",
+    "summary": "USB-C create project plan ",
+    "description": "",
+    "status": "In QA",
+    "issuetype": "Story",
+    "priority": "Medium",
+    "assignee": "Beckhaus, Christian",
+    "labels": [],
+    "components": [],
+    "url": "https://jira.dentsplysirona.com/browse/Y3839-148"
+  },
+  {
+    "key": "Y3839-422",
+    "summary": "Applicable standards missing",
+    "description": "Coverage of the following standards is missing in the CB report:\r\n * Safety Testing: IEC 60601-1:2005 Ed.3+A1; *C1:2014*\r\n * Safety Testing 2nd ed: IEC 60601-1 *Ed. 2.0*\r\n * RoHS Directive 2011/65/EU",
+    "status": "IN PROGRESS",
+    "issuetype": "Bug",
+    "priority": "Medium",
+    "assignee": "Darmer, Frank",
+    "labels": [
+      "DOCU_BUG",
+      "rated"
+    ],
+    "components": [
+      "TechFile"
+    ],
+    "url": "https://jira.dentsplysirona.com/browse/Y3839-422"
+  },
+  {
+    "key": "Y3839-575",
+    "summary": "Sensor sporadically not detected after repeated USB3 Interface reconnect",
+    "description": "h2. Description\r\n\r\nAfter disconnecting and reconnecting the USB cable from the USB3 interface (box), the sensor is sporadically not detected. This prevents any exposure from being made. The issue resolves only after repeatedly unplugging and reconnecting the {*}sensor cable{*}. The issue has been reproduced across all software platforms.\r\nh2. Steps to Reproduce\r\n # Disconnect the USB cable from the USB3 interface (box)\r\n # Reconnect the USB cable\r\n # Observe whether the sensor is detected\r\n # Attempt to start an exposure\r\n # If the sensor is not detected, repeatedly unplug and re-plug the sensor cable until it is recognized\r\n\r\nh2. Observed Behavior\r\n * After reconnecting the USB cable to the USB3 interface, the sensor is *not recognized* by the system\r\n * Exposures cannot be started because the sensor is not detected\r\n * The sensor becomes functional again only after *multiple reconnection attempts of the sensor cable*\r\n * Reproducible across all software platforms (IOSS and CDR integration)\r\n\r\nh2. Expected Behavior\r\n * After reconnecting the USB cable, the system should immediately detect the sensor\r\n * The sensor should be fully operational without requiring repeated cable reconnections\r\n * Exposure functionality should remain uninterrupted after a USB reconnection event\r\n\r\nh2. Additional Information\r\n * Trigger: USB cable disconnect/reconnect from the USB3 interface box\r\n * Workaround: Repeatedly re-plug the sensor cable until the sensor is recognized\r\n * The issue could be reproduced on the Xios XG Supreme Gen 1 and Gen 2\r\n * Even if the sensor cable is unplugged first, the same behavior occurs as when the USB3 interface cable is disconnected first",
+    "status": "Open",
+    "issuetype": "Bug",
+    "priority": "Medium",
+    "assignee": "Kurz, Christian",
+    "labels": [
+      "rated"
+    ],
+    "components": [
+      "USB3-Remote-FPGA"
+    ],
+    "url": "https://jira.dentsplysirona.com/browse/Y3839-575"
+  },
+  {
+    "key": "Y3839-710",
+    "summary": "Remote Box is not usable after reinstall of IOSS/CDR Drivers",
+    "description": "*Workflow:*\r\n * Connect Remote Box to the PC with IOSS/CDR.\r\n * Uninstall IOSS/CDR\r\n * Disconnect Remote Box\r\n * Install IOSS/CDR again\r\n * Connect the same Box again\r\n\r\n*Observation:*\r\n\r\nReinstalling the drivers build into the IOSS/CDR package causes the following issues:\r\n * The Connection LED remains Orange and the Interface is not recognised by PC\r\n * Other USB3 Interfaces have no issues and can be used with the PC\r\n * The Remote Box is functional with another PCs with IOSS\r\n * Restart a PC after uninstall doesn't help\r\n\r\n*Workaround:*\r\n\r\nUpdating a driver over device-manger during connected issue-box resolve this problem.\r\n\r\nReinstalling a IOSS with the same box connected to PC resolve that problem too.",
+    "status": "Accepted",
+    "issuetype": "Bug",
+    "priority": "Medium",
+    "assignee": "Unassigned",
+    "labels": [
+      "rated"
+    ],
+    "components": [
+      "IOSS"
+    ],
+    "url": "https://jira.dentsplysirona.com/browse/Y3839-710"
+  },
+  {
+    "key": "Y3839-393",
+    "summary": "7.13.3 Upgrade and Diagnostic Utility- Diagnostics",
+    "description": "*+Test Goal:+*\r\n * To verify that the functionality of the USB Interface test and the Senor test in the AE USB Interface Utility.\r\n\r\n*+Pre-conditions:+*\r\n * The Imaging Application is closed.\r\n * AE USB Interface Utility is closed.\r\n * AE Sensor USB Interface is connected.\r\n * No sensor is connected.\r\n * All AE Sensor USB Interface and sensor hardware has up to date firmware and FPGA.",
+    "status": "Accepted",
+    "issuetype": "Test",
+    "priority": "Medium",
+    "assignee": "Unassigned",
+    "labels": [],
+    "components": [],
+    "url": "https://jira.dentsplysirona.com/browse/Y3839-393"
+  },
+  {
+    "key": "Y3839-529",
+    "summary": "Saving image failed due to resources ; Image Loss",
+    "description": "During automated exposures of 1.5.148 with AE sensor S1 the automation stopped due to an Rescue after 63*12 =756 exposures (Single, Bitewing and Check-up).\r\n\r\nIt seems as if the previous Checkup-Template could not be completed successfully (see screenshot1). \r\nAfter leaving the session and starting another acquisition, the Rescue is shown (see screenshot2). \r\nResolving the rescue (it shows 4 of 7 exposures were saved successfully, see screenshot3), a re-transfer of all Images was working as expected.\r\n\r\nOn every next attempt to perform an exposure, IOSS and the USB3 remote to be ready for acquisition. *After radiation the image transfer fails,* which is indicated by an error message with red viewport and endless spinner. For every next attempt the behavior is the same.\r\n\r\nSidexis-Logs shows an error: \r\n{code:java}\r\n2026-01-30 19:41:11,068 [573       ] [ERROR] RemoteLogger - An error occurred while saving image e4f7c997-e978-4e7c-958d-bdbe0c7af253.\r\n{\r\n    \"headers\": {\r\n        \"normalizedNames\": {},\r\n        \"lazyUpdate\": null\r\n    },\r\n    \"status\": 500,\r\n    \"statusText\": \"OK\",\r\n    \"url\": \"https://localhost:43809/api/sidexis/session/f053fcb4-7784-444d-a4d0-4a485d78933c/images/e4f7c997-e978-4e7c-958d-bdbe0c7af253\",\r\n    \"ok\": false,\r\n    \"name\": \"HttpErrorResponse\",\r\n    \"message\": \"Http failure response for https://localhost:43809/api/sidexis/session/f053fcb4-7784-444d-a4d0-4a485d78933c/images/e4f7c997-e978-4e7c-958d-bdbe0c7af253: 500 OK\",\r\n    \"error\": {\r\n        \"message\": \"An error has occurred.\",\r\n        \"exceptionMessage\": \"Der Vorgang wurde erfolgreich beendet\",\r\n        \"exceptionType\": \"System.ComponentModel.Win32Exception\",\r\n        \"stackTrace\": \"   bei MS.Win32.UnsafeNativeMethods.RegisterClassEx(WNDCLASSEX_D wc_d)\\r\\n   bei MS.Win32.HwndWrapper..ctor(Int32 classStyle, Int32 style, Int32 exStyle, Int32 x, Int32 y, Int32 width, Int32 height, String name, IntPtr parent, HwndWrapperHook[] hooks)\\r\\n   bei System.Windows.Threading.Dispatcher..ctor()\\r\\n   bei System.Windows.Threading.Dispatcher.get_CurrentDispatcher()\\r\\n   bei System.Windows.Media.Imaging.BitmapDecoder..ctor(Stream bitmapStream, BitmapCreateOptions createOptions, BitmapCacheOption cacheOption, Guid expectedClsId)\\r\\n   bei System.Windows.Media.Imaging.PngBitmapDecoder..ctor(Stream bitmapStream, BitmapCreateOptions createOptions, BitmapCacheOption cacheOption)\\r\\n   bei Sirona.Schick.SidexisPlugin.WebApiService.Services.SidexisSession.<StoreImage>d__33.MoveNext()\\r\\n--- Ende der Stapelüberwachung vom vorhergehenden Ort, an dem die Ausnahme ausgelöst wurde ---\\r\\n   bei System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()\\r\\n   bei System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)\\r\\n   bei Sirona.Schick.SidexisPlugin.WebApiService.Controllers.SidexisController.<StoreImage>d__47.MoveNext()\\r\\n--- Ende der Stapelüberwachung vom vorhergehenden Ort, an dem die Ausnahme ausgelöst wurde ---\\r\\n   bei System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()\\r\\n   bei System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)\\r\\n   bei System.Threading.Tasks.TaskHelpersExtensions.<CastToObject>d__1`1.MoveNext()\\r\\n--- Ende der Stapelüberwachung vom vorhergehenden Ort, an dem die Ausnahme ausgelöst wurde ---\\r\\n   bei System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()\\r\\n   bei System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)\\r\\n   bei System.Web.Http.Controllers.ApiControllerActionInvoker.<InvokeActionAsyncCore>d__1.MoveNext()\\r\\n--- Ende der Stapelüberwachung vom vorhergehenden Ort, an dem die Ausnahme ausgelöst wurde ---\\r\\n   bei System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()\\r\\n   bei System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)\\r\\n   bei System.Web.Http.Controllers.ActionFilterResult.<ExecuteAsync>d__5.MoveNext()\\r\\n--- Ende der Stapelüberwachung vom vorhergehenden Ort, an dem die Ausnahme ausgelöst wurde ---\\r\\n   bei System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()\\r\\n   bei System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)\\r\\n   bei System.Web.Http.Filters.AuthorizationFilterAttribute.<ExecuteAuthorizationFilterAsyncCore>d__3.MoveNext()\\r\\n--- Ende der Stapelüberwachung vom vorhergehenden Ort, an dem die Ausnahme ausgelöst wurde ---\\r\\n   bei System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()\\r\\n   bei System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)\\r\\n   bei System.Web.Http.Filters.AuthorizationFilterAttribute.<ExecuteAuthorizationFilterAsyncCore>d__3.MoveNext()\\r\\n--- Ende der Stapelüberwachung vom vorhergehenden Ort, an dem die Ausnahme ausgelöst wurde ---\\r\\n   bei System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()\\r\\n   bei System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)\\r\\n   bei System.Web.Http.Controllers.AuthenticationFilterResult.<ExecuteAsync>d__5.MoveNext()\\r\\n--- Ende der Stapelüberwachung vom vorhergehenden Ort, an dem die Ausnahme ausgelöst wurde ---\\r\\n   bei System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()\\r\\n   bei System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)\\r\\n   bei System.Web.Http.Controllers.ExceptionFilterResult.<ExecuteAsync>d__6.MoveNext()\\r\\n--- Ende der Stapelüberwachung vom vorhergehenden Ort, an dem die Ausnahme ausgelöst wurde ---\\r\\n   bei System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()\\r\\n   bei System.Web.Http.Controllers.ExceptionFilterResult.<ExecuteAsync>d__6.MoveNext()\\r\\n--- Ende der Stapelüberwachung vom vorhergehenden Ort, an dem die Ausnahme ausgelöst wurde ---\\r\\n   bei System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()\\r\\n   bei System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)\\r\\n   bei System.Web.Http.Dispatcher.HttpControllerDispatcher.<SendAsync>d__15.MoveNext()\"\r\n    }\r\n} {code}\r\nWindows Event log does not show information to the time of occurrence. \r\n\r\nAdditional information can be found here: +\\\\10.244.128.96\\sw_systemtest\\Jira\\Y3839-529+",
+    "status": "Accepted",
+    "issuetype": "Bug",
+    "priority": "Medium",
+    "assignee": "Unassigned",
+    "labels": [
+      "Software",
+      "Team_DX5",
+      "rated"
+    ],
+    "components": [
+      "IOSS"
+    ],
+    "url": "https://jira.dentsplysirona.com/browse/Y3839-529"
+  },
+  {
+    "key": "Y3839-716",
+    "summary": "CDR-Integration Test of 1.5.165 - OpenDental",
+    "description": "",
+    "status": "To Do",
+    "issuetype": "Test Execution",
+    "priority": "Medium",
+    "assignee": "Unassigned",
+    "labels": [],
+    "components": [],
+    "url": "https://jira.dentsplysirona.com/browse/Y3839-716"
+  },
+  {
+    "key": "Y3839-723",
+    "summary": "CDR-Integration Test of 1.5.140 - OpenDental",
+    "description": "",
+    "status": "To Do",
+    "issuetype": "Test Execution",
+    "priority": "Medium",
+    "assignee": "Unassigned",
+    "labels": [],
+    "components": [],
+    "url": "https://jira.dentsplysirona.com/browse/Y3839-723"
+  },
+  {
+    "key": "Y3839-431",
+    "summary": "Stream Loss / Previous Patient",
+    "description": "+*Phenomena:*+ \r\n\r\nSeveral customer complained about part of the image:\r\n * is missing\r\n * shows big striped pattern\r\n * shows previous exposure structures\r\n * is missing image lines",
+    "status": "In QA",
+    "issuetype": "Bug",
+    "priority": "Medium",
+    "assignee": "Beckhaus, Christian",
+    "labels": [
+      "IntraOral",
+      "csc",
+      "rated"
+    ],
+    "components": [
+      "Sensor"
+    ],
+    "url": "https://jira.dentsplysirona.com/browse/Y3839-431"
+  },
+  {
+    "key": "Y3839-742",
+    "summary": "Race Conditions during GPIF transactions",
+    "description": "*target behavior:*\r\n\r\nTransactions are atomic.\r\n\r\n*actual behavior:*\r\n\r\nTransactions are not atomic - sending FPGA requests and receiving responses are not handled as an atomic transaction event, leading to threads reading responses that are meant for different thread requests.\r\n\r\n*reproducibility:* \r\n_yes/no?_\r\n\r\n...\r\n_steps to reproduce_\r\n\r\n...\r\n\r\n*additional information:*\r\n\r\n...",
+    "status": "Open",
+    "issuetype": "Bug",
+    "priority": "Medium",
+    "assignee": "Petek, Michael Alan",
+    "labels": [],
+    "components": [
+      "USB3-Remote-FW"
+    ],
+    "url": "https://jira.dentsplysirona.com/browse/Y3839-742"
+  },
+  {
+    "key": "Y3839-659",
+    "summary": "Broken FPGA image is not providing valid version info",
+    "description": "*Test goal:*\r\n * Validate that if an FPGA image is corrupted, the Cypress controller returns invalid version information for the corresponding image(s).\r\n\r\n_Implemented first in Firmware build 1.5.165_\r\n\r\n*Precondition:*\r\n * Velocity USB Test Client tool\r\n * USB Interface Module  (pre Installed Changelog Firmware 1.5.165-RC7 or higher) with unplugged Sensor\r\n * SironaUSBService and other 3rd Party Applications closed / disabled\r\n * Attached Broken FPGA Firmware Upgrade bin",
+    "status": "Accepted",
+    "issuetype": "Test",
+    "priority": "Medium",
+    "assignee": "Unassigned",
+    "labels": [],
+    "components": [
+      "USB3-Remote-FW"
+    ],
+    "url": "https://jira.dentsplysirona.com/browse/Y3839-659"
+  },
+  {
+    "key": "Y3839-614",
+    "summary": "Irrelevant commands are ignored during upgrade",
+    "description": "*Test goal:*\r\n * During upgrade only commands should be processed that are relevant to perform the upgrade.\r\n\r\n \r\n\r\n_Implemented first in Firmware build 1.5.158_\r\n\r\n*Precondition:*\r\n * Velocity USB Test Client tool\r\n * USB Interface Module  (pre Installed Changelog Firmware 1.5.158-RC4 or higher) with unplugged Sensor\r\n * SironaUSBService and other 3rd Party Applications closed / disabled\r\n * Access to UBS Interface device logs via Adafruit Beakout Board\r\n * Firmware 1.5.158-RC4 zip file or higher",
+    "status": "Accepted",
+    "issuetype": "Test",
+    "priority": "Medium",
+    "assignee": "Unassigned",
+    "labels": [],
+    "components": [
+      "USB3-Remote-FW"
+    ],
+    "url": "https://jira.dentsplysirona.com/browse/Y3839-614"
+  },
+  {
+    "key": "Y3839-605",
+    "summary": "Valid patient image will not be overwritten before image data transfer",
+    "description": "*Test goal:*\r\n * Once a patient image has been received from the sensor and stored on the remote memory, the remote memory must not be erased until the patient image has been successfully transfered to the host.\r\n\r\n \r\n\r\n_Implemented first in Firmware build 1.5.152-RC1_\r\n\r\n*Precondition:*\r\n * Velocity USB Test Client tool\r\n * USB Interface Module with 1.5.152-RC1 or newer and sensor of any size attached\r\n * Ability to generate image by Xray exposure or modified light sensor\r\n * SironaUSBService and other 3rd Party Applications closed / disabled\r\n * ImageJ to inspect transferred image",
+    "status": "Accepted",
+    "issuetype": "Test",
+    "priority": "Medium",
+    "assignee": "Unassigned",
+    "labels": [],
+    "components": [
+      "USB3-Remote-FW"
+    ],
+    "url": "https://jira.dentsplysirona.com/browse/Y3839-605"
+  },
+  {
+    "key": "Y3839-624",
+    "summary": "FPGA upgrade done does not lead to an power cycle",
+    "description": "*Test goal:*\r\n * Validate that the _upgrade done phase_ doesn´t lead an power cycle on _1.8V_FPGA_ Voltage Supply.\r\n\r\n*Precondition:*\r\n * Velocity USB Test Client tool\r\n * USB3 Interface Box (pre Installed Changelog Firmware 1.5.158-RC4 or higher)\r\n * Oscilloscope (Tektronix MSO 70404C)\r\n ** Ch1: FPGA_PROGRAM_Bn (connected to SW2 Pin2)\r\n ** Ch2: 1.8V_FPGA (connected to C140 Pin1)\r\n ** Ch3: FPGA_Done (connected to R141 Pin1)\r\n ** Ch4: FPGA_INITn (connected to R143 Pin1)\r\n * Changelog Firmware 1.5.158-RC4 or higher",
+    "status": "Accepted",
+    "issuetype": "Test",
+    "priority": "Medium",
+    "assignee": "Unassigned",
+    "labels": [],
+    "components": [
+      "USB3-Remote-FW"
+    ],
+    "url": "https://jira.dentsplysirona.com/browse/Y3839-624"
+  },
+  {
+    "key": "Y3839-608",
+    "summary": "Command start upgrade does not lead to an power cycle",
+    "description": "*Test goal:*\r\n * Validate that the _start upgrade_ command doesn´t lead an power cycle on _1.8V_FPGA_ Voltage Supply.\r\n\r\n*Precondition:*\r\n * Velocity USB Test Client tool\r\n * USB3 Interface Box (pre Installed Changelog Firmware 1.5.154-RC2 or higher)\r\n * Oscilloscope (Tektronix MSO 70404C)\r\n ** Ch1: FPGA_PROGRAM_Bn (connected to SW2 Pin2)\r\n ** Ch2: 1.8V_FPGA (connected to C140 Pin1)\r\n ** Ch3: FPGA_Done (connected to R141 Pin1)\r\n ** Ch4: FPGA_INITn (connected to R143 Pin1)\r\n * Changelog Firmware 1.5.154-RC2 or higher",
+    "status": "Accepted",
+    "issuetype": "Test",
+    "priority": "Medium",
+    "assignee": "Unassigned",
+    "labels": [],
+    "components": [
+      "USB3-Remote-FW"
+    ],
+    "url": "https://jira.dentsplysirona.com/browse/Y3839-608"
+  },
+  {
+    "key": "Y3839-609",
+    "summary": "Command read FPGA versions does not lead to an power cycle",
+    "description": "*Test goal:*\r\n * Validate that the _Read FPGA Versions_ command doesn´t lead an power cycle on _1.8V_FPGA_ Voltage Supply.\r\n\r\n*Precondition:*\r\n * Velocity USB Test Client tool\r\n * USB3 Interface Box (pre Installed Changelog Firmware 1.5.155-RC3 or higher)\r\n * Oscilloscope (Tektronix MSO 70404C)\r\n ** Ch1: FPGA_PROGRAM_Bn (connected to SW2 Pin2)\r\n ** Ch2: 1.8V_FPGA (connected to C140 Pin1)\r\n ** Ch3: FPGA_Done (connected to R141 Pin1)\r\n ** Ch4: FPGA_INITn (connected to R143 Pin1)",
+    "status": "Accepted",
+    "issuetype": "Test",
+    "priority": "Medium",
+    "assignee": "Unassigned",
+    "labels": [],
+    "components": [
+      "USB3-Remote-FW"
+    ],
+    "url": "https://jira.dentsplysirona.com/browse/Y3839-609"
+  },
+  {
+    "key": "Y3839-634",
+    "summary": "Interrupts are only processed when FPGA done loading the configuration",
+    "description": "*Test goal:*\r\n * interrupts caused by undefined signal transition has to be ignored during FPGA configuration\r\n\r\n*Precondition:*\r\n * USB3 Interface Box (pre Installed Changelog Firmware 1.5.163-RC5 or higher)\r\n * Switch connected to:\r\n ** FPGA_PROGRAM_Bn\r\n ** FPGA_INITn\r\n * Pushbutton connected to:\r\n ** GPIF_INT_TO_FX3\r\n * Oscilloscope (Tektronix MSO 70404C)\r\n ** Ch1: FPGA_PROGRAM_Bn (connected to SW2 Pin2)\r\n ** Ch2: FPGA_Done (connected to R141 Pin1)\r\n ** Ch3: FPGA_INITn (connected to R143 Pin1)\r\n ** Ch4: GPIF_INT_TO_FX3\r\n * Adapter-Board with seriell interface cable connected to USB3 Interface Box\r\n * Terminal Program (e.g. Putty)",
+    "status": "Accepted",
+    "issuetype": "Test",
+    "priority": "Medium",
+    "assignee": "Unassigned",
+    "labels": [],
+    "components": [
+      "USB3-Remote-FW"
+    ],
+    "url": "https://jira.dentsplysirona.com/browse/Y3839-634"
+  },
+  {
+    "key": "Y3839-606",
+    "summary": "Cypress init pin is not driving against FPGA init pin",
+    "description": "*Test goal:*\r\n * Validate that the Signal FPGA_INITn isn´t driven by Cypress during FPGA pulls this Signal to GND.\r\n\r\n*Precondition:*\r\n * Velocity USB Test Client tool\r\n * USB3 Interface Box (pre Installed Changelog Firmware 1.5.155-RC3 or higher)\r\n * Oscilloscope (Tektronix MSO 70404C)\r\n ** Ch1: FPGA_PROGRAM_Bn (connected to SW2 Pin2)\r\n ** Ch2: 1.8V_FPGA (connected to C140 Pin1)\r\n ** Ch3: FPGA_Done (connected to R141 Pin1)\r\n ** Ch4: FPGA_INITn (connected to R143 Pin1)",
+    "status": "Accepted",
+    "issuetype": "Test",
+    "priority": "Medium",
+    "assignee": "Unassigned",
+    "labels": [],
+    "components": [
+      "USB3-Remote-FW"
+    ],
+    "url": "https://jira.dentsplysirona.com/browse/Y3839-606"
+  },
+  {
+    "key": "Y3839-618",
+    "summary": "Check for consistent firmware version is performed",
+    "description": "*Test goal:*\r\n * Firmware and FPGA versions should be checked for consistency. Inconsistent firmware and FPGA versions should be logged.\r\n\r\n_Implemented first in Firmware Build 1.5.163_\r\n\r\n*Precondition:*\r\n * Velocity USB Test Client tool\r\n * USB Interface Module  (pre Installed Changelog Firmware {_}1.5.163{_}-RC5 and corresponding FPGA image or higher) with unplugged Sensor\r\n * SironaUSBService and other 3rd Party Applications closed / disabled\r\n * Access to USB Interface device logs via Adafruit Breakout Board\r\n * Firmware 1.5.158-RC4 zip file or lower",
+    "status": "Accepted",
+    "issuetype": "Test",
+    "priority": "Medium",
+    "assignee": "Unassigned",
+    "labels": [],
+    "components": [
+      "USB3-Remote-FW"
+    ],
+    "url": "https://jira.dentsplysirona.com/browse/Y3839-618"
+  },
+  {
+    "key": "Y3839-613",
+    "summary": "No data is appended in the flash memory behind the programming file",
+    "description": "*Test goal:*\r\n * After writing a new firmware image, if the firmware image size is not a multiple of the page size (256 bytes), the remaining bytes of the last page are filled with 0x00, consistent with the implementation in the USB Control Center.\r\n\r\n \r\n\r\n_Implemented first in Firmware build 1.5.156_\r\n\r\n*Precondition:*\r\n * No Sensor connected\r\n * Velocity USB Test Client tool\r\n * USB Interface Module\r\n * Binary Comparison Tool (e..g Beyond Compare 5, WinMerge, ...)\r\n * Firmware zip file 1.5.156 or newer\r\n * SironaUSBService and other 3rd Party Applications closed / disabled",
+    "status": "Accepted",
+    "issuetype": "Test",
+    "priority": "Medium",
+    "assignee": "Unassigned",
+    "labels": [],
+    "components": [
+      "USB3-Remote-FW"
+    ],
+    "url": "https://jira.dentsplysirona.com/browse/Y3839-613"
+  },
+  {
+    "key": "Y3839-635",
+    "summary": "Reading FPGA versions does not lead to deadlock for bricked FPGA",
+    "description": "*Test goal:*\r\n * Requesting FPGA Versions does not lead to a deadlocked Cypress even for bricked FPGAs.\r\n\r\n \r\n\r\n_Implemented first in Firmware build 1.5.160_\r\n\r\n*Precondition:*\r\n * Velocity USB Test Client tool\r\n * USB Interface Module with firmware 1.5.160 or newer installed\r\n * SironaUSBService and other 3rd Party Applications closed / disabled",
+    "status": "Accepted",
+    "issuetype": "Test",
+    "priority": "Medium",
+    "assignee": "Unassigned",
+    "labels": [],
+    "components": [
+      "USB3-Remote-FW"
+    ],
+    "url": "https://jira.dentsplysirona.com/browse/Y3839-635"
+  },
+  {
+    "key": "Y3839-660",
+    "summary": "FPGA upgrade does not timeout by false positive done signal",
+    "description": "*Test goal:*\r\n * verify sleep increase with oszilloskop\r\n\r\n*Precondition:*\r\n * Velocity USB Test Client tool\r\n * USB3 Interface Box (pre Installed Changelog Firmware 1.5.164-RC6 or higher)\r\n * Oscilloscope (Tektronix MSO 70404C)\r\n ** Ch1: FPGA_PROGRAM_Bn (connected to SW2 Pin2)\r\n ** Ch2: FPGA_Done (connected to R141 Pin1)\r\n ** Ch3: FPGA_INITn (connected to R143 Pin1)",
+    "status": "Accepted",
+    "issuetype": "Test",
+    "priority": "Medium",
+    "assignee": "Unassigned",
+    "labels": [],
+    "components": [
+      "USB3-Remote-FW"
+    ],
+    "url": "https://jira.dentsplysirona.com/browse/Y3839-660"
+  },
+  {
+    "key": "Y3839-612",
+    "summary": "FPGA is verifying programmed flash data",
+    "description": "*Test goal:*\r\n * Validate that the Verifying FPGA programming data function is correctly implemented\r\n\r\n_First introduced with firmware version 1.5.163-RC5_\r\n\r\n*Precondition:*\r\n * USB3 Interface SN:2067071, with flying wire connection between QSPI output (TP20) and LED_SENSOR_YLW DGND to pull the SO line to GND during readout.\r\n * Golden image 0.5.2 with triggering flash read-back error ([^bitfiles-0.5.2.zip])\r\n * Firmware 0.5.1 with disabled golden image reload prior to upgrade ([^Velocity.Firmware.v0.5.1_noGoldenReload.zip])\r\n * Access to device logs\r\n * Firmware zip of version under test",
+    "status": "Accepted",
+    "issuetype": "Test",
+    "priority": "Medium",
+    "assignee": "Unassigned",
+    "labels": [],
+    "components": [
+      "USB3-Remote-FPGA",
+      "USB3-Remote-FW"
+    ],
+    "url": "https://jira.dentsplysirona.com/browse/Y3839-612"
+  },
+  {
+    "key": "Y3839-743",
+    "summary": "Interface Resets On Sensor Plug And Unplug",
+    "description": "When plugging or unplugging a sensor, the interface sometimes resets.",
+    "status": "Open",
+    "issuetype": "Bug",
+    "priority": "Medium",
+    "assignee": "Petek, Michael Alan",
+    "labels": [],
+    "components": [
+      "USB3-Remote-FW"
+    ],
+    "url": "https://jira.dentsplysirona.com/browse/Y3839-743"
+  },
+  {
+    "key": "Y3839-745",
+    "summary": "FPGA dies after interface lies around with plugged sensor",
+    "description": "The FPGA became unresponsive after lying around with a plugged sensor for some time. The Sensor LED was very lightly on with color Amber, but might also have been interpreted as off. The Device Logs show that the FPGA routed through some Sensor Errors to the firmware which are being ignored in the firmware with an apparent reason that the FPGA will handle them automatically. Observed errors that were routed through were Sensor Cmd Reply Status bit 3 (SENSOR_RX_DATA_BYTE_TIMEOUT), Sensor Status Register bit 2 (SENSOR_SYNC_ERROR) and \r\nSensor Status Register bit 12 (SENSOR_FRAMING_ERROR). It is not clear if the routing to the FW stopped because the errors stopped or the FPGA died at the time that the logs stop as the system has not been actively supervised. \r\n\r\nSending a request to the FPGA after presumably some while in this state led to a device reset, as the FPGA was unresponsive (did not consume the request buffer). Logs and Chatty analysis attached.",
+    "status": "Open",
+    "issuetype": "Bug",
+    "priority": "Medium",
+    "assignee": "Ding, Xiang",
+    "labels": [],
+    "components": [
+      "USB3-Remote-FPGA"
+    ],
+    "url": "https://jira.dentsplysirona.com/browse/Y3839-745"
+  },
+  {
+    "key": "Y3839-234",
+    "summary": "Connection Status LED lights up dimly when USB3 remote plugged in host PC",
+    "description": "*Reproduction steps:* \r\n * Ensure no sensor connected (shall remain unconnected)\r\n * Plug the USB3 remote with the micro-b ss cable to the host PC\r\n * Observe the sensor connection LED\r\n\r\n{color:#172b4d}+*Fault description:*+{color} \r\n\r\n-> Each time, after connecting the USB3 remote to the host PC, the sensor connection LED lights up weakly once in a pulsating red light when the status connection LED is turning solid GREEN. The LED is expected to be off and not powered.",
+    "status": "Accepted",
+    "issuetype": "Bug",
+    "priority": "Medium",
+    "assignee": "Ding, Xiang",
+    "labels": [
+      "rated"
+    ],
+    "components": [
+      "USB3-Remote-FPGA",
+      "USB3-Remote-FW",
+      "USB3-Remote-HW"
+    ],
+    "url": "https://jira.dentsplysirona.com/browse/Y3839-234"
+  },
+  {
+    "key": "Y3839-596",
+    "summary": "Sensor triggers due to electrostatic charge without x-ray and shows white image",
+    "description": "*target behavior:*\r\n\r\nonly x-ray triggers the sensor\r\n\r\n*actual behavior:*\r\nA new XIOS SENSOR XG SUPREME with the new AE Box triggers by itself whenever static electricity builds up—for example, when someone shuffles their shoes on the floor and then touches the sensor.\r\n\r\n*reproducibility:*\r\n\r\nunknown\r\n\r\n*additional information:*\r\n\r\nsee ticket #8001472421",
+    "status": "Open",
+    "issuetype": "Bug",
+    "priority": "Medium",
+    "assignee": "Damnik, Markus",
+    "labels": [
+      "Team_ELDX",
+      "rated"
+    ],
+    "components": [
+      "Team_ELDX"
+    ],
+    "url": "https://jira.dentsplysirona.com/browse/Y3839-596"
+  },
+  {
+    "key": "Y3839-594",
+    "summary": "The Sensor LED stays orange sporadically after unplugging the sensor",
+    "description": "During repeated plug-in and unplug cycles of the AE sensor (Supreme Gen1 is also affected), the Sensor LED indicator sporadically remains {*}orange{*}, even though {*}no sensor is connected anymore{*}. The behavior occurs frequently, but not consistently, making it sporadic and hard to reproduce deterministically. *The issue occurred on Tuesday, June 30th, 2026 at approximate 17:32:00 CET.*\r\n\r\n+*Actual Result*+\r\nThe Sensor LED continues to light up in orange after the sensor is unplugged.\r\nThe device behaves as if a sensor was still connected, even though no sensor is attached.\r\nThe issue appears often, but not every time.\r\n\r\n+*Expected Result*+\r\nAfter unplugging the sensor, the Sensor LED should immediately turn \"OFF\".\r\nThe system should correctly detect the absence of the sensor and show no active LED indication.\r\nNo sporadic or residual LED activity should occur.\r\n\r\n+*Remarks:*+\r\n[~Michael.Niederle@dentsplysirona.com] , [~Sebastian.Torpus@dentsplysirona.com]: the error could also be reproduced today using the new *FW Version* ({*}1.5.154){*} and an *Xios XG Supreme Gen 1* Sensor around 13:40 CET.\r\n\r\nPlease check the new attached Logs from {*}07.07.2026{*}.",
+    "status": "Open",
+    "issuetype": "Bug",
+    "priority": "Medium",
+    "assignee": "Ding, Xiang",
+    "labels": [
+      "rated"
+    ],
+    "components": [
+      "USB3-Remote-FPGA"
+    ],
+    "url": "https://jira.dentsplysirona.com/browse/Y3839-594"
+  },
+  {
+    "key": "Y3839-234",
+    "summary": "Connection Status LED lights up dimly when USB3 remote plugged in host PC",
+    "description": "*Reproduction steps:* \r\n * Ensure no sensor connected (shall remain unconnected)\r\n * Plug the USB3 remote with the micro-b ss cable to the host PC\r\n * Observe the sensor connection LED\r\n\r\n{color:#172b4d}+*Fault description:*+{color} \r\n\r\n-> Each time, after connecting the USB3 remote to the host PC, the sensor connection LED lights up weakly once in a pulsating red light when the status connection LED is turning solid GREEN. The LED is expected to be off and not powered.",
+    "status": "Accepted",
+    "issuetype": "Bug",
+    "priority": "Medium",
+    "assignee": "Ding, Xiang",
+    "labels": [
+      "rated"
+    ],
+    "components": [
+      "USB3-Remote-FPGA",
+      "USB3-Remote-FW",
+      "USB3-Remote-HW"
+    ],
+    "url": "https://jira.dentsplysirona.com/browse/Y3839-234"
+  },
+  {
+    "key": "Y3839-744",
+    "summary": "Dentrix/CDR: USB3 sporadically fails to detect sensor after repeated plug/unplug – Sensor LED stays off, device unresponsive to reconnection",
+    "description": "*Test Action:*\r\nWith an active Dentrix session open and \"4 Bitewings\" exposure selected, plug and unplug the sensor several times in succession.\r\n\r\n*Expected Behavior:*\r\nThe device should reliably re-detect the sensor after each plug/unplug cycle within the active Dentrix session, indicated by the sensor LED turning on, and should remain responsive to further plug/unplug actions regardless of how many cycles have occurred.\r\n\r\n*Actual Behavior:*\r\nAfter a few plug/unplug cycles during the active Dentrix session (4 Bitewings), the sensor is sporadically no longer detected. The sensor LED stays off, and the device remains in the \"Ready for exposure\" state. Further unplugging and re-plugging the sensor has no effect whatsoever. The device does not respond or attempt to re-detect the sensor.\r\n\r\n*Additional Observations:*\r\n * Occurs sporadically, not on every plug/unplug cycle.\r\n * Device gets stuck in \"Ready for exposure\" state despite the sensor being effectively disconnected/undetected.\r\n * No recovery observed via further plug/unplug attempts of the sensor itself. Only unplugging and re-plugging the USB3 cable resolves the issue.\r\n * Related to a known application error where the FPGA thread semaphore is not released in the expected time, typically occurring after relatively frequent sensor plug/unplug actions.",
+    "status": "Open",
+    "issuetype": "Bug",
+    "priority": "Medium",
+    "assignee": "Wenz, Steffen",
+    "labels": [],
+    "components": [
+      "CDR",
+      "Sensor",
+      "USB3-Remote-FW"
+    ],
+    "url": "https://jira.dentsplysirona.com/browse/Y3839-744"
+  },
+  {
+    "key": "Y3839-598",
+    "summary": "USB3 Interface Stuck in Red LED State which requires PC Restart to Restore Connection",
+    "description": "+*Actual Behavior:*+\r\nThe USB interface is unable to establish a stable connection to Dentrix via CDR. Only a PC restart resolves the issue. Dentrix freezes at the \"Getting device ready\" screen; meanwhile, the sensor LED remains green while the interface LED is frozen in red status.\r\nDentrix was restarted, the device was unplugged/replugged multiple times, and the CDR app was closed via Task Manager and restarted — the issue persisted.\r\n\r\n+*Reproducibility:*+\r\nDuring an unplug/plug test of the sensor, the device sometimes restarted on its own (LED sequence changing green → red → green), even though it remained connected the entire time. On one occasion, this restart apparently did not complete successfully (sporadic behavior), causing the USB interface to get stuck in this state. Unplugging and replugging the device did not resolve it — only a full PC restart allowed the device to re-establish a stable connection.\r\n\r\n+*Additional Information:*+\r\nSee logs in attachment. The issue first occurred at 1:55 AM.\r\nSensor: Xios XG Supreme Gen1: 72012231\r\nUSB Interface: 2031530, FW: *1.5.152*\r\n\r\n+*Update:*+\r\nThe issue could also be reproduced with the new firmware version ({*}1.5.154{*}).",
+    "status": "Open",
+    "issuetype": "Bug",
+    "priority": "Medium",
+    "assignee": "Torpus, Sebastian",
+    "labels": [
+      "Team_DX5",
+      "Team_ESDX",
+      "rated"
+    ],
+    "components": [
+      "CDR"
+    ],
+    "url": "https://jira.dentsplysirona.com/browse/Y3839-598"
+  },
+  {
     "key": "Y3839-735",
-    "summary": "IO Qualitätsoffensive – Testaufwände",
-    "description": "h2. Zielsetzung\n\nDiese Epic bündelt die Testaufwände, die im Rahmen der IO Qualitätsoffensive entstehen.\n\nMit der Qualitätsoffensive committen wir uns darauf, die Qualität der aktuellen Produkte im IO-Bereich nachhaltig zu verbessern. Es sollen offene Probleme und Bugs systematisch angegangen und darüber hinaus verschiedene Möglichkeiten entdeckt werden, die Produkte weiter zu verbessern. Ein besonderer Fokus liegt dabei auf den größten Pain Points aus dem Feld.\n\nh2. Betroffene Produkte / Scope\n* IOSS (IO Sensor Software)\n* USB3 Interface – Firmware, FPGA sowie Hardware-Verbesserungen\n* Sensor\n* Updater Tool für die Firmware des USB3 Interfaces\n\nh2. Inhalt dieser Epic\n\nDiese Epic dient als Sammelpunkt für alle Test- und Verifikationsaufwände der Qualitätsoffensive, unter anderem:\n* Verifikation von Bugfixes und Problemlösungen der oben genannten Produkte\n* Reproduktion und Absicherung von Feld-Pain-Points\n* Regressions- und Stabilitätstests nach Verbesserungen an Firmware, FPGA, Hardware und Sensor\n* Test des Updater Tools für das USB3-Interface-Firmware-Update\n* Aufdecken und Absichern neuer Verbesserungspotenziale\n\nh2. Zielbild\n\nMessbar verbesserte Produktqualität im IO-Bereich, spürbare Reduktion der wichtigsten Feld-Beanstandungen und eine belastbare Testabsicherung der eingeführten Verbesserungen.",
+    "summary": "IO Quality Offensive – Test Efforts",
+    "description": "h2. Objective\r\n\r\nThis Epic bundles the test efforts arising in the context of the IO Quality Offensive.\r\n\r\nWith the Quality Offensive we commit to sustainably improving the quality of the current products in the IO area. Open problems and bugs shall be addressed systematically, and beyond that various opportunities to further improve the products shall be discovered. A particular focus lies on the biggest pain points from the field.\r\nh2. Products in Scope\r\n * IOSS (IO Sensor Software)\r\n * USB3 Interface – Firmware, FPGA and hardware improvements\r\n * Xios XG and Schick 33 Sensors (Gen 1,2and 3)\r\n * Updater Tool for the USB3 interface firmware\r\n\r\nh2. Content of this Epic\r\n\r\nThis Epic serves as the collection point for all test and verification efforts of the Quality Offensive, among others:\r\n * Verification of bugfixes and problem resolutions for the products listed above\r\n * Reproduction and safeguarding of field pain points\r\n * Regression and stability testing after improvements to firmware, FPGA, hardware and sensor\r\n * Testing of the Updater Tool for the USB3 interface firmware update\r\n * Discovering and safeguarding new improvement potentials\r\n\r\nh2. Target State\r\n\r\nMeasurably improved product quality in the IO area, a noticeable reduction of the most important field complaints, and a robust test safeguarding of the introduced improvements.",
     "status": "Open",
     "issuetype": "Epic",
     "priority": "Medium",
@@ -5652,16 +5574,143 @@
     "url": "https://jira.dentsplysirona.com/browse/Y3839-735"
   },
   {
-    "key": "Y3839-736",
-    "summary": "IOSS - Eaglesoft: Bitewing Series - same exposure is loaded in two frames and stuck at taking the exposure for the third frame",
-    "description": "*Preconditions:*\r\n * IOSS V3.2.4024.52346\r\n * Eaglesoft V25.20.03\r\n\r\n*Steps to reproduce:*\r\n * In Eaglesoft perform an 4 Bitewing series exposure with any IOSS sensor\r\n * Take the first image and wait for loading the image in the first frame\r\n * Don't take the next image - wait for what further happens\r\n\r\n*Actual result:*\r\n * The first taken image will load to the first frame of the series.\r\n * The second frame gets activated and after a view seconds the first taken image gets loaded in the second frame also\r\n\r\n*Expected result:*\r\n * For each frame one image has to be performed\r\n * The same image is not loaded twice. It is loaded only in the frame where it is performed for\r\n\r\n*Attachments:*\r\n\r\nIn bug folder:\r\n * Video\r\n * Eaglesoft logs",
+    "key": "Y3839-568",
+    "summary": "Sidexis/IOSS: Viewport remains red after sensor reconnect, sensor shown twice in configuration app and Sidexis",
+    "description": "h2. Description\r\n\r\nDuring an acquisition session in {*}Sidexis with IOSS{*}, the intraoral sensor was unplugged and re-plugged. This resulted in an inconsistent system state with multiple symptoms.\r\nh2. Steps to Reproduce\r\n # Start an acquisition session in Sidexis with IOSS\r\n # Unplug the intraoral sensor during the session\r\n # Re-plug the sensor\r\n # Observe system behavior\r\n # Trigger an exposure\r\n # Repeat exposure multiple times\r\n\r\nh2. Observed Behavior\r\n\r\n*After sensor reconnect:*\r\n * The *USB3 interface rebooted multiple times* (LED alternates between orange and green)\r\n * After some time, the remote became ready and signaled *acquisition readiness*\r\n * The *IOSS viewport remains red* (no image, no ready state)\r\n * The *info area in IOSS (bottom)* shows no error message — empty, despite a problem being present\r\n * In the {*}Intraoral Sensor Configuration App{*}, the connected sensor is *shown twice*\r\n * In the {*}acquisition phase selection menu in Sidexis{*}, the sensor is also *listed twice*\r\n\r\n*After triggering exposures (observed via attached video):*\r\n * Upon triggering radiation, the viewport shows a *loading animation* and the info text states that image data is being received\r\n * The image *is actually delivered* successfully\r\n * After the first image arrives, *the next viewport turns red* in IOSS but with a loading animation. USB interface was ready for exposure.\r\n * The same image is received several times. Afterwards the viewport turns red without loading animation. \r\n * Triggert another exposure, which results in several images received\r\n\r\nh2. Expected Behavior\r\n * After reconnect, IOSS should re-initialize the sensor and set the viewport to ready (green)\r\n * If an error occurs, the info area in IOSS should display a meaningful error message\r\n * The sensor should appear only once in the configuration app and the Sidexis selection menu\r\n * Each viewport should only be filled by an actual exposure — no duplication of the last image",
+    "status": "Accepted",
+    "issuetype": "Bug",
+    "priority": "Medium",
+    "assignee": "Unassigned",
+    "labels": [
+      "Team_DX5",
+      "rated"
+    ],
+    "components": [
+      "IOSS"
+    ],
+    "url": "https://jira.dentsplysirona.com/browse/Y3839-568"
+  },
+  {
+    "key": "Y3839-691",
+    "summary": "Sensor detection not stable",
+    "description": "h2. Description\r\n\r\nSometimes the sensor is not detected by the remote, if sensor is connected to the remote. Result: Although the sensor is connected to the remote the sensor is not detected and the Sensor LED is still off. Customer has to reconnect the sensor.\r\nh2. Steps to Reproduce\r\n # Use Gen 1 sensor\r\n # Connect the sensor slowly into the remote\r\n # Sensor is connected to the remote but sensor LED is still off\r\n\r\nh2. Observed Behavior\r\n * Sensor is connected to the remote but will not be recognized by the remote\r\n\r\nh2. Expected Behavior\r\n * If the sensor is connected to the remote the sensor has to be detected.\r\n\r\nh2. Additional Informations\r\n\r\nSee confluence page: [Slow connection sensor (gen. 1) issue - Intra-Oral X-Ray - Confluence Dentsply Sirona|https://wiki.dentsplysirona.com/spaces/IOXRAY/pages/385745621/Slow+connection+sensor+gen.+1+issue]",
     "status": "Open",
     "issuetype": "Bug",
     "priority": "Medium",
-    "assignee": "Heller, Albert (External)",
-    "labels": [],
-    "components": [],
-    "url": "https://jira.dentsplysirona.com/browse/Y3839-736"
+    "assignee": "Ding, Xiang",
+    "labels": [
+      "Team_ESDX",
+      "rated"
+    ],
+    "components": [
+      "Team_ESDX",
+      "USB3-Remote-FPGA",
+      "USB3-Remote-FW"
+    ],
+    "url": "https://jira.dentsplysirona.com/browse/Y3839-691"
+  },
+  {
+    "key": "Y3839-698",
+    "summary": "On plug-in of incompatible sensor, Sensor LED lights up green before turning red",
+    "description": "+*Expected Result:*+\r\n\r\nThe Sensor Status Interface Lights up red on plug-in of an incompatible sensor (Xios XG Select / Schicke Elite)\r\n\r\n+*Actual Result:*+\r\n\r\nThe Sensor Status LED lights up green shortly before chaning to red\r\n\r\nSee \\\\10.244.128.96\\sw_systemtest\\Jira\\Y3839-698\\P1030529.MP4 for video",
+    "status": "Accepted",
+    "issuetype": "Bug",
+    "priority": "Medium",
+    "assignee": "Ding, Xiang",
+    "labels": [
+      "Team_ESDX",
+      "rated"
+    ],
+    "components": [
+      "Team_ESDX",
+      "USB3-Remote-FPGA"
+    ],
+    "url": "https://jira.dentsplysirona.com/browse/Y3839-698"
+  },
+  {
+    "key": "Y3839-699",
+    "summary": "Odontogram in indication dialog is active only if it's not predefined in viewset",
+    "description": "+*Intended:*+ \r\n\r\nMost likely intended behavior (according to requirement IOPF-475):\r\nOdontogram in indication dialog is only active, if regions are NOT pre-defined by the viewset and for custom templates (no matter if regions are predefined). \r\n\r\n+*Actual:*+ \r\n\r\n_1. Documentation mismatch:_\r\n\r\n[IOPF-1164 - Indications Dialog < IO Platform|https://alm-gb.dentsplysirona.com/polarion/#/project/IOPF/workitem?id=IOPF-1164] and [IOPF-475 - Indications < IO Platform|https://alm-gb.dentsplysirona.com/polarion/#/project/IOPF/workitem?id=IOPF-475] as well as its design [IOPF-764 - Indications < IO Platform|https://alm-gb.dentsplysirona.com/polarion/#/project/IOPF/workitem?id=IOPF-764] interfere: \r\n # [IOPF-1164|https://alm-gb.dentsplysirona.com/polarion/#/project/IOPF/workitem?id=IOPF-1164]: Anatomic region: only active for single exposure template\r\n # [IOPF-475 / |https://alm-gb.dentsplysirona.com/polarion/#/project/IOPF/workitem?id=IOPF-475] [IOPF-764|https://alm-gb.dentsplysirona.com/polarion/#/project/IOPF/workitem?id=IOPF-764]: Anatomical regions, including one or multiple teeth, if not already specified in the viewset",
+    "status": "Accepted",
+    "issuetype": "Bug",
+    "priority": "Medium",
+    "assignee": "Wenz, Steffen",
+    "labels": [
+      "Documentation",
+      "rated"
+    ],
+    "components": [
+      "TechFile"
+    ],
+    "url": "https://jira.dentsplysirona.com/browse/Y3839-699"
+  },
+  {
+    "key": "Y3839-702",
+    "summary": "Indication region in Sidexis is different to the one in indication dialog",
+    "description": "+*Workflow:*+\r\n * Start IOSS and select a viewset without defined region (single exposure).\r\n * Open indication dialog and select a frontal tooth for indication and save together with an indication snippet.\r\n * Change the viewset with defined region (bitewing).\r\n * Check inication dialog. Indications are same as before.\r\n * Perform an exposure and click on finish.\r\n * In Sidexis lightdesk check the indication by selecting the diagnosis tab.\r\n\r\n+*Expected behavior:*+\r\n\r\nThe indication shown in Sidexis is the same as in the indication dialog in the acquisition\r\n\r\n+*Actual behavior:*+\r\n\r\nIn Sidexis the indication shows the regions of the viewset, not the one displayed in the indication dialog while the acquisition.",
+    "status": "Accepted",
+    "issuetype": "Bug",
+    "priority": "Medium",
+    "assignee": "Wenz, Steffen",
+    "labels": [
+      "Documentation",
+      "rated"
+    ],
+    "components": [
+      "TechFile"
+    ],
+    "url": "https://jira.dentsplysirona.com/browse/Y3839-702"
+  },
+  {
+    "key": "Y3839-706",
+    "summary": "Documentation: rotation buttons are usable",
+    "description": "Single exposure acquisition finished automatically but the user has some time to click on rotation buttons (there are active for some period of time). If the rotation happend after appliance of a filter than is a image in Sidexis rotated too.",
+    "status": "Accepted",
+    "issuetype": "Bug",
+    "priority": "Medium",
+    "assignee": "Wenz, Steffen",
+    "labels": [
+      "Documentation",
+      "rated"
+    ],
+    "components": [
+      "TechFile"
+    ],
+    "url": "https://jira.dentsplysirona.com/browse/Y3839-706"
+  },
+  {
+    "key": "Y3839-709",
+    "summary": "Endo horizontal and endo vertical templates do not contain predefined anatomic regions",
+    "description": "*Description:*\r\nDuring verification of the *Endo Horizontal* and *Endo Vertical* templates, it was observed that no predefined *anatomic regions* are assigned to the viewboxes.\r\n\r\n*Steps to Reproduce:*\r\n # Open the Endo Horizontal template in the Acquisition Web Application.\r\n # Open the corresponding template in Sidexis 4 Global Settings.\r\n # Verify the assigned anatomic regions.\r\n # Repeat the same steps for the Endo Vertical template.\r\n\r\n*Actual Result:*\r\nThe Endo Horizontal and Endo Vertical templates do not contain predefined anatomic regions.\r\n\r\n*Expected Result:*\r\nEither:\r\n * Predefined anatomic regions should be available for the viewboxes, or\r\n * The test case/documentation should be updated to indicate that these templates do not use predefined anatomic regions.",
+    "status": "Accepted",
+    "issuetype": "Bug",
+    "priority": "Medium",
+    "assignee": "Wenz, Steffen",
+    "labels": [
+      "Documentation",
+      "rated"
+    ],
+    "components": [
+      "TechFile"
+    ],
+    "url": "https://jira.dentsplysirona.com/browse/Y3839-709"
+  },
+  {
+    "key": "Y3839-712",
+    "summary": "Documentation: Recovery references multiple unfinished acquisition sessions although only one session can exist",
+    "description": "*Action:*\r\n # Start Sidexis 4 and reach exposure readiness.\r\n # Create an unfinished acquisition session to trigger rescue mode.\r\n # Open the *Recovery* tab in the Configuration App.\r\n # Click {*}Refresh Sessions{*}.\r\n\r\n*Expected Result:*\r\nThe Recovery View displays all information defined in the requirements, including:\r\n * List of unfinished acquisition sessions\r\n * Creation date\r\n * Patient name\r\n * Template type\r\n * Sensor name\r\n * Number of images\r\n\r\n*Actual Result:*\r\nThe Recovery View does not display a {*}\"List of unfinished acquisition sessions\"{*}.\r\n\r\nHowever, this appears to be a requirement/documentation issue rather than a software defect. It is currently not possible to create more than one unfinished acquisition session. Once a rescue situation exists, no further acquisitions can be performed until the existing session has been recovered or discarded.",
+    "status": "Accepted",
+    "issuetype": "Bug",
+    "priority": "Medium",
+    "assignee": "Wenz, Steffen",
+    "labels": [
+      "Documentation",
+      "rated"
+    ],
+    "components": [
+      "TechFile"
+    ],
+    "url": "https://jira.dentsplysirona.com/browse/Y3839-712"
   },
   {
     "key": "Y3839-521",
@@ -5850,24 +5899,6 @@
     "url": "https://jira.dentsplysirona.com/browse/Y3839-304"
   },
   {
-    "key": "Y3839-570",
-    "summary": "Eaglesoft/IOSS: No image received after exposure, USB3 interface stuck in state 6",
-    "description": "h2. Description\r\n\r\nAfter performing an exposure in an *Eaglesoft with IOSS integration* setup, no image is delivered to Eaglesoft. The USB3 interface PC connection LED blinks after the exposure, indicating a transfer attempt, but the image never arrives. The USB3 interface remains stuck in state 6.\r\nh2. Steps to Reproduce\r\n # Set up an acquisition session in Eaglesoft with IOSS integration\r\n # Establish acquisition readiness (remote shows green breathing LED)\r\n # Trigger an exposure\r\n # Observe Eaglesoft and the USB3 interface\r\n\r\nh2. Observed Behavior\r\n * The remote shows a *green breathing LED* before the exposure (acquisition readiness confirmed)\r\n * After triggering the exposure, the *PC connection LED on the USB3 remote blinks* (indicates connection issue)\r\n * *No image is received in Eaglesoft*\r\n\r\nh2. Expected Behavior\r\n * After a successful exposure the image should be transferred and displayed in Eaglesoft\r\n\r\nh2. Additional Information\r\n * Integration: Eaglesoft with IOSS\r\n * Logs to be updated (current logs do not capture image transfer — box stuck in state 6 at EOF)",
-    "status": "Accepted",
-    "issuetype": "Bug",
-    "priority": "High",
-    "assignee": "Kurz, Christian",
-    "labels": [
-      "Eaglesoft",
-      "Team_DX5",
-      "rated"
-    ],
-    "components": [
-      "IOSS"
-    ],
-    "url": "https://jira.dentsplysirona.com/browse/Y3839-570"
-  },
-  {
     "key": "Y3839-282",
     "summary": "8000991426, XIOS AE sporadically no image provided",
     "description": "Description from ticken\r\nthe following behavior is described in this case with a XIOS AE:\r\n * Radiation detected\r\n * Red Circle Symbol in Sidexis\r\n * No image transfer\r\n\r\nAs far as I see timestamps it happened on\r\n\r\n2024-02-15 16:45, 2024-02-21 15:09, 2024-02-24 no time\r\n\r\n \r\n\r\nKnown tickets: 2",
@@ -5904,6 +5935,18 @@
     "url": "https://jira.dentsplysirona.com/browse/Y3839-471"
   },
   {
+    "key": "Y3839-734",
+    "summary": "Synergy/Raptor USB Interface Module Self-Resets and Disconnects During Acquisition (reproducible only on the USB 2.0 box, not the USB3 Interface)",
+    "description": "h2. Summary\nThe XIOS XG legacy \"Synergy\" USB interface module (VID_0FBC&PID_0004, Blackfin BF533 + NET2272 -- a USB 2.0 device, NOT the USB3 Interface/Velocity product) repeatedly crashes and self-reboots via its own watchdog during normal image-acquisition series. Root cause identified at firmware source level: the firmware treats a wide range of internal conditions as fatal and force-resets via WDTimerActivate(), and several USB-command handlers wait with no timeout at all, which can leave the module deaf on USB before a secondary trip-wire eventually reboots it. This has NOT been reproduced on the USB3 Interface (Cypress FX3-based) product -- it is specific to the legacy USB 2.0 box.\n\nh2. Steps to Reproduce\n* Connect an XIOS XG Supreme sensor to a legacy Synergy/Raptor USB 2.0 interface module (VID_0FBC&PID_0004, \"USB Interface\", firmware Raptor.sldr, field-deployed version 2.38).\n* Perform a rapid series of exposures (e.g. a full-mouth/Zahnstatus series), one image every few seconds.\n* Observe the module after roughly every 5-15 images (field median ~10).\n\nh2. Expected Result\nThe module keeps answering USB status/image requests continuously across the whole series; exposure readiness stays available between images.\n\nh2. Actual Result\n* After a successful image readout, within a few seconds (field median: 4 s) the module either:\n  (a) drops off the USB bus instantly (Windows PnP surprise removal) and re-enumerates about 3.2 s later -- matching the firmware's own watchdog timeout, or\n  (b) stops answering GetStatus/write requests first (a deaf period, field median 9.5 s, observed up to several minutes) before eventually dropping and re-enumerating the same way.\n* Host-visible symptoms: exposure readiness drops to \"not ready\", both LEDs on the module go dark, Sidexis/IOSS logs show \"Failed to read Status.\" / \"Failed to write GetStatus request.\" followed by a device-removal/re-arrival pair for VID_0FBC&PID_0004.\n* Not reproduced with the USB3 Interface (PID_0020, Cypress FX3) product in the material reviewed -- appears specific to the legacy USB 2.0 (Synergy/Raptor) box.\n\nh2. Environment\n* Application: Sirona Sidexis4 sensor plugin 3.1.3120.49190 / Sidexis 4.4.1.2, IOSS.\n* Hardware: XIOS XG legacy \"Synergy\" USB 2.0 interface module (VID_0FBC&PID_0004), firmware Raptor.sldr v2.38 (Blackfin BF533 + NET2272), paired with XIOS XG Supreme sensors (sensorTech 19).\n* Not reproduced on: the newer USB3 Interface / Velocity product (Cypress FX3, PID_0020).\n* Field occurrence: Poliklinik Bonn, 2 workstations, 529 crash episodes over 78 clinic days (full field-log analysis in linked ticket).\n\nh2. Severity / Impact\nHigh workflow impact at high-throughput sites: field data shows a roughly constant 5.5-9% crash probability per image, which at a university-clinic series workload (150-300 images/day/bay) produces 5-15 visible failures per day per bay. No corrupted-image reports were found in the material reviewed (unconfirmed whether specifically checked). Patient-safety/regulatory relevance of repeated exposures is a QM/RA decision, not addressed here.\n\nh2. Workaround\nNone at the software/field level -- cable, module, and sensor-head swaps do not change the crash rate, since the defect is in the module firmware itself, common to the whole module generation. The module usually self-recovers (re-enumerates) within seconds to a few minutes without user action.\n\nh2. Logs / Attachments\nSee linked ticket TPDX5-931 for the full field-log analysis (529 episodes, both workstations). Root cause detail (source: cdr repo, CDRHardware/Xray/Synergy/SynergyRemote/application/RaptorG2/):\n* ~50 internal error conditions (enum REBOOT_ERROR_CODES, RAPTOR.h) each call SchickErrorHandler() -> WDTimerActivate(), forcing an immediate watchdog reset (RAPTOR.cpp). One trigger is a single flicker of the sensor-present status bit (SENSOR_CONNECTION_CHANGE in SENSOR_G2_INTERFACE.cpp), which the code's own comment flags as needing softer handling (\"TBD make it softer, like send a status to Host\") -- never implemented.\n* Several USB-command handlers wait forever with no timeout (PendSemaphore(kSENSOR_THREAD_DONE_SEMAPHORE, 0), 6+ call sites in Host_Interface.cpp) while a separate thread keeps servicing the watchdog on its own schedule -- this produces the \"deaf\" period seen before some resets.\n* The trigger window is the module's own post-acquisition housekeeping: G2/Supreme sensors send a keep-alive token roughly every 20 ms; a gap over 100 ms (G2_TOKEN_TIMEOUT, RAPTOR.h) forces an internal sensor power-cycle recovery sequence, which is where the error trip-wires above get reached.\n* Diagnostic note: the firmware already reports its own crash reason across the reset (usb_status.error_code, Core_Module.h) in every status packet, but the host plugin does not currently read or log it (see the \"Reserved\" field of USB_STATUS in SchickTypes.cs). Logging it would attribute every future crash to a specific internal cause with no firmware change required.\n\nAccuracy note: the checked-out firmware source (cdr repo, git-svn mirror of SVN trunk, no tags) is at version 2.34.3106 at HEAD; the field-deployed module is confirmed at v2.38 (four point releases later). The mechanisms above are confirmed in the 2.34-era source and inferred, not byte-for-byte verified, to still apply at 2.38.",
+    "status": "Open",
+    "issuetype": "Bug",
+    "priority": "High",
+    "assignee": "Unassigned",
+    "labels": [],
+    "components": [],
+    "url": "https://jira.dentsplysirona.com/browse/Y3839-734"
+  },
+  {
     "key": "Y3839-479",
     "summary": "Acquisition App not able to fetch sensor information and device becomes unavailable",
     "description": "Siroforce Ticket: 8001271498\r\n\r\n \r\n\r\nAcquisition app seems to be unable to fetch sensor information in some cases for a customer.\r\nNormally the Sidexis log should contain a line like: \"Selected sensor updated with family: Supreme and serial number: 72006288\" which is missing in the error case at 2025-07-31 08:56:32,813. It is unclear if there is an error because errors are not handled fro this request.\r\n\r\nAfter this issue the device does not go back into state AVAILABLE after closing the session and cannot be selected for the next session. \r\n\r\nIssue cannot be reproduced locally.\r\n\r\nUpdate: Might be reproducible in test automation (to be clarified)",
@@ -5922,32 +5965,23 @@
     "url": "https://jira.dentsplysirona.com/browse/Y3839-479"
   },
   {
-    "key": "Y3839-734",
-    "summary": "Synergy/Raptor USB Interface Module Self-Resets and Disconnects During Acquisition (reproducible only on the USB 2.0 box, not the USB3 Interface)",
-    "description": "h2. Summary\nThe XIOS XG legacy \"Synergy\" USB interface module (VID_0FBC&PID_0004, Blackfin BF533 + NET2272 -- a USB 2.0 device, NOT the USB3 Interface/Velocity product) repeatedly crashes and self-reboots via its own watchdog during normal image-acquisition series. Root cause identified at firmware source level: the firmware treats a wide range of internal conditions as fatal and force-resets via WDTimerActivate(), and several USB-command handlers wait with no timeout at all, which can leave the module deaf on USB before a secondary trip-wire eventually reboots it. This has NOT been reproduced on the USB3 Interface (Cypress FX3-based) product -- it is specific to the legacy USB 2.0 box.\n\nh2. Steps to Reproduce\n* Connect an XIOS XG Supreme sensor to a legacy Synergy/Raptor USB 2.0 interface module (VID_0FBC&PID_0004, \"USB Interface\", firmware Raptor.sldr, field-deployed version 2.38).\n* Perform a rapid series of exposures (e.g. a full-mouth/Zahnstatus series), one image every few seconds.\n* Observe the module after roughly every 5-15 images (field median ~10).\n\nh2. Expected Result\nThe module keeps answering USB status/image requests continuously across the whole series; exposure readiness stays available between images.\n\nh2. Actual Result\n* After a successful image readout, within a few seconds (field median: 4 s) the module either:\n  (a) drops off the USB bus instantly (Windows PnP surprise removal) and re-enumerates about 3.2 s later -- matching the firmware's own watchdog timeout, or\n  (b) stops answering GetStatus/write requests first (a deaf period, field median 9.5 s, observed up to several minutes) before eventually dropping and re-enumerating the same way.\n* Host-visible symptoms: exposure readiness drops to \"not ready\", both LEDs on the module go dark, Sidexis/IOSS logs show \"Failed to read Status.\" / \"Failed to write GetStatus request.\" followed by a device-removal/re-arrival pair for VID_0FBC&PID_0004.\n* Not reproduced with the USB3 Interface (PID_0020, Cypress FX3) product in the material reviewed -- appears specific to the legacy USB 2.0 (Synergy/Raptor) box.\n\nh2. Environment\n* Application: Sirona Sidexis4 sensor plugin 3.1.3120.49190 / Sidexis 4.4.1.2, IOSS.\n* Hardware: XIOS XG legacy \"Synergy\" USB 2.0 interface module (VID_0FBC&PID_0004), firmware Raptor.sldr v2.38 (Blackfin BF533 + NET2272), paired with XIOS XG Supreme sensors (sensorTech 19).\n* Not reproduced on: the newer USB3 Interface / Velocity product (Cypress FX3, PID_0020).\n* Field occurrence: Poliklinik Bonn, 2 workstations, 529 crash episodes over 78 clinic days (full field-log analysis in linked ticket).\n\nh2. Severity / Impact\nHigh workflow impact at high-throughput sites: field data shows a roughly constant 5.5-9% crash probability per image, which at a university-clinic series workload (150-300 images/day/bay) produces 5-15 visible failures per day per bay. No corrupted-image reports were found in the material reviewed (unconfirmed whether specifically checked). Patient-safety/regulatory relevance of repeated exposures is a QM/RA decision, not addressed here.\n\nh2. Workaround\nNone at the software/field level -- cable, module, and sensor-head swaps do not change the crash rate, since the defect is in the module firmware itself, common to the whole module generation. The module usually self-recovers (re-enumerates) within seconds to a few minutes without user action.\n\nh2. Logs / Attachments\nSee linked ticket TPDX5-931 for the full field-log analysis (529 episodes, both workstations). Root cause detail (source: cdr repo, CDRHardware/Xray/Synergy/SynergyRemote/application/RaptorG2/):\n* ~50 internal error conditions (enum REBOOT_ERROR_CODES, RAPTOR.h) each call SchickErrorHandler() -> WDTimerActivate(), forcing an immediate watchdog reset (RAPTOR.cpp). One trigger is a single flicker of the sensor-present status bit (SENSOR_CONNECTION_CHANGE in SENSOR_G2_INTERFACE.cpp), which the code's own comment flags as needing softer handling (\"TBD make it softer, like send a status to Host\") -- never implemented.\n* Several USB-command handlers wait forever with no timeout (PendSemaphore(kSENSOR_THREAD_DONE_SEMAPHORE, 0), 6+ call sites in Host_Interface.cpp) while a separate thread keeps servicing the watchdog on its own schedule -- this produces the \"deaf\" period seen before some resets.\n* The trigger window is the module's own post-acquisition housekeeping: G2/Supreme sensors send a keep-alive token roughly every 20 ms; a gap over 100 ms (G2_TOKEN_TIMEOUT, RAPTOR.h) forces an internal sensor power-cycle recovery sequence, which is where the error trip-wires above get reached.\n* Diagnostic note: the firmware already reports its own crash reason across the reset (usb_status.error_code, Core_Module.h) in every status packet, but the host plugin does not currently read or log it (see the \"Reserved\" field of USB_STATUS in SchickTypes.cs). Logging it would attribute every future crash to a specific internal cause with no firmware change required.\n\nAccuracy note: the checked-out firmware source (cdr repo, git-svn mirror of SVN trunk, no tags) is at version 2.34.3106 at HEAD; the field-deployed module is confirmed at v2.38 (four point releases later). The mechanisms above are confirmed in the 2.34-era source and inferred, not byte-for-byte verified, to still apply at 2.38.",
-    "status": "Open",
+    "key": "Y3839-570",
+    "summary": "Eaglesoft/IOSS: No image received after exposure, USB3 interface stuck in state 6",
+    "description": "h2. Description\r\n\r\nAfter performing an exposure in an *Eaglesoft with IOSS integration* setup, no image is delivered to Eaglesoft. The USB3 interface PC connection LED blinks after the exposure, indicating a transfer attempt, but the image never arrives. The USB3 interface remains stuck in state 6.\r\nh2. Steps to Reproduce\r\n # Set up an acquisition session in Eaglesoft with IOSS integration\r\n # Establish acquisition readiness (remote shows green breathing LED)\r\n # Trigger an exposure\r\n # Observe Eaglesoft and the USB3 interface\r\n\r\nh2. Observed Behavior\r\n * The remote shows a *green breathing LED* before the exposure (acquisition readiness confirmed)\r\n * After triggering the exposure, the *PC connection LED on the USB3 remote blinks* (indicates connection issue)\r\n * *No image is received in Eaglesoft*\r\n\r\nh2. Expected Behavior\r\n * After a successful exposure the image should be transferred and displayed in Eaglesoft\r\n\r\nh2. Additional Information\r\n * Integration: Eaglesoft with IOSS\r\n * Logs to be updated (current logs do not capture image transfer — box stuck in state 6 at EOF)",
+    "status": "Accepted",
     "issuetype": "Bug",
     "priority": "High",
-    "assignee": "Unassigned",
-    "labels": [],
-    "components": [],
-    "url": "https://jira.dentsplysirona.com/browse/Y3839-734"
-  },
-  {
-    "key": "Y3839-587",
-    "summary": "SW freezes after taking some images (Waukee Dental)",
-    "description": "*target behavior:*\r\n\r\nSw shall not freeze during normal operation\r\n\r\n*actual behavior:*\r\n\r\nSW freezes after taking some images with different sensors\r\n\r\n*reproducibility:*\r\n\r\nreported 3 @customer, sporadically\r\n\r\n*additional information:*\r\n\r\nerror 8 (incomplete readout) was recorded several times in the log but only 1 checkerboard error reported",
-    "status": "Open",
-    "issuetype": "Bug",
-    "priority": "Urgent",
-    "assignee": "Torpus, Sebastian",
-    "labels": [],
-    "components": [
-      "CDR",
-      "Sensor",
-      "USB3-Remote-FW"
+    "assignee": "Kurz, Christian",
+    "labels": [
+      "Dentrix",
+      "Eaglesoft",
+      "Team_DX5",
+      "rated"
     ],
-    "url": "https://jira.dentsplysirona.com/browse/Y3839-587"
+    "components": [
+      "IOSS"
+    ],
+    "url": "https://jira.dentsplysirona.com/browse/Y3839-570"
   },
   {
     "key": "Y3839-523",
@@ -5967,21 +6001,6 @@
       "IOSS"
     ],
     "url": "https://jira.dentsplysirona.com/browse/Y3839-523"
-  },
-  {
-    "key": "Y3839-588",
-    "summary": "Multiple different issues with one sensor (Waukee Dental)",
-    "description": "*target behavior:*\r\n\r\nno issues during normal operation\r\n\r\n*actual behavior:*\r\n\r\nwith one sensor ('orange sensor', Ser# 25005883) multiple issues with connectivity, SW freeze, low contrast image occured\r\n\r\n*reproducibility:*\r\n\r\nreported 5 issues in 12 days @customer, sporadicly\r\n\r\n*additional information:*\r\n\r\nerror 8 (incomplete readout) was recorded several times in the log but only 1 checkerboard error reported",
-    "status": "Open",
-    "issuetype": "Bug",
-    "priority": "Urgent",
-    "assignee": "Torpus, Sebastian",
-    "labels": [],
-    "components": [
-      "CDR",
-      "Sensor"
-    ],
-    "url": "https://jira.dentsplysirona.com/browse/Y3839-588"
   },
   {
     "key": "Y3839-696",
@@ -6032,21 +6051,5 @@
       "USB3-Remote-FW"
     ],
     "url": "https://jira.dentsplysirona.com/browse/Y3839-525"
-  },
-  {
-    "key": "Y3839-586",
-    "summary": "White images with different sensors (Waukee Dental)",
-    "description": "*target behavior:*\r\n\r\nThe system shall display a correct patient image and no white image when irradiated and no image at all when not irradiated\r\n\r\n*actual behavior:*\r\n\r\nA white image is displayed in one case even without radiation\r\n\r\n*reproducibility:*\r\n\r\nreported 3 times in 12 days @customer, sporadicly\r\n\r\n*additional information:*\r\n\r\nerror 8 (incomplete readout) was recorded several times in the log but only 1 checkerboard error reported",
-    "status": "Open",
-    "issuetype": "Bug",
-    "priority": "Urgent",
-    "assignee": "Torpus, Sebastian",
-    "labels": [],
-    "components": [
-      "CDR",
-      "Sensor",
-      "USB3-Remote-FW"
-    ],
-    "url": "https://jira.dentsplysirona.com/browse/Y3839-586"
   }
 ]
