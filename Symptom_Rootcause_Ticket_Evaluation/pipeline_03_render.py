@@ -24,6 +24,14 @@ BLOCKED_ROOT_CAUSE_KEYS = {
   "software timing error",
 }
 
+LOOSE_SCREWS_SYMPTOM = "Loosening Screws"
+LOOSE_SCREWS_RC_KEY = "loose sensor cable screws"
+LOOSE_SCREWS_TARGET_SYMPTOMS = {
+  "Intermittent Connectivity",
+  "Previous (Patient) Image",
+}
+LOOSE_SCREWS_DISPLAY_LABEL = "Loosing Screws (Symptom)"
+
 
 def _trend_icon(pct):
     if pct is None:
@@ -278,6 +286,13 @@ def _normalize_rc_key(text):
   return cleaned.lower()
 
 
+def _display_rc_for_symptom(symptom_name, rc_text):
+  """Return a symptom-scoped display alias for selected root causes."""
+  if str(symptom_name or "") in LOOSE_SCREWS_TARGET_SYMPTOMS and _normalize_rc_key(str(rc_text or "")) == LOOSE_SCREWS_RC_KEY:
+    return LOOSE_SCREWS_DISPLAY_LABEL
+  return str(rc_text or "")
+
+
 def _is_blocked_root_cause(text):
   return _normalize_rc_key(str(text)) in BLOCKED_ROOT_CAUSE_KEYS
 
@@ -333,6 +348,68 @@ def _lookup_rc_entry(rc_map, rc_name, default=None):
     if _normalize_rc_key(stored_name) == target_key:
       return stored_value
   return default
+
+
+def _derive_loose_screws_status(rc_status_map):
+  """Derive one status from all RCs under the 'Loosening Screws' symptom.
+
+  Rule set requested by user:
+  - if any RC is InProgress => InProgress
+  - if all RCs are OnHold => OnHold
+  - if all RCs are Solved => Solved
+  """
+  rc_entries = rc_status_map.get(LOOSE_SCREWS_SYMPTOM, {}) if isinstance(rc_status_map, dict) else {}
+  if not isinstance(rc_entries, dict) or not rc_entries:
+    return "OnHold"
+
+  statuses = []
+  for rc_entry in rc_entries.values():
+    status = _history_rc_entry_status(rc_entry)
+    if status:
+      statuses.append(status)
+
+  if not statuses:
+    return "OnHold"
+  if "InProgress" in statuses:
+    return "InProgress"
+  if all(status == "OnHold" for status in statuses):
+    return "OnHold"
+  if all(status == "Solved" for status in statuses):
+    return "Solved"
+
+  # Deterministic fallback for mixed states not explicitly covered above.
+  if "InAnalysis" in statuses:
+    return "InAnalysis"
+  if "OnHold" in statuses:
+    return "OnHold"
+  if "Solved" in statuses:
+    return "Solved"
+  return "OnHold"
+
+
+def _apply_loose_screws_proxy_status(rc_status_map):
+  """Mirror loose-sensor-cable-screws status into target symptoms."""
+  proxy_status = _derive_loose_screws_status(rc_status_map)
+  if not isinstance(rc_status_map, dict):
+    return proxy_status
+
+  for symptom_name in LOOSE_SCREWS_TARGET_SYMPTOMS:
+    rc_entries = rc_status_map.get(symptom_name, {})
+    if not isinstance(rc_entries, dict):
+      continue
+    for rc_name, rc_entry in rc_entries.items():
+      if _normalize_rc_key(rc_name) != LOOSE_SCREWS_RC_KEY:
+        continue
+      if isinstance(rc_entry, dict):
+        rc_entry["status"] = proxy_status
+      else:
+        rc_entries[rc_name] = {
+          "status": proxy_status,
+          "selected": "No",
+          "action_type": _action_type_from_rc_name(rc_name),
+        }
+
+  return proxy_status
 
 
 def _jira_tickets_by_normalized_rc(jira_enriched):
@@ -779,6 +856,10 @@ def run():
             "action_type": action_type,
           }
 
+    # Proxy rule: loose sensor cable screws in target symptoms inherits status from
+    # the Loosening Screws symptom state model.
+    _apply_loose_screws_proxy_status(rc_status_map)
+
     # Derive selected_for_release map from current RC snapshot.
     for symptom_name, rc_entries in rc_status_map.items():
       if not isinstance(rc_entries, dict):
@@ -937,6 +1018,11 @@ def run():
         jira_by_rc = _jira_tickets_by_normalized_rc(jira_enriched)
         rc_map_rows_html = ""
         for rc in rc_list:
+          display_rc = _display_rc_for_symptom(s["name"], rc)
+          is_derived_loose_screws = (
+            s["name"] in LOOSE_SCREWS_TARGET_SYMPTOMS
+            and _normalize_rc_key(rc) == LOOSE_SCREWS_RC_KEY
+          )
           tickets = jira_by_rc.get(_normalize_rc_key(rc), [])
           rc_id = f"rc-{abs(hash(s['name'] + rc)) % 99999}"
           raw_rc_entry = _lookup_rc_entry(rc_status_map.get(s["name"], {}), rc, "OnHold")
@@ -952,8 +1038,11 @@ def run():
             release_selected = _release_selected_value(raw_rc_entry, _normalize_rc_key(rc) in release_rc_keys)
 
           release_control = _release_select(s["name"], rc, release_selected)
-          status_badge = _status_control_html(s["name"], rc, rc_status_value, tickets)
-          if not tickets and rc_status != "Solved":
+          if is_derived_loose_screws:
+            status_badge = _status_badge(rc_status_value)
+          else:
+            status_badge = _status_control_html(s["name"], rc, rc_status_value, tickets)
+          if not is_derived_loose_screws and not tickets and rc_status != "Solved":
             editable_rc_count += 1
           if tickets:
             ticket_count = len(tickets)
@@ -991,7 +1080,7 @@ def run():
             jira_toggle = ""
           rc_map_rows_html += (
             '<tr>'
-            f'<td style="padding:6px 8px;border-bottom:1px solid #e2e8f0;vertical-align:top">{_tag_rc(rc)}{jira_toggle}</td>'
+            f'<td style="padding:6px 8px;border-bottom:1px solid #e2e8f0;vertical-align:top">{_tag_rc(display_rc)}{jira_toggle}</td>'
             f'<td style="padding:6px 8px;border-bottom:1px solid #e2e8f0;vertical-align:top;width:140px">{release_control}</td>'
             f'<td style="padding:6px 8px;border-bottom:1px solid #e2e8f0;vertical-align:top;width:130px">{status_badge}</td>'
             '</tr>'
@@ -1102,7 +1191,7 @@ def run():
                 _k = _t["key"]
                 ticket_index.setdefault(_k, []).append({
                     "symptom": _sym["name"],
-                    "rc": _rc["text"],
+                  "rc": _display_rc_for_symptom(_sym["name"], _rc["text"]),
                     "status": _t.get("status", ""),
                     "priority": _t.get("priority", ""),
                     "url": _t.get("url", ""),
@@ -1235,6 +1324,7 @@ def run():
           "source": source_label,
           "selected": _rc_selected_value(rc_entry, "No"),
           "fix": "-",
+          "fix_date": "?",
         })
 
     # Enrich solved list with solved_issues.json records.
@@ -1279,6 +1369,27 @@ def run():
         existing_parts.append(fix_text)
         item["fix"] = " | ".join(existing_parts)
 
+    def _read_fix_date(issue):
+      """Read fix date from flexible solved_issues field naming."""
+      for key in ("fix_date", "fixDate", "date", "fixed_date", "resolved_date"):
+        value = str(issue.get(key, "")).strip() if isinstance(issue, dict) else ""
+        if value:
+          return value
+      return "?"
+
+    def _append_fix_date(item, fix_date):
+      current_date = str(item.get("fix_date", "")).strip() or "?"
+      next_date = str(fix_date or "").strip() or "?"
+      if next_date == "?":
+        return
+      if current_date == "?":
+        item["fix_date"] = next_date
+        return
+      existing_parts = [part.strip() for part in current_date.split(" | ") if part.strip()]
+      if next_date not in existing_parts:
+        existing_parts.append(next_date)
+        item["fix_date"] = " | ".join(existing_parts)
+
     for issue in solved_issues_data.get("solved_issues", []):
       if not isinstance(issue, dict):
         continue
@@ -1288,6 +1399,7 @@ def run():
 
       issue_id = issue.get("id", "")
       fix_text = str(issue.get("fix", "")).strip() or "-"
+      fix_date = _read_fix_date(issue)
       raw_rootcause = str(issue.get("fixed_rootcause", "")).strip()
       rc_items = [item.strip() for item in raw_rootcause.split(",") if item.strip() and item.strip() != "-"]
       symptom_items = issue.get("improvement_to_symptoms", [])
@@ -1306,6 +1418,7 @@ def run():
               existing_item = existing_solved_keys.get(dedupe_key)
               if existing_item:
                 _append_fix_text(existing_item, fix_text)
+                _append_fix_date(existing_item, fix_date)
                 continue
               next_item = {
                 "symptom": mapped_symptom,
@@ -1314,6 +1427,7 @@ def run():
                 "source": f"solved_issues.json #{issue_id}",
                 "selected": "Yes" if _normalize_rc_key(mapped_rc) in release_rc_keys else "No",
                 "fix": fix_text,
+                "fix_date": fix_date,
               }
               solved_topics.append(next_item)
               existing_solved_keys[dedupe_key] = next_item
@@ -1323,6 +1437,7 @@ def run():
               existing_item = existing_solved_keys.get(dedupe_key)
               if existing_item:
                 _append_fix_text(existing_item, fix_text)
+                _append_fix_date(existing_item, fix_date)
                 continue
               next_item = {
                 "symptom": mapped_symptom,
@@ -1331,6 +1446,7 @@ def run():
                 "source": f"solved_issues.json #{issue_id}",
                 "selected": "Yes" if rc_item_key in release_rc_keys else "No",
                 "fix": fix_text,
+                "fix_date": fix_date,
               }
               solved_topics.append(next_item)
               existing_solved_keys[dedupe_key] = next_item
@@ -1340,6 +1456,7 @@ def run():
           existing_item = existing_solved_keys.get(dedupe_key)
           if existing_item:
             _append_fix_text(existing_item, fix_text)
+            _append_fix_date(existing_item, fix_date)
             continue
           next_item = {
             "symptom": mapped_symptom,
@@ -1348,6 +1465,7 @@ def run():
             "source": f"solved_issues.json #{issue_id}",
             "selected": "No",
             "fix": fix_text,
+            "fix_date": fix_date,
           }
           solved_topics.append(next_item)
           existing_solved_keys[dedupe_key] = next_item
@@ -1372,19 +1490,29 @@ def run():
       solved_topics_rows = ""
       for symptom_name in ordered_solved_symptoms:
         items = solved_by_symptom[symptom_name]
+        visible_items = []
+        for item in items:
+          display_rc = _display_rc_for_symptom(symptom_name, item["rc"])
+          if _normalize_rc_key(display_rc) == _normalize_rc_key(LOOSE_SCREWS_DISPLAY_LABEL):
+            continue
+          visible_items.append((item, display_rc))
+        if not visible_items:
+          continue
         rc_rows = "".join(
           f'<tr>'
-          f'<td style="padding:6px 8px;border-bottom:1px solid #e2e8f0;color:#1f2937">{_html_lib.escape(item["rc"])}</td>'
+          f'<td style="padding:6px 8px;border-bottom:1px solid #e2e8f0;color:#1f2937">{_html_lib.escape(display_rc)}</td>'
           f'<td style="padding:6px 8px;border-bottom:1px solid #e2e8f0;color:#5b6b7f">{_html_lib.escape(item.get("fix", "-"))}</td>'
+          f'<td style="padding:6px 8px;border-bottom:1px solid #e2e8f0;color:#5b6b7f;white-space:nowrap">{_html_lib.escape(item.get("fix_date", "?") or "?")}</td>'
           f'</tr>'
-          for item in items
+          for item, display_rc in visible_items
         )
         root_cause_table = (
           '<table style="margin:0;border:1px solid #d9e2ec;border-radius:6px;overflow:hidden;background:white;width:100%;table-layout:fixed">'
-          '<colgroup><col style="width:38%"><col style="width:62%"></colgroup>'
+          '<colgroup><col style="width:34%"><col style="width:46%"><col style="width:20%"></colgroup>'
           '<thead><tr style="background:#eef2f7">'
           '<th style="text-align:left;padding:6px 8px">Root Cause</th>'
           '<th style="text-align:left;padding:6px 8px">Fix</th>'
+          '<th style="text-align:left;padding:6px 8px">Fix Date</th>'
           '</tr></thead>'
           f'<tbody>{rc_rows}</tbody>'
           '</table>'
@@ -2003,48 +2131,91 @@ def run():
   );
 """
 
-    # Build unmatched-ticket category breakdown from Siroforce classified tickets.
-    # Use the actual Siroforce pipeline output path and also allow a local fallback
-    # so the render does not silently empty the section when the file is missing.
+    # Build unmatched summary from symptom_analysis totals.
+    # Show category breakdown only when a category source is available.
     _unmatched_section = ""
+    _ingested_path = BASE_DIR / "output" / "tickets_ingested.json"
     _classified_candidates = [
         BASE_DIR.parent / "Siroforce_Evaluation" / "output" / "tickets_classified.json",
         BASE_DIR.parent / "Siroforce_Evaluation" / "backup" / "tickets_classified.json",
         BASE_DIR / "output" / "tickets_classified.json",
     ]
-    _classified_path = next((p for p in _classified_candidates if p.exists()), _classified_candidates[0])
-    if _classified_path.exists():
+    _classified_path = None
+    _classified_best_count = -1
+    for _candidate in _classified_candidates:
+      if not _candidate.exists():
+        continue
+      try:
+        with open(_candidate, encoding="utf-8") as _cf:
+          _candidate_data = json.load(_cf)
+        _candidate_tickets = _candidate_data.get("tickets", []) if isinstance(_candidate_data, dict) else []
+        _candidate_count = len(_candidate_tickets) if isinstance(_candidate_tickets, list) else 0
+      except Exception:
+        _candidate_count = 0
+      if _candidate_count > _classified_best_count:
+        _classified_best_count = _candidate_count
+        _classified_path = _candidate
+
+    _matched_total = sum(int(s.get("total", 0) or 0) for s in symptoms)
+    _unmatched_total = max(int(total or 0) - _matched_total, 0)
+    _unmatched_pct_total = round(_unmatched_total / total * 100, 1) if total else 0
+    _classified_source_note = ""
+    if _classified_path and _classified_best_count >= 0:
+      _classified_source_note = (
+        f'Category source: {str(_classified_path)} '
+        f'({_classified_best_count:,} tickets).'
+      )
+
+    if _ingested_path.exists() and _classified_path and _classified_path.exists():
+      with open(_ingested_path, encoding="utf-8") as f:
+        _ingested = json.load(f)
+
+      _ingested_tickets = _ingested.get("tickets", []) if isinstance(_ingested, dict) else []
+      _ingested_ids = {
+        str(t.get("ticket_id", "")).strip()
+        for t in _ingested_tickets
+        if isinstance(t, dict) and str(t.get("ticket_id", "")).strip()
+      }
+
+      _matched_ids = {
+        str(tid).strip()
+        for s in symptoms
+        for tid in s.get("ticket_ids", [])
+        if str(tid).strip()
+      }
+
+      _unmatched_ids = _ingested_ids - _matched_ids
+
+      _category_by_ticket = {}
+      if _classified_path and _classified_path.exists():
         with open(_classified_path, encoding="utf-8") as f:
-            _classified = json.load(f)
-        _matched_ids = {tid for s in symptoms for tid in s.get("ticket_ids", [])}
-        _unmatched_tickets = [
-            t for t in _classified.get("tickets", [])
-            if t.get("ticket_id") not in _matched_ids
-        ]
-        _unmatched_total = len(_unmatched_tickets)
-        from collections import Counter as _Counter
-        _cat_counts = _Counter(t.get("primary", "Unknown/Other") for t in _unmatched_tickets)
-        _cat_rows = ""
-        _prio_colors_cat = [
-            "#c0392b", "#e67e22", "#2980b9", "#27ae60",
-            "#8e44ad", "#1a6b8a", "#7f8c8d", "#2c3e50", "#d35400",
-        ]
-        for _i, (_cat, _cnt) in enumerate(sorted(_cat_counts.items(), key=lambda x: -x[1])):
-            _pct = round(_cnt / total * 100, 1) if total else 0
-            _pct_unmatched = round(_cnt / _unmatched_total * 100, 1) if _unmatched_total else 0
-            _bar_w = int(_cnt / max(_cat_counts.values()) * 180)
-            _col = _prio_colors_cat[_i % len(_prio_colors_cat)]
-            _cat_rows += (
-                f'<tr>'
-                f'<td style="padding:7px 10px;font-weight:500">{_cat}</td>'
-                f'<td style="padding:7px 10px;text-align:right;font-variant-numeric:tabular-nums;font-weight:600">{_cnt:,}</td>'
-                f'<td style="padding:7px 10px;text-align:right;font-variant-numeric:tabular-nums">{_pct} %</td>'
-                f'</tr>'
-            )
-        _unmatched_section = f"""
+          _classified = json.load(f)
+        _classified_tickets = _classified.get("tickets", []) if isinstance(_classified, dict) else []
+        for _ct in _classified_tickets:
+          if not isinstance(_ct, dict):
+            continue
+          _tid = str(_ct.get("ticket_id", "")).strip()
+          if not _tid:
+            continue
+          _category_by_ticket[_tid] = str(_ct.get("primary", "")).strip() or "Unknown/Other"
+
+      from collections import Counter as _Counter
+      _cat_counts = _Counter(_category_by_ticket.get(_tid, "Unknown/Other") for _tid in _unmatched_ids)
+      _cat_rows = ""
+      for _cat, _cnt in sorted(_cat_counts.items(), key=lambda x: -x[1]):
+        _pct = round(_cnt / total * 100, 1) if total else 0
+        _cat_rows += (
+          f'<tr>'
+          f'<td style="padding:7px 10px;font-weight:500">{_cat}</td>'
+          f'<td style="padding:7px 10px;text-align:right;font-variant-numeric:tabular-nums;font-weight:600">{_cnt:,}</td>'
+          f'<td style="padding:7px 10px;text-align:right;font-variant-numeric:tabular-nums">{_pct} %</td>'
+          f'</tr>'
+        )
+      _unmatched_section = f"""
   <section style="margin-bottom:28px">
     <h2 style="font-size:1.1em;margin-bottom:4px;color:var(--accent)">Unmatched Tickets — Category Breakdown</h2>
-    <p style="font-size:0.83em;color:#888;margin-bottom:14px">{_unmatched_total:,} tickets ({round(_unmatched_total/total*100,1) if total else 0}% of {total:,} total) could not be assigned to any tracked symptom.</p>
+    <p style="font-size:0.83em;color:#888;margin-bottom:14px">{_unmatched_total:,} tickets ({_unmatched_pct_total}% of {total:,} total) could not be assigned to any tracked symptom.</p>
+    <p style="font-size:0.78em;color:#9aa3af;margin:-6px 0 12px 0">{_classified_source_note}</p>
     <table>
       <thead>
         <tr>
@@ -2061,7 +2232,8 @@ def run():
         _unmatched_section = f"""
   <section style="margin-bottom:28px">
     <h2 style="font-size:1.1em;margin-bottom:4px;color:var(--accent)">Unmatched Tickets</h2>
-    <p style="font-size:0.83em;color:#888;margin-bottom:14px">Source file missing. Expected classified Siroforce output at: <strong>{_missing_source}</strong></p>
+    <p style="font-size:0.83em;color:#888;margin-bottom:8px">{_unmatched_total:,} tickets ({_unmatched_pct_total}% of {total:,} total) could not be assigned to any tracked symptom.</p>
+    <p style="font-size:0.8em;color:#9aa3af;margin:0">Category breakdown unavailable because no classified source was found at <strong>{_missing_source}</strong>.</p>
   </section>"""
 
     # Build R&D backlog section

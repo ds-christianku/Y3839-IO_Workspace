@@ -8,11 +8,13 @@ Ausgabe: output/tickets_classified.json
 from __future__ import annotations
 
 import argparse
+import datetime as dt
 import json
 import os
 import re
 import urllib.request
 from collections import Counter
+from difflib import get_close_matches
 from pathlib import Path
 
 
@@ -99,6 +101,49 @@ def _load_category_catalog() -> tuple[list[str], list[str]]:
     return primary_labels, secondary_labels
 
 
+def _extract_json_object(text: str) -> str | None:
+    if not text:
+        return None
+    cleaned = text.strip()
+    if cleaned.startswith("```"):
+        cleaned = re.sub(r"^```(?:json)?\s*", "", cleaned, flags=re.I)
+        cleaned = re.sub(r"\s*```\s*$", "", cleaned, flags=re.I)
+    start = cleaned.find("{")
+    if start == -1:
+        return None
+    depth = 0
+    for idx in range(start, len(cleaned)):
+        ch = cleaned[idx]
+        if ch == "{":
+            depth += 1
+        elif ch == "}":
+            depth -= 1
+            if depth == 0:
+                return cleaned[start:idx + 1]
+    match = re.search(r"\{.*\}", cleaned, re.S)
+    return match.group(0) if match else None
+
+
+def _normalize_label(value: str) -> str:
+    return re.sub(r"\s+", " ", str(value).strip().lower().replace("_", " "))
+
+
+def _match_allowed_label(value: str, allowed: list[str]) -> str:
+    text = _normalize_label(value)
+    if not text:
+        return ""
+    for label in allowed:
+        if _normalize_label(label) == text:
+            return label
+    close = get_close_matches(text, [_normalize_label(label) for label in allowed], n=1, cutoff=0.75)
+    if close:
+        match_text = close[0]
+        for label in allowed:
+            if _normalize_label(label) == match_text:
+                return label
+    return ""
+
+
 def _call_ollama_json(prompt: str, model: str = "gemma4:12b") -> dict | None:
     base_url = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
     endpoint = f"{base_url.rstrip('/')}/api/chat"
@@ -124,11 +169,13 @@ def _call_ollama_json(prompt: str, model: str = "gemma4:12b") -> dict | None:
         content = body.get("message", {}).get("content", "")
         if not content:
             return None
-        match = re.search(r"\{.*\}", content, re.S)
-        if match:
-            content = match.group(0)
-        parsed = json.loads(content)
-        return parsed
+        json_text = _extract_json_object(content)
+        if not json_text:
+            return None
+        parsed = json.loads(json_text)
+        if isinstance(parsed, dict):
+            return parsed
+        return None
     except Exception:
         return None
 
@@ -142,9 +189,11 @@ def classify_with_ollama(description: str, notes: str = "", summary: dict[str, s
     solution = _summary_value(solution)
     prompt = (
         "You are a ticket classifying assistant. "
-        "Return JSON only with exactly two keys: 'primary' and 'secondary'. "
-        "Use one label from the allowed primary categories and one label from the allowed secondary categories. "
-        "If unclear, use 'Unknown/Other' and 'Other'.\n\n"
+        "Return valid JSON only with exactly two keys: 'primary' and 'secondary'. "
+        "Do not include markdown fences, commentary, or any extra text. "
+        "Choose the best matching allowed label from the provided lists. "
+        "If unsure, use the closest supported label; do not invent new categories. "
+        "If still unclear, use 'Unknown/Other' and 'Other'.\n\n"
         f"Allowed primary categories: {json.dumps(primaries, ensure_ascii=False)}\n"
         f"Allowed secondary categories: {json.dumps(secondaries, ensure_ascii=False)}\n\n"
         f"Description: {normalize_text(description)}\n\n"
@@ -161,11 +210,14 @@ def classify_with_ollama(description: str, notes: str = "", summary: dict[str, s
         primary = "Unknown/Other"
     if not secondary:
         secondary = "Other"
-    if primary not in primaries:
-        primary = "Unknown/Other"
-    if secondary not in secondaries and secondary != "Other":
-        secondary = "Other"
-    return primary, secondary
+
+    matched_primary = _match_allowed_label(primary, primaries) or "Unknown/Other"
+    matched_secondary = _match_allowed_label(secondary, secondaries) or "Other"
+    if matched_primary == "Unknown/Other" and primary.lower() not in {"unknown/other", "unknown", "other"}:
+        matched_primary = "Unknown/Other"
+    if matched_secondary == "Other" and secondary.lower() not in {"other", "unknown", "n/a", "n.a."}:
+        matched_secondary = "Other"
+    return matched_primary, matched_secondary
 
 
 def print_progress(prefix: str, processed: int, total: int, extra: str = "") -> None:
@@ -1310,17 +1362,165 @@ def _ticket_id(ticket: dict) -> str:
     return ""
 
 
-def select_unclassified_batch(raw_tickets: list[dict], existing_tickets: list[dict] | None = None, batch_size: int = 500) -> list[dict]:
+def checkpoint_path_for_output(output_path: str | Path) -> Path:
+    path = Path(output_path)
+    return path.with_name(f"{path.stem}.checkpoint.json")
+
+
+def backup_path_for_output(output_path: str | Path) -> Path:
+    path = Path(output_path)
+    return path.with_name(f"{path.name}.bak")
+
+
+def sidecar_path_for_output(output_path: str | Path) -> Path:
+    path = Path(output_path)
+    return path.with_name(f"{path.stem}.safe.json")
+
+
+def write_json_atomic(path: str | Path, payload: dict) -> None:
+    target = Path(path)
+    target.parent.mkdir(parents=True, exist_ok=True)
+
+    try:
+        backup = backup_path_for_output(target)
+        if target.exists():
+            backup.write_text(target.read_text(encoding="utf-8"), encoding="utf-8")
+
+        tmp = target.with_suffix(target.suffix + ".tmp") if target.suffix else target.with_name(target.name + ".tmp")
+        tmp.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+        tmp.replace(target)
+        return
+    except PermissionError:
+        safe = sidecar_path_for_output(target)
+        safe.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+        return
+    except OSError:
+        safe = sidecar_path_for_output(target)
+        safe.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+        return
+
+
+def persist_classified_snapshot(output_path: str | Path, tickets: list[dict], stats: dict, last_ticket_id: str | None = None) -> None:
+    path = Path(output_path)
+    payload = {"tickets": tickets, "stats": stats}
+    write_json_atomic(path, payload)
+
+    checkpoint = checkpoint_path_for_output(path)
+    checkpoint_payload = {
+        "last_ticket_id": last_ticket_id or last_ticket_id_from_tickets(tickets),
+        "saved_at": dt.datetime.utcnow().isoformat(timespec="seconds") + "Z",
+        "total_tickets": len(tickets),
+        "status": "in_progress",
+    }
+    checkpoint.write_text(json.dumps(checkpoint_payload, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
+def load_resume_ticket_id(output_path: str | Path, existing_tickets: list[dict] | None = None) -> str | None:
+    path = Path(output_path)
+
+    checkpoint = checkpoint_path_for_output(path)
+    if checkpoint.exists():
+        try:
+            data = json.loads(checkpoint.read_text(encoding="utf-8"))
+            ticket_id = str(data.get("last_ticket_id") or "").strip()
+            if ticket_id:
+                return ticket_id
+        except Exception:
+            pass
+
+    safe = sidecar_path_for_output(path)
+    if safe.exists():
+        try:
+            data = json.loads(safe.read_text(encoding="utf-8"))
+            tickets = data.get("tickets") or []
+            ticket_id = last_ticket_id_from_tickets(tickets)
+            if ticket_id:
+                return ticket_id
+        except Exception:
+            pass
+
+    return last_ticket_id_from_tickets(existing_tickets or [])
+
+
+def last_ticket_id_from_tickets(tickets: list[dict]) -> str | None:
+    for ticket in reversed(tickets or []):
+        ticket_id = _ticket_id(ticket)
+        if ticket_id:
+            return ticket_id
+    return None
+
+
+def merge_ticket_records(existing_tickets: list[dict], new_tickets: list[dict]) -> list[dict]:
+    ordered: list[dict] = []
+    seen: set[str] = set()
+    for ticket in existing_tickets or []:
+        ticket_id = _ticket_id(ticket)
+        if not ticket_id:
+            ordered.append(ticket)
+            continue
+        if ticket_id in seen:
+            continue
+        seen.add(ticket_id)
+        ordered.append(ticket)
+    for ticket in new_tickets or []:
+        ticket_id = _ticket_id(ticket)
+        if not ticket_id:
+            ordered.append(ticket)
+            continue
+        if ticket_id in seen:
+            for index, current in enumerate(ordered):
+                if _ticket_id(current) == ticket_id:
+                    ordered[index] = ticket
+                    break
+            continue
+        seen.add(ticket_id)
+        ordered.append(ticket)
+    return ordered
+
+
+def select_fallback_retry_batch(raw_tickets: list[dict], existing_tickets: list[dict] | None = None, batch_size: int = 500, resume_after_ticket_id: str | None = None) -> list[dict]:
+    fallback_ids: set[str] = set()
+    for ticket in existing_tickets or []:
+        ticket_id = _ticket_id(ticket)
+        source = str(ticket.get("classification_source") or "").strip().lower()
+        llm_classified = bool(ticket.get("llm_classified"))
+        if ticket_id and (source == "keyword_fallback" or (not llm_classified and source != "ollama")):
+            fallback_ids.add(ticket_id)
+
+    batch: list[dict] = []
+    for ticket in raw_tickets:
+        ticket_id = _ticket_id(ticket)
+        if ticket_id and ticket_id in fallback_ids:
+            batch.append(ticket)
+            if len(batch) >= max(1, batch_size):
+                break
+    return batch
+
+
+def select_unclassified_batch(raw_tickets: list[dict], existing_tickets: list[dict] | None = None, batch_size: int = 500, resume_after_ticket_id: str | None = None) -> list[dict]:
     existing_ids: set[str] = set()
     for ticket in existing_tickets or []:
         ticket_id = _ticket_id(ticket)
         if ticket_id:
             existing_ids.add(ticket_id)
 
+    resume_after = (resume_after_ticket_id or "").strip()
+    batch_starts_after_resume = bool(resume_after) and not any(_ticket_id(ticket) == resume_after for ticket in raw_tickets)
+    continue_after_resume = not resume_after or batch_starts_after_resume
     batch: list[dict] = []
     for ticket in raw_tickets:
         ticket_id = _ticket_id(ticket)
-        if ticket_id and ticket_id in existing_ids:
+        if resume_after:
+            if not batch_starts_after_resume:
+                if not continue_after_resume:
+                    if ticket_id and ticket_id == resume_after:
+                        continue_after_resume = True
+                    continue
+                if ticket_id and ticket_id in existing_ids:
+                    continue
+            elif ticket_id and ticket_id in existing_ids:
+                continue
+        elif ticket_id and ticket_id in existing_ids:
             continue
         batch.append(ticket)
         if len(batch) >= max(1, batch_size):
@@ -1328,9 +1528,13 @@ def select_unclassified_batch(raw_tickets: list[dict], existing_tickets: list[di
     return batch
 
 
-def classify_tickets(raw_tickets: list[dict], existing_tickets: list[dict] | None = None, batch_size: int = 500) -> tuple[list[dict], dict]:
+def classify_tickets(raw_tickets: list[dict], existing_tickets: list[dict] | None = None, batch_size: int = 500, output_path: str | Path | None = None, resume_after_ticket_id: str | None = None, reclassify_fallback_only: bool = False) -> tuple[list[dict], dict]:
+    merged_existing = list(existing_tickets) if existing_tickets is not None else []
     if existing_tickets is not None:
-        raw_tickets = select_unclassified_batch(raw_tickets, existing_tickets, batch_size)
+        if reclassify_fallback_only:
+            raw_tickets = select_fallback_retry_batch(raw_tickets, merged_existing, batch_size, resume_after_ticket_id=resume_after_ticket_id)
+        else:
+            raw_tickets = select_unclassified_batch(raw_tickets, merged_existing, batch_size, resume_after_ticket_id=resume_after_ticket_id)
 
     classified: list[dict] = []
     refined_total = 0
@@ -1347,19 +1551,23 @@ def classify_tickets(raw_tickets: list[dict], existing_tickets: list[dict] | Non
         llm_summary = generate_ticket_summary(notes, desc)
         llm_result = None
         if ollama_enabled:
-            try:
-                llm_result = classify_with_ollama(desc, notes, llm_summary)
-                if llm_result:
-                    processed += 1
-                    print_progress(
-                        "Ollama classify",
-                        processed,
-                        total,
-                        f"{t.get('transaction_number', index)} -> {llm_result[0]} / {llm_result[1]}",
-                    )
-            except Exception as exc:
-                print_progress("Ollama classify", processed + 1, total, f"fallback to keyword classification ({exc})")
-                llm_result = None
+            attempts = 0
+            while attempts < 2 and not llm_result:
+                attempts += 1
+                try:
+                    llm_result = classify_with_ollama(desc, notes, llm_summary)
+                    if llm_result:
+                        processed += 1
+                        print_progress(
+                            "Ollama classify",
+                            processed,
+                            total,
+                            f"{t.get('transaction_number', index)} -> {llm_result[0]} / {llm_result[1]}",
+                        )
+                except Exception as exc:
+                    if attempts == 1:
+                        print_progress("Ollama classify", processed + 1, total, f"retry LLM classification ({exc})")
+                    llm_result = None
         classification_source = "ollama" if llm_result else "keyword_fallback"
         llm_classified = bool(llm_result)
         if llm_result:
@@ -1383,7 +1591,12 @@ def classify_tickets(raw_tickets: list[dict], existing_tickets: list[dict] | Non
                         ["Solution Description", "Internal Note", "Customer Communication"])
         if index % 50 == 0 or index == total:
             print(f"\n[Ollama summary] {index}/{total}: {t.get('transaction_number', index)} -> problem: {llm_summary['problem'][:80]} | solution: {llm_summary['solution'][:80]}")
-        classified.append({**t, "desc_primary_raw": bp, "desc_secondary_raw": bs, "primary": p0, "secondary": s0, "clarity": clarity, "tickets": 1, "classification_source": classification_source, "llm_classified": llm_classified, "spare_part_group": spare_grp, "major_issue_domain": domain, "major_issue_theme": theme, "solution_path": sol_path, "problem_description": prob_desc, "problem_summary": llm_summary["problem"], "solution_summary": llm_summary["solution"]})
+        result = {**t, "desc_primary_raw": bp, "desc_secondary_raw": bs, "primary": p0, "secondary": s0, "clarity": clarity, "tickets": 1, "classification_source": classification_source, "llm_classified": llm_classified, "spare_part_group": spare_grp, "major_issue_domain": domain, "major_issue_theme": theme, "solution_path": sol_path, "problem_description": prob_desc, "problem_summary": llm_summary["problem"], "solution_summary": llm_summary["solution"]}
+        classified.append(result)
+        if output_path:
+            merged = merge_ticket_records(merged_existing, classified)
+            payload = {"tickets": merged, "stats": {"total": len(merged), "notes_refined_total": refined_total, "refined_by_primary": dict(refined_by_primary.most_common()), "top_transitions": dict(refined_transitions.most_common(10))}}
+            persist_classified_snapshot(output_path, merged, payload["stats"], last_ticket_id=_ticket_id(result))
     if total:
         print()
     stats = {"total": len(classified), "notes_refined_total": refined_total, "refined_by_primary": dict(refined_by_primary.most_common()), "top_transitions": dict(refined_transitions.most_common(10))}

@@ -146,6 +146,39 @@ def test_select_unclassified_batch_skips_existing_and_limits_size() -> None:
     assert batch[-1]["ticket_id"] == "T574"
 
 
+def test_select_unclassified_batch_can_resume_from_last_ticket_id() -> None:
+    raw_tickets = [{"ticket_id": f"T{i}", "description_text": f"issue {i}", "notes_text": "some notes"} for i in range(10)]
+
+    batch = classify.select_unclassified_batch(raw_tickets, existing_tickets=[], batch_size=500, resume_after_ticket_id="T4")
+
+    assert [ticket["ticket_id"] for ticket in batch] == ["T5", "T6", "T7", "T8", "T9"]
+
+
+def test_select_unclassified_batch_keeps_post_resume_batch() -> None:
+    raw_tickets = [{"ticket_id": f"T{i}", "description_text": f"issue {i}", "notes_text": "some notes"} for i in range(5, 10)]
+
+    batch = classify.select_unclassified_batch(raw_tickets, existing_tickets=[], batch_size=500, resume_after_ticket_id="T4")
+
+    assert [ticket["ticket_id"] for ticket in batch] == ["T5", "T6", "T7", "T8", "T9"]
+
+
+def test_select_fallback_retry_batch_reprocesses_only_keyword_fallbacks() -> None:
+    raw_tickets = [{"ticket_id": f"T{i}", "description_text": f"issue {i}", "notes_text": "some notes"} for i in range(10)]
+    existing = [
+        {"ticket_id": "T0", "classification_source": "keyword_fallback", "llm_classified": False},
+        {"ticket_id": "T1", "classification_source": "ollama", "llm_classified": True},
+        {"ticket_id": "T2", "classification_source": "keyword_fallback", "llm_classified": False},
+    ]
+
+    batch = classify.select_fallback_retry_batch(raw_tickets, existing_tickets=existing, batch_size=500)
+
+    assert [ticket["ticket_id"] for ticket in batch] == ["T0", "T2"]
+
+    merged = classify.merge_ticket_records(existing, [{"ticket_id": "T0", "classification_source": "ollama", "llm_classified": True}])
+    assert merged[0]["classification_source"] == "ollama"
+    assert merged[0]["llm_classified"] is True
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Klassifizierungstest fuer Ticket-Pipeline")
     parser.add_argument("--file", type=Path,

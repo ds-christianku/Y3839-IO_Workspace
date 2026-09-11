@@ -3,6 +3,7 @@
     {
       "id": 1,
       "fix": "Stabilize sensor connection to remote by a revised sensor connector housing",
+      "fix_date": "April 2026 / V1.5.148",
       "fixed_rootcause": "Loose USB3 remote/sensor interface",
       "status": "solved",
       "improvement_to_symptoms": [
@@ -14,6 +15,7 @@
     {
       "id": 2,
       "fix": "Overwrite RAM by checkered pattern before next image acquisition",
+      "fix_date": "April 2026 / V1.5.148",
       "fixed_rootcause": "-",
       "status": "solved",
       "improvement_to_symptoms": [
@@ -23,6 +25,7 @@
     {
       "id": 3,
       "fix": "Reduce USB speed",
+      "fix_date": "April 2026 / V1.5.148",
       "fixed_rootcause": "-",
       "status": "solved",
       "improvement_to_symptoms": [
@@ -33,16 +36,17 @@
     {
       "id": 4,
       "fix": "Core isolation",
+      "fix_date": "August 2026",
       "fixed_rootcause": "-",
       "status": "solved",
       "improvement_to_symptoms": [
-        "Intermittent Connectivity",
-        "Images not transferred"
+        "Not Assigned"
       ]
     },
     {
       "id": 5,
       "fix": "Stabilize firmware update",
+      "fix_date": "September 2026 / V1.5.165",
       "fixed_rootcause": "Firmware update bricked the USB3 remote",
       "status": "solved",
       "improvement_to_symptoms": [
@@ -52,6 +56,7 @@
     {
       "id": 9,
       "fix": "SW/FW fix for the hardware error",
+      "fix_date": "September 2026 / V1.5.165",
       "fixed_rootcause": "Circuit fault on the RAM (SW-solution), Power cycling the RAM during update corrupts the update file (SW-solution)",
       "status": "solved",
       "improvement_to_symptoms": [
@@ -59,8 +64,19 @@
       ]
     },
     {
+      "id": 10,
+      "fix": "Information in IFU that only one remote is connected to PC",
+      "fix_date": "August 2026 / chapter 4.3",
+      "fixed_rootcause": "More than one USB3 remote connected to acquisition PC",
+      "status": "solved",
+      "improvement_to_symptoms": [
+        "Images not transferred"
+      ]
+    },
+    {
       "id": 6,
       "fix": "USB-HUB communication",
+      "fix_date": "August 2026 / chapter 4.3",
       "fixed_rootcause": "Not specified USB cable used to PC (above max. specified range)",
       "status": "solved",
       "improvement_to_symptoms": [
@@ -70,6 +86,7 @@
     {
       "id": 7,
       "fix": "Revise IFU cable-clip",
+      "fix_date": "July 2026",
       "fixed_rootcause": "Loose micro-B USB interface (no cable clip used)",
       "status": "solved",
       "improvement_to_symptoms": [
