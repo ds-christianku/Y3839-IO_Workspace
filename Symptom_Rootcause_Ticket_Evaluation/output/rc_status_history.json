@@ -1,323 +1,13 @@
 {
   "tracking_history": [
     {
-      "week": "2026-W36",
-      "date": "2026-09-03T12:31:20.815Z",
+      "week": "2026-W41",
+      "date": "2026-10-09T13:01:01.096Z",
       "user": "dirlq523",
       "rc_status": {
-        "3rd Party Slowness (NAM)": {
-          "Others currently unknown": {
-            "status": "",
-            "action_type": "",
-            "jira_tickets": [
-              {
-                "key": "Y3839-696",
-                "status": "OnHold",
-                "jira_status": "Open"
-              }
-            ],
-            "selected": "Yes"
-          }
-        },
         "Intermittent Connectivity": {
           "Not specified USB cable used to PC (above max. specified range)": {
-            "status": "Solved",
-            "selected": "Yes",
-            "action_type": "CM"
-          },
-          "Loose micro-B USB interface (no cable clip used)": {
-            "status": "",
-            "action_type": "CM",
-            "jira_tickets": [
-              {
-                "key": "Y3839-383",
-                "status": "InAnalysis",
-                "jira_status": "Accepted"
-              }
-            ],
-            "selected": "Yes"
-          },
-          "Loose USB3 remote/sensor interface": {
-            "status": "",
-            "action_type": "HW",
-            "jira_tickets": [
-              {
-                "key": "Y3839-265",
-                "status": "InAnalysis",
-                "jira_status": "Accepted"
-              }
-            ],
-            "selected": "Yes"
-          },
-          "Loose sensor cable screws": {
-            "status": "Solved",
-            "selected": "Yes",
-            "action_type": "CM"
-          },
-          "Defect USB3 remote (cold solder joints)": {
-            "status": "",
-            "action_type": "HW",
-            "jira_tickets": [
-              {
-                "key": "Y3839-588",
-                "status": "OnHold",
-                "jira_status": "Open"
-              }
-            ],
-            "selected": "Yes"
-          },
-          "Driver conflicts (CDR vs IOSS)": {
-            "status": "",
-            "action_type": "SW",
-            "jira_tickets": [
-              {
-                "key": "Y3839-598",
-                "status": "OnHold",
-                "jira_status": "Open"
-              }
-            ],
-            "selected": "Yes"
-          },
-          "Calibration file not transferred correctly": {
-            "status": "",
-            "action_type": "SW",
-            "jira_tickets": [
-              {
-                "key": "Y3839-718",
-                "status": "InAnalysis",
-                "jira_status": "Accepted"
-              }
-            ],
-            "selected": "Yes"
-          },
-          "Reconnection of sensor not stable": {
-            "status": "",
-            "action_type": "SW",
-            "jira_tickets": [
-              {
-                "key": "Y3839-231",
-                "status": "InAnalysis",
-                "jira_status": "Accepted"
-              },
-              {
-                "key": "Y3839-526",
-                "status": "InAnalysis",
-                "jira_status": "Accepted"
-              },
-              {
-                "key": "Y3839-568",
-                "status": "InAnalysis",
-                "jira_status": "Accepted"
-              },
-              {
-                "key": "Y3839-575",
-                "status": "OnHold",
-                "jira_status": "Open"
-              },
-              {
-                "key": "Y3839-599",
-                "status": "OnHold",
-                "jira_status": "Open"
-              },
-              {
-                "key": "Y3839-657",
-                "status": "OnHold",
-                "jira_status": "Open"
-              },
-              {
-                "key": "Y3839-691",
-                "status": "OnHold",
-                "jira_status": "Open"
-              }
-            ],
-            "selected": "Yes"
-          },
-          "Missing error handling in SW/FW": {
-            "status": "",
-            "action_type": "SW",
-            "jira_tickets": [
-              {
-                "key": "Y3839-305",
-                "status": "InAnalysis",
-                "jira_status": "Accepted"
-              },
-              {
-                "key": "Y3839-373",
-                "status": "InAnalysis",
-                "jira_status": "Accepted"
-              },
-              {
-                "key": "Y3839-471",
-                "status": "InAnalysis",
-                "jira_status": "Accepted"
-              },
-              {
-                "key": "Y3839-479",
-                "status": "InAnalysis",
-                "jira_status": "Accepted"
-              },
-              {
-                "key": "Y3839-521",
-                "status": "InAnalysis",
-                "jira_status": "Accepted"
-              },
-              {
-                "key": "Y3839-530",
-                "status": "InAnalysis",
-                "jira_status": "Accepted"
-              },
-              {
-                "key": "Y3839-537",
-                "status": "InAnalysis",
-                "jira_status": "Accepted"
-              },
-              {
-                "key": "Y3839-538",
-                "status": "InAnalysis",
-                "jira_status": "Accepted"
-              },
-              {
-                "key": "Y3839-587",
-                "status": "OnHold",
-                "jira_status": "Open"
-              },
-              {
-                "key": "Y3839-594",
-                "status": "OnHold",
-                "jira_status": "Open"
-              },
-              {
-                "key": "Y3839-607",
-                "status": "OnHold",
-                "jira_status": "Open"
-              },
-              {
-                "key": "Y3839-690",
-                "status": "OnHold",
-                "jira_status": "Open"
-              },
-              {
-                "key": "Y3839-732",
-                "status": "OnHold",
-                "jira_status": "Open"
-              }
-            ],
-            "selected": "Yes"
-          },
-          "Electromagnetic interference (EMI) on system": {
             "status": "OnHold",
-            "selected": "Yes",
-            "action_type": "HW"
-          },
-          "Insufficient power-supply": {
-            "status": "OnHold",
-            "selected": "Yes",
-            "action_type": "HW"
-          },
-          "IOSS bugs": {
-            "status": "",
-            "action_type": "SW",
-            "jira_tickets": [
-              {
-                "key": "Y3839-478",
-                "status": "InAnalysis",
-                "jira_status": "Accepted"
-              },
-              {
-                "key": "Y3839-522",
-                "status": "InAnalysis",
-                "jira_status": "Accepted"
-              }
-            ],
-            "selected": "Yes"
-          }
-        },
-        "Previous (Patient) Image": {
-          "Loose USB3 remote/sensor interface": {
-            "status": "Solved",
-            "selected": "Yes",
-            "action_type": "HW"
-          },
-          "Loose sensor cable screws": {
-            "status": "Solved",
-            "selected": "Yes",
-            "action_type": "HW"
-          }
-        },
-        "Images not transferred": {
-          "Loose USB3 remote/sensor interface": {
-            "status": "Solved",
-            "selected": "Yes",
-            "action_type": "HW"
-          },
-          "More than one USB3 remote connected to acquisition PC": {
-            "status": "Solved",
-            "selected": "Yes",
-            "action_type": "CM"
-          }
-        },
-        "Loosening Screws": {
-          "Incorrect assembly (wrong torque used)": {
-            "status": "Solved",
-            "selected": "Yes",
-            "action_type": "HW"
-          },
-          "Incorrect torque used during sensor cable exchange": {
-            "status": "",
-            "action_type": "CM",
-            "jira_tickets": [
-              {
-                "key": "Y3839-549",
-                "status": "InProgress",
-                "jira_status": "IN PROGRESS"
-              }
-            ],
-            "selected": "Yes"
-          }
-        },
-        "No Power / \"Dying Boxes\" (USB module)": {
-          "Firmware update bricked the USB3 remote": {
-            "status": "Solved",
-            "selected": "Yes",
-            "action_type": "SW"
-          }
-        },
-        "Interface Update Issues": {
-          "Circuit fault on the RAM": {
-            "status": "Solved",
-            "selected": "Yes",
-            "action_type": "HW"
-          },
-          "Power cycling the RAM during update corrupts the update file": {
-            "status": "Solved",
-            "selected": "Yes",
-            "action_type": "HW"
-          }
-        }
-      }
-    },
-    {
-      "week": "2026-W37",
-      "date": "2026-09-07T09:53:59.649Z",
-      "user": "dirlq523",
-      "rc_status": {
-        "3rd Party Slowness (NAM)": {
-          "Others currently unknown": {
-            "status": "",
-            "selected": "Yes",
-            "action_type": "",
-            "jira_tickets": [
-              {
-                "key": "Y3839-696",
-                "status": "OnHold",
-                "jira_status": "Open"
-              }
-            ]
-          }
-        },
-        "Intermittent Connectivity": {
-          "Not specified USB cable used to PC (above max. specified range)": {
-            "status": "Solved",
             "selected": "Yes",
             "action_type": "CM"
           },
@@ -329,201 +19,240 @@
               {
                 "key": "Y3839-383",
                 "status": "InAnalysis",
-                "jira_status": "Accepted"
+                "jira_status": "Accepted",
+                "selected": "Yes"
               }
             ]
           },
           "Loose USB3 remote/sensor interface": {
-            "status": "",
+            "status": "OnHold",
             "selected": "Yes",
-            "action_type": "HW",
-            "jira_tickets": [
-              {
-                "key": "Y3839-265",
-                "status": "InAnalysis",
-                "jira_status": "Accepted"
-              }
-            ]
+            "action_type": "HW"
           },
           "Loose sensor cable screws": {
-            "status": "Solved",
+            "status": "OnHold",
             "selected": "Yes",
             "action_type": "CM"
           },
           "Defect USB3 remote (cold solder joints)": {
-            "status": "",
-            "selected": "Yes",
-            "action_type": "HW",
-            "jira_tickets": [
-              {
-                "key": "Y3839-588",
-                "status": "OnHold",
-                "jira_status": "Open"
-              }
-            ]
+            "status": "OnHold",
+            "selected": "No",
+            "action_type": "HW"
           },
           "Driver conflicts (CDR vs IOSS)": {
             "status": "",
-            "selected": "Yes",
+            "selected": "No",
             "action_type": "SW",
             "jira_tickets": [
               {
                 "key": "Y3839-598",
                 "status": "OnHold",
-                "jira_status": "Open"
+                "jira_status": "Open",
+                "selected": "No"
               }
             ]
           },
           "Calibration file not transferred correctly": {
             "status": "",
-            "selected": "Yes",
+            "selected": "No",
             "action_type": "SW",
             "jira_tickets": [
               {
                 "key": "Y3839-718",
                 "status": "InAnalysis",
-                "jira_status": "Accepted"
+                "jira_status": "Accepted",
+                "selected": "No"
               }
             ]
           },
           "Reconnection of sensor not stable": {
             "status": "",
-            "selected": "Yes",
+            "selected": "No",
             "action_type": "SW",
             "jira_tickets": [
               {
                 "key": "Y3839-231",
                 "status": "InAnalysis",
-                "jira_status": "Accepted"
-              },
-              {
-                "key": "Y3839-526",
-                "status": "InAnalysis",
-                "jira_status": "Accepted"
-              },
-              {
-                "key": "Y3839-568",
-                "status": "InAnalysis",
-                "jira_status": "Accepted"
+                "jira_status": "Accepted",
+                "selected": "No"
               },
               {
                 "key": "Y3839-575",
                 "status": "OnHold",
-                "jira_status": "Open"
+                "jira_status": "Open",
+                "selected": "No"
               },
               {
                 "key": "Y3839-599",
                 "status": "OnHold",
-                "jira_status": "Open"
+                "jira_status": "Open",
+                "selected": "No"
               },
               {
                 "key": "Y3839-657",
                 "status": "OnHold",
-                "jira_status": "Open"
+                "jira_status": "Open",
+                "selected": "No"
               },
               {
                 "key": "Y3839-691",
                 "status": "OnHold",
-                "jira_status": "Open"
+                "jira_status": "Open",
+                "selected": "No"
+              },
+              {
+                "key": "Y3839-743",
+                "status": "OnHold",
+                "jira_status": "Open",
+                "selected": "No"
+              },
+              {
+                "key": "Y3839-744",
+                "status": "OnHold",
+                "jira_status": "Open",
+                "selected": "No"
               }
             ]
           },
           "Missing error handling in SW/FW": {
             "status": "",
-            "selected": "Yes",
+            "selected": "No",
             "action_type": "SW",
             "jira_tickets": [
               {
                 "key": "Y3839-305",
                 "status": "InAnalysis",
-                "jira_status": "Accepted"
+                "jira_status": "Accepted",
+                "selected": "No"
               },
               {
                 "key": "Y3839-373",
                 "status": "InAnalysis",
-                "jira_status": "Accepted"
+                "jira_status": "Accepted",
+                "selected": "No"
               },
               {
                 "key": "Y3839-471",
                 "status": "InAnalysis",
-                "jira_status": "Accepted"
+                "jira_status": "Accepted",
+                "selected": "No"
               },
               {
                 "key": "Y3839-479",
                 "status": "InAnalysis",
-                "jira_status": "Accepted"
+                "jira_status": "Accepted",
+                "selected": "No"
               },
               {
                 "key": "Y3839-521",
                 "status": "InAnalysis",
-                "jira_status": "Accepted"
+                "jira_status": "Accepted",
+                "selected": "No"
               },
               {
-                "key": "Y3839-530",
+                "key": "Y3839-522",
                 "status": "InAnalysis",
-                "jira_status": "Accepted"
+                "jira_status": "Accepted",
+                "selected": "No"
               },
               {
                 "key": "Y3839-537",
                 "status": "InAnalysis",
-                "jira_status": "Accepted"
+                "jira_status": "Accepted",
+                "selected": "No"
               },
               {
                 "key": "Y3839-538",
                 "status": "InAnalysis",
-                "jira_status": "Accepted"
+                "jira_status": "Accepted",
+                "selected": "No"
               },
               {
-                "key": "Y3839-587",
-                "status": "OnHold",
-                "jira_status": "Open"
+                "key": "Y3839-568",
+                "status": "InAnalysis",
+                "jira_status": "Accepted",
+                "selected": "No"
               },
               {
                 "key": "Y3839-594",
                 "status": "OnHold",
-                "jira_status": "Open"
+                "jira_status": "Open",
+                "selected": "No"
               },
               {
                 "key": "Y3839-607",
                 "status": "OnHold",
-                "jira_status": "Open"
+                "jira_status": "Open",
+                "selected": "No"
               },
               {
                 "key": "Y3839-690",
                 "status": "OnHold",
-                "jira_status": "Open"
+                "jira_status": "Open",
+                "selected": "No"
               },
               {
                 "key": "Y3839-732",
                 "status": "OnHold",
-                "jira_status": "Open"
+                "jira_status": "Open",
+                "selected": "No"
               }
             ]
           },
           "Electromagnetic interference (EMI) on system": {
             "status": "OnHold",
-            "selected": "Yes",
+            "selected": "No",
             "action_type": "HW"
           },
           "Insufficient power-supply": {
             "status": "OnHold",
-            "selected": "Yes",
+            "selected": "No",
             "action_type": "HW"
           },
-          "IOSS bugs": {
+          "FPGA Bug": {
             "status": "",
-            "selected": "Yes",
+            "selected": "No",
             "action_type": "SW",
             "jira_tickets": [
               {
-                "key": "Y3839-478",
-                "status": "InAnalysis",
-                "jira_status": "Accepted"
+                "key": "Y3839-745",
+                "status": "OnHold",
+                "jira_status": "Open",
+                "selected": "No"
+              }
+            ]
+          },
+          "Others currently unknown": {
+            "status": "",
+            "selected": "No",
+            "action_type": "",
+            "jira_tickets": [
+              {
+                "key": "Y3839-739",
+                "status": "OnHold",
+                "jira_status": "Open",
+                "selected": "No"
+              }
+            ]
+          }
+        },
+        "3rd Party Slowness (NAM)": {
+          "general slowness": {
+            "status": "",
+            "selected": "No",
+            "action_type": "SW",
+            "jira_tickets": [
+              {
+                "key": "Y3839-696",
+                "status": "OnHold",
+                "jira_status": "Open",
+                "selected": "No"
               },
               {
-                "key": "Y3839-522",
-                "status": "InAnalysis",
-                "jira_status": "Accepted"
+                "key": "Y3839-742",
+                "status": "OnHold",
+                "jira_status": "Open",
+                "selected": "No"
               }
             ]
           },
@@ -535,12 +264,12 @@
         },
         "Previous (Patient) Image": {
           "Loose USB3 remote/sensor interface": {
-            "status": "Solved",
+            "status": "OnHold",
             "selected": "Yes",
             "action_type": "HW"
           },
           "Loose sensor cable screws": {
-            "status": "Solved",
+            "status": "OnHold",
             "selected": "Yes",
             "action_type": "HW"
           },
@@ -550,16 +279,9 @@
             "action_type": "HW"
           },
           "Workflow robustness": {
-            "status": "",
+            "status": "OnHold",
             "selected": "No",
-            "action_type": "SW",
-            "jira_tickets": [
-              {
-                "key": "Y3839-712",
-                "status": "InAnalysis",
-                "jira_status": "Accepted"
-              }
-            ]
+            "action_type": "SW"
           },
           "Second (rescue) image transfer path in IOSS": {
             "status": "OnHold",
@@ -567,171 +289,38 @@
             "action_type": "SW"
           },
           "Missing error handling in SW/FW": {
+            "status": "OnHold",
+            "selected": "No",
+            "action_type": "SW"
+          },
+          "No checkerboard support for AE sensor": {
             "status": "",
             "selected": "No",
             "action_type": "SW",
             "jira_tickets": [
-              {
-                "key": "Y3839-523",
-                "status": "InAnalysis",
-                "jira_status": "Accepted"
-              },
               {
                 "key": "Y3839-662",
                 "status": "OnHold",
-                "jira_status": "Open"
-              },
-              {
-                "key": "Y3839-664",
-                "status": "OnHold",
-                "jira_status": "Open"
+                "jira_status": "Open",
+                "selected": "No"
               }
             ]
           },
           "Others currently unknown": {
-            "status": "OnHold",
-            "selected": "No",
-            "action_type": ""
-          }
-        },
-        "Images not transferred": {
-          "Loose USB3 remote/sensor interface": {
-            "status": "Solved",
-            "selected": "Yes",
-            "action_type": "HW"
-          },
-          "More than one USB3 remote connected to acquisition PC": {
-            "status": "Solved",
-            "selected": "Yes",
-            "action_type": "CM"
-          },
-          "USB module defect": {
-            "status": "OnHold",
-            "selected": "No",
-            "action_type": "HW"
-          },
-          "Software timing error": {
             "status": "",
             "selected": "No",
-            "action_type": "SW",
+            "action_type": "",
             "jira_tickets": [
               {
-                "key": "Y3839-547",
-                "status": "OnHold",
-                "jira_status": "Open"
-              }
-            ]
-          },
-          "Software can trigger a FPGA reset": {
-            "status": "OnHold",
-            "selected": "No",
-            "action_type": "SW"
-          },
-          "SW allocates too small buffer size": {
-            "status": "",
-            "selected": "No",
-            "action_type": "SW",
-            "jira_tickets": [
-              {
-                "key": "Y3839-384",
-                "status": "InAnalysis",
-                "jira_status": "Accepted"
-              }
-            ]
-          },
-          "Missing error handling in SW/FW": {
-            "status": "",
-            "selected": "No",
-            "action_type": "SW",
-            "jira_tickets": [
-              {
-                "key": "Y3839-255",
-                "status": "InAnalysis",
-                "jira_status": "Accepted"
-              },
-              {
-                "key": "Y3839-282",
-                "status": "OnHold",
-                "jira_status": "Open"
-              },
-              {
-                "key": "Y3839-520",
-                "status": "InAnalysis",
-                "jira_status": "Accepted"
-              },
-              {
-                "key": "Y3839-529",
-                "status": "InAnalysis",
-                "jira_status": "Accepted"
-              },
-              {
-                "key": "Y3839-555",
+                "key": "Y3839-541",
                 "status": "InProgress",
-                "jira_status": "IN PROGRESS"
-              },
-              {
-                "key": "Y3839-570",
-                "status": "InAnalysis",
-                "jira_status": "Accepted"
-              },
-              {
-                "key": "Y3839-593",
-                "status": "OnHold",
-                "jira_status": "Open"
+                "jira_status": "IN PROGRESS",
+                "selected": "No"
               }
             ]
-          },
-          "Others currently unknown": {
-            "status": "OnHold",
-            "selected": "No",
-            "action_type": ""
-          }
-        },
-        "Loosening Screws": {
-          "Incorrect assembly (wrong torque used)": {
-            "status": "Solved",
-            "selected": "Yes",
-            "action_type": "HW"
-          },
-          "Incorrect torque used during sensor cable exchange": {
-            "status": "",
-            "selected": "Yes",
-            "action_type": "CM",
-            "jira_tickets": [
-              {
-                "key": "Y3839-549",
-                "status": "InProgress",
-                "jira_status": "IN PROGRESS"
-              }
-            ]
-          },
-          "Mechanical wear": {
-            "status": "OnHold",
-            "selected": "No",
-            "action_type": "HW"
-          },
-          "Vibration / sensor handling loosens the connection": {
-            "status": "OnHold",
-            "selected": "No",
-            "action_type": "HW"
-          },
-          "Missing error handling Remote (FPGA) / Sensor (FPGA)": {
-            "status": "OnHold",
-            "selected": "No",
-            "action_type": "FW"
-          },
-          "Others currently unknown": {
-            "status": "OnHold",
-            "selected": "No",
-            "action_type": ""
           }
         },
         "No Power / \"Dying Boxes\" (USB module)": {
-          "Firmware update bricked the USB3 remote": {
-            "status": "Solved",
-            "selected": "Yes",
-            "action_type": "SW"
-          },
           "USB3 remote hardware failure": {
             "status": "",
             "selected": "No",
@@ -740,7 +329,8 @@
               {
                 "key": "Y3839-234",
                 "status": "InAnalysis",
-                "jira_status": "Accepted"
+                "jira_status": "Accepted",
+                "selected": "No"
               }
             ]
           },
@@ -759,6 +349,11 @@
             "selected": "No",
             "action_type": "HW"
           },
+          "Firmware update bricked the USB3 remote": {
+            "status": "OnHold",
+            "selected": "Yes",
+            "action_type": "SW"
+          },
           "USB cable physically damaged": {
             "status": "OnHold",
             "selected": "No",
@@ -770,23 +365,47 @@
             "action_type": "",
             "jira_tickets": [
               {
-                "key": "Y3839-695",
+                "key": "Y3839-663",
                 "status": "OnHold",
-                "jira_status": "Open"
+                "jira_status": "Open",
+                "selected": "No"
               }
             ]
           }
         },
-        "Interface Update Issues": {
-          "Circuit fault on the RAM": {
-            "status": "Solved",
+        "Images not transferred": {
+          "USB module defect": {
+            "status": "OnHold",
+            "selected": "No",
+            "action_type": "HW"
+          },
+          "Software can trigger a FPGA reset": {
+            "status": "OnHold",
+            "selected": "No",
+            "action_type": "SW"
+          },
+          "Loose USB3 remote/sensor interface": {
+            "status": "OnHold",
             "selected": "Yes",
             "action_type": "HW"
           },
-          "Power cycling the RAM during update corrupts the update file": {
-            "status": "Solved",
+          "More than one USB3 remote connected to acquisition PC": {
+            "status": "OnHold",
             "selected": "Yes",
-            "action_type": "HW"
+            "action_type": "CM"
+          },
+          "SW allocates too small buffer size": {
+            "status": "",
+            "selected": "No",
+            "action_type": "SW",
+            "jira_tickets": [
+              {
+                "key": "Y3839-384",
+                "status": "InAnalysis",
+                "jira_status": "Accepted",
+                "selected": "No"
+              }
+            ]
           },
           "Missing error handling in SW/FW": {
             "status": "",
@@ -794,85 +413,132 @@
             "action_type": "SW",
             "jira_tickets": [
               {
-                "key": "Y3839-307",
+                "key": "Y3839-255",
                 "status": "InAnalysis",
-                "jira_status": "Accepted"
+                "jira_status": "Accepted",
+                "selected": "No"
               },
               {
-                "key": "Y3839-506",
+                "key": "Y3839-282",
                 "status": "OnHold",
-                "jira_status": "Open"
+                "jira_status": "Open",
+                "selected": "No"
               },
               {
-                "key": "Y3839-510",
+                "key": "Y3839-520",
                 "status": "InAnalysis",
-                "jira_status": "Accepted"
+                "jira_status": "Accepted",
+                "selected": "No"
               },
               {
-                "key": "Y3839-611",
+                "key": "Y3839-523",
+                "status": "InAnalysis",
+                "jira_status": "Accepted",
+                "selected": "No"
+              },
+              {
+                "key": "Y3839-529",
+                "status": "InAnalysis",
+                "jira_status": "Accepted",
+                "selected": "No"
+              },
+              {
+                "key": "Y3839-593",
                 "status": "OnHold",
-                "jira_status": "Open"
+                "jira_status": "Open",
+                "selected": "No"
               },
               {
-                "key": "Y3839-625",
-                "status": "InProgress",
-                "jira_status": "IN PROGRESS"
-              },
-              {
-                "key": "Y3839-661",
-                "status": "InAnalysis",
-                "jira_status": "Accepted"
-              },
-              {
-                "key": "Y3839-689",
-                "status": "InAnalysis",
-                "jira_status": "Accepted"
-              },
-              {
-                "key": "Y3839-702",
-                "status": "InAnalysis",
-                "jira_status": "Accepted"
-              },
-              {
-                "key": "Y3839-705",
-                "status": "InAnalysis",
-                "jira_status": "Accepted"
-              },
-              {
-                "key": "Y3839-711",
-                "status": "InAnalysis",
-                "jira_status": "Accepted"
+                "key": "Y3839-738",
+                "status": "OnHold",
+                "jira_status": "Open",
+                "selected": "No"
               }
             ]
           },
-          "Driver conflicts after IOSS/CDR reinstall for 3rd party": {
+          "SW timing issue": {
             "status": "",
             "selected": "No",
             "action_type": "SW",
             "jira_tickets": [
               {
-                "key": "Y3839-673",
-                "status": "InAnalysis",
-                "jira_status": "Accepted"
-              },
+                "key": "Y3839-547",
+                "status": "OnHold",
+                "jira_status": "Open",
+                "selected": "No"
+              }
+            ]
+          },
+          "Sensor self-triggering": {
+            "status": "",
+            "selected": "No",
+            "action_type": "HW",
+            "jira_tickets": [
               {
-                "key": "Y3839-710",
+                "key": "Y3839-555",
+                "status": "InProgress",
+                "jira_status": "IN PROGRESS",
+                "selected": "No"
+              }
+            ]
+          },
+          "State-machine mismatch in SW/FW (out-of-sync)": {
+            "status": "",
+            "selected": "No",
+            "action_type": "SW",
+            "jira_tickets": [
+              {
+                "key": "Y3839-570",
                 "status": "InAnalysis",
-                "jira_status": "Accepted"
+                "jira_status": "Accepted",
+                "selected": "No"
               }
             ]
           },
           "Others currently unknown": {
-            "status": "",
+            "status": "OnHold",
             "selected": "No",
-            "action_type": "",
+            "action_type": ""
+          }
+        },
+        "Loosening Screws": {
+          "Mechanical wear": {
+            "status": "OnHold",
+            "selected": "No",
+            "action_type": "HW"
+          },
+          "Incorrect assembly (wrong torque used)": {
+            "status": "OnHold",
+            "selected": "Yes",
+            "action_type": "HW"
+          },
+          "Incorrect torque used during sensor cable exchange": {
+            "status": "",
+            "selected": "Yes",
+            "action_type": "CM",
             "jira_tickets": [
               {
-                "key": "Y3839-422",
+                "key": "Y3839-549",
                 "status": "InProgress",
-                "jira_status": "IN PROGRESS"
+                "jira_status": "IN PROGRESS",
+                "selected": "Yes"
               }
             ]
+          },
+          "Vibration / sensor handling loosens the connection": {
+            "status": "OnHold",
+            "selected": "No",
+            "action_type": "HW"
+          },
+          "Missing error handling Remote (FPGA) / Sensor (FPGA)": {
+            "status": "OnHold",
+            "selected": "No",
+            "action_type": "FW"
+          },
+          "Others currently unknown": {
+            "status": "OnHold",
+            "selected": "No",
+            "action_type": ""
           }
         },
         "White Images": {
@@ -882,16 +548,9 @@
             "action_type": "HW"
           },
           "Sensor self-triggering": {
-            "status": "",
+            "status": "OnHold",
             "selected": "No",
-            "action_type": "HW",
-            "jira_tickets": [
-              {
-                "key": "Y3839-586",
-                "status": "OnHold",
-                "jira_status": "Open"
-              }
-            ]
+            "action_type": "HW"
           },
           "Sensor triggers by the influence of an electric field": {
             "status": "",
@@ -901,7 +560,8 @@
               {
                 "key": "Y3839-596",
                 "status": "OnHold",
-                "jira_status": "Open"
+                "jira_status": "Open",
+                "selected": "No"
               }
             ]
           },
@@ -928,7 +588,8 @@
               {
                 "key": "Y3839-722",
                 "status": "InAnalysis",
-                "jira_status": "Accepted"
+                "jira_status": "Accepted",
+                "selected": "No"
               }
             ]
           },
@@ -947,32 +608,14 @@
               {
                 "key": "Y3839-304",
                 "status": "InAnalysis",
-                "jira_status": "Accepted"
+                "jira_status": "Accepted",
+                "selected": "No"
               },
               {
                 "key": "Y3839-525",
                 "status": "InAnalysis",
-                "jira_status": "Accepted"
-              },
-              {
-                "key": "Y3839-533",
-                "status": "InAnalysis",
-                "jira_status": "Accepted"
-              },
-              {
-                "key": "Y3839-545",
-                "status": "InAnalysis",
-                "jira_status": "Accepted"
-              },
-              {
-                "key": "Y3839-546",
-                "status": "OnHold",
-                "jira_status": "Open"
-              },
-              {
-                "key": "Y3839-567",
-                "status": "InAnalysis",
-                "jira_status": "Accepted"
+                "jira_status": "Accepted",
+                "selected": "No"
               }
             ]
           },
@@ -982,44 +625,16 @@
             "action_type": "SW",
             "jira_tickets": [
               {
-                "key": "Y3839-571",
-                "status": "OnHold",
-                "jira_status": "Open"
-              },
-              {
-                "key": "Y3839-573",
-                "status": "OnHold",
-                "jira_status": "Open"
-              },
-              {
-                "key": "Y3839-583",
-                "status": "OnHold",
-                "jira_status": "Open"
-              },
-              {
-                "key": "Y3839-631",
-                "status": "OnHold",
-                "jira_status": "Open"
-              },
-              {
-                "key": "Y3839-638",
-                "status": "OnHold",
-                "jira_status": "Open"
-              },
-              {
-                "key": "Y3839-639",
-                "status": "OnHold",
-                "jira_status": "Open"
-              },
-              {
                 "key": "Y3839-733",
                 "status": "OnHold",
-                "jira_status": "Open"
+                "jira_status": "Open",
+                "selected": "No"
               },
               {
                 "key": "Y3839-736",
-                "status": "OnHold",
-                "jira_status": "Open"
+                "status": "InAnalysis",
+                "jira_status": "Accepted",
+                "selected": "No"
               }
             ]
           },
@@ -1031,22 +646,32 @@
               {
                 "key": "Y3839-382",
                 "status": "InAnalysis",
-                "jira_status": "Accepted"
+                "jira_status": "Accepted",
+                "selected": "No"
               },
               {
                 "key": "Y3839-524",
                 "status": "InAnalysis",
-                "jira_status": "Accepted"
+                "jira_status": "Accepted",
+                "selected": "No"
               },
               {
-                "key": "Y3839-698",
+                "key": "Y3839-545",
                 "status": "InAnalysis",
-                "jira_status": "Accepted"
+                "jira_status": "Accepted",
+                "selected": "No"
               },
               {
-                "key": "Y3839-706",
+                "key": "Y3839-546",
+                "status": "OnHold",
+                "jira_status": "Open",
+                "selected": "No"
+              },
+              {
+                "key": "Y3839-567",
                 "status": "InAnalysis",
-                "jira_status": "Accepted"
+                "jira_status": "Accepted",
+                "selected": "No"
               }
             ]
           },
@@ -1054,6 +679,88 @@
             "status": "OnHold",
             "selected": "No",
             "action_type": "FW"
+          },
+          "Missing error handling in SW/FW": {
+            "status": "",
+            "selected": "No",
+            "action_type": "SW",
+            "jira_tickets": [
+              {
+                "key": "Y3839-478",
+                "status": "InAnalysis",
+                "jira_status": "Accepted",
+                "selected": "No"
+              },
+              {
+                "key": "Y3839-513",
+                "status": "InAnalysis",
+                "jira_status": "Accepted",
+                "selected": "No"
+              },
+              {
+                "key": "Y3839-533",
+                "status": "InAnalysis",
+                "jira_status": "Accepted",
+                "selected": "No"
+              }
+            ]
+          },
+          "FW Bug": {
+            "status": "",
+            "selected": "No",
+            "action_type": "SW",
+            "jira_tickets": [
+              {
+                "key": "Y3839-631",
+                "status": "OnHold",
+                "jira_status": "Open",
+                "selected": "No"
+              },
+              {
+                "key": "Y3839-639",
+                "status": "OnHold",
+                "jira_status": "Open",
+                "selected": "No"
+              },
+              {
+                "key": "Y3839-698",
+                "status": "InAnalysis",
+                "jira_status": "Accepted",
+                "selected": "No"
+              },
+              {
+                "key": "Y3839-731",
+                "status": "InAnalysis",
+                "jira_status": "Accepted",
+                "selected": "No"
+              }
+            ]
+          },
+          "SW Bug": {
+            "status": "",
+            "selected": "No",
+            "action_type": "SW",
+            "jira_tickets": [
+              {
+                "key": "Y3839-706",
+                "status": "InAnalysis",
+                "jira_status": "Accepted",
+                "selected": "No"
+              }
+            ]
+          },
+          "FPGA Bug": {
+            "status": "",
+            "selected": "No",
+            "action_type": "SW",
+            "jira_tickets": [
+              {
+                "key": "Y3839-741",
+                "status": "OnHold",
+                "jira_status": "Open",
+                "selected": "No"
+              }
+            ]
           },
           "Others currently unknown": {
             "status": "OnHold",
@@ -1073,21 +780,1031 @@
             "action_type": "HW"
           },
           "Error in the image processing path": {
-            "status": "",
+            "status": "OnHold",
             "selected": "No",
-            "action_type": "SW",
-            "jira_tickets": [
-              {
-                "key": "Y3839-541",
-                "status": "InProgress",
-                "jira_status": "IN PROGRESS"
-              }
-            ]
+            "action_type": "SW"
           },
           "Different implementation for dark image substraction": {
             "status": "OnHold",
             "selected": "No",
             "action_type": "SW"
+          },
+          "Others currently unknown": {
+            "status": "OnHold",
+            "selected": "No",
+            "action_type": ""
+          }
+        },
+        "Interface Update Issues": {
+          "Circuit fault on the RAM": {
+            "status": "OnHold",
+            "selected": "Yes",
+            "action_type": "HW"
+          },
+          "Power cycling the RAM during update corrupts the update file": {
+            "status": "OnHold",
+            "selected": "Yes",
+            "action_type": "HW"
+          },
+          "Missing error handling in SW/FW": {
+            "status": "",
+            "selected": "No",
+            "action_type": "SW",
+            "jira_tickets": [
+              {
+                "key": "Y3839-307",
+                "status": "InAnalysis",
+                "jira_status": "Accepted",
+                "selected": "No"
+              },
+              {
+                "key": "Y3839-506",
+                "status": "OnHold",
+                "jira_status": "Open",
+                "selected": "No"
+              },
+              {
+                "key": "Y3839-510",
+                "status": "InAnalysis",
+                "jira_status": "Accepted",
+                "selected": "No"
+              }
+            ]
+          },
+          "Driver conflicts after IOSS/CDR reinstall for 3rd party": {
+            "status": "OnHold",
+            "selected": "No",
+            "action_type": "SW"
+          },
+          "FW Bug": {
+            "status": "",
+            "selected": "No",
+            "action_type": "SW",
+            "jira_tickets": [
+              {
+                "key": "Y3839-611",
+                "status": "OnHold",
+                "jira_status": "Open",
+                "selected": "No"
+              },
+              {
+                "key": "Y3839-661",
+                "status": "InAnalysis",
+                "jira_status": "Accepted",
+                "selected": "No"
+              },
+              {
+                "key": "Y3839-664",
+                "status": "OnHold",
+                "jira_status": "Open",
+                "selected": "No"
+              },
+              {
+                "key": "Y3839-689",
+                "status": "InAnalysis",
+                "jira_status": "Accepted",
+                "selected": "No"
+              },
+              {
+                "key": "Y3839-711",
+                "status": "InAnalysis",
+                "jira_status": "Accepted",
+                "selected": "No"
+              }
+            ]
+          },
+          "FPGA Bug": {
+            "status": "",
+            "selected": "No",
+            "action_type": "SW",
+            "jira_tickets": [
+              {
+                "key": "Y3839-625",
+                "status": "InProgress",
+                "jira_status": "IN PROGRESS",
+                "selected": "No"
+              }
+            ]
+          },
+          "IOSS not installed": {
+            "status": "",
+            "selected": "No",
+            "action_type": "SW",
+            "jira_tickets": [
+              {
+                "key": "Y3839-673",
+                "status": "InAnalysis",
+                "jira_status": "Accepted",
+                "selected": "No"
+              }
+            ]
+          },
+          "Others currently unknown": {
+            "status": "OnHold",
+            "selected": "No",
+            "action_type": ""
+          }
+        }
+      }
+    },
+    {
+      "week": "2026-W41",
+      "date": "2026-10-09T13:03:59.392Z",
+      "user": "dirlq523",
+      "rc_status": {
+        "Intermittent Connectivity": {
+          "Not specified USB cable used to PC (above max. specified range)": {
+            "status": "Solved",
+            "selected": "Yes",
+            "action_type": "CM"
+          },
+          "Loose micro-B USB interface (no cable clip used)": {
+            "status": "",
+            "selected": "Yes",
+            "action_type": "CM",
+            "jira_tickets": [
+              {
+                "key": "Y3839-383",
+                "status": "InAnalysis",
+                "jira_status": "Accepted",
+                "selected": "Yes"
+              }
+            ]
+          },
+          "Loose USB3 remote/sensor interface": {
+            "status": "Solved",
+            "selected": "Yes",
+            "action_type": "HW"
+          },
+          "Loose sensor cable screws": {
+            "status": "InProgress",
+            "selected": "Yes",
+            "action_type": "CM"
+          },
+          "Defect USB3 remote (cold solder joints)": {
+            "status": "OnHold",
+            "selected": "No",
+            "action_type": "HW"
+          },
+          "Driver conflicts (CDR vs IOSS)": {
+            "status": "",
+            "selected": "No",
+            "action_type": "SW",
+            "jira_tickets": [
+              {
+                "key": "Y3839-598",
+                "status": "OnHold",
+                "jira_status": "Open",
+                "selected": "No"
+              }
+            ]
+          },
+          "Calibration file not transferred correctly": {
+            "status": "",
+            "selected": "No",
+            "action_type": "SW",
+            "jira_tickets": [
+              {
+                "key": "Y3839-718",
+                "status": "InAnalysis",
+                "jira_status": "Accepted",
+                "selected": "No"
+              }
+            ]
+          },
+          "Reconnection of sensor not stable": {
+            "status": "",
+            "selected": "No",
+            "action_type": "SW",
+            "jira_tickets": [
+              {
+                "key": "Y3839-231",
+                "status": "InAnalysis",
+                "jira_status": "Accepted",
+                "selected": "No"
+              },
+              {
+                "key": "Y3839-575",
+                "status": "OnHold",
+                "jira_status": "Open",
+                "selected": "No"
+              },
+              {
+                "key": "Y3839-599",
+                "status": "OnHold",
+                "jira_status": "Open",
+                "selected": "No"
+              },
+              {
+                "key": "Y3839-657",
+                "status": "OnHold",
+                "jira_status": "Open",
+                "selected": "No"
+              },
+              {
+                "key": "Y3839-691",
+                "status": "OnHold",
+                "jira_status": "Open",
+                "selected": "No"
+              },
+              {
+                "key": "Y3839-743",
+                "status": "OnHold",
+                "jira_status": "Open",
+                "selected": "No"
+              },
+              {
+                "key": "Y3839-744",
+                "status": "OnHold",
+                "jira_status": "Open",
+                "selected": "No"
+              }
+            ]
+          },
+          "Missing error handling in SW/FW": {
+            "status": "",
+            "selected": "No",
+            "action_type": "SW",
+            "jira_tickets": [
+              {
+                "key": "Y3839-305",
+                "status": "InAnalysis",
+                "jira_status": "Accepted",
+                "selected": "No"
+              },
+              {
+                "key": "Y3839-373",
+                "status": "InAnalysis",
+                "jira_status": "Accepted",
+                "selected": "No"
+              },
+              {
+                "key": "Y3839-471",
+                "status": "InAnalysis",
+                "jira_status": "Accepted",
+                "selected": "No"
+              },
+              {
+                "key": "Y3839-479",
+                "status": "InAnalysis",
+                "jira_status": "Accepted",
+                "selected": "No"
+              },
+              {
+                "key": "Y3839-521",
+                "status": "InAnalysis",
+                "jira_status": "Accepted",
+                "selected": "No"
+              },
+              {
+                "key": "Y3839-522",
+                "status": "InAnalysis",
+                "jira_status": "Accepted",
+                "selected": "No"
+              },
+              {
+                "key": "Y3839-537",
+                "status": "InAnalysis",
+                "jira_status": "Accepted",
+                "selected": "No"
+              },
+              {
+                "key": "Y3839-538",
+                "status": "InAnalysis",
+                "jira_status": "Accepted",
+                "selected": "No"
+              },
+              {
+                "key": "Y3839-568",
+                "status": "InAnalysis",
+                "jira_status": "Accepted",
+                "selected": "No"
+              },
+              {
+                "key": "Y3839-594",
+                "status": "OnHold",
+                "jira_status": "Open",
+                "selected": "No"
+              },
+              {
+                "key": "Y3839-607",
+                "status": "OnHold",
+                "jira_status": "Open",
+                "selected": "No"
+              },
+              {
+                "key": "Y3839-690",
+                "status": "OnHold",
+                "jira_status": "Open",
+                "selected": "No"
+              },
+              {
+                "key": "Y3839-732",
+                "status": "OnHold",
+                "jira_status": "Open",
+                "selected": "No"
+              }
+            ]
+          },
+          "Electromagnetic interference (EMI) on system": {
+            "status": "InAnalysis",
+            "selected": "Yes",
+            "action_type": "HW"
+          },
+          "Insufficient power-supply": {
+            "status": "InAnalysis",
+            "selected": "Yes",
+            "action_type": "HW"
+          },
+          "FPGA Bug": {
+            "status": "",
+            "selected": "No",
+            "action_type": "SW",
+            "jira_tickets": [
+              {
+                "key": "Y3839-745",
+                "status": "OnHold",
+                "jira_status": "Open",
+                "selected": "No"
+              }
+            ]
+          },
+          "Others currently unknown": {
+            "status": "",
+            "selected": "No",
+            "action_type": "",
+            "jira_tickets": [
+              {
+                "key": "Y3839-739",
+                "status": "OnHold",
+                "jira_status": "Open",
+                "selected": "No"
+              }
+            ]
+          }
+        },
+        "3rd Party Slowness (NAM)": {
+          "general slowness": {
+            "status": "",
+            "selected": "No",
+            "action_type": "SW",
+            "jira_tickets": [
+              {
+                "key": "Y3839-696",
+                "status": "OnHold",
+                "jira_status": "Open",
+                "selected": "No"
+              },
+              {
+                "key": "Y3839-742",
+                "status": "OnHold",
+                "jira_status": "Open",
+                "selected": "No"
+              }
+            ]
+          },
+          "Others currently unknown": {
+            "status": "OnHold",
+            "selected": "No",
+            "action_type": ""
+          }
+        },
+        "Previous (Patient) Image": {
+          "Loose USB3 remote/sensor interface": {
+            "status": "Solved",
+            "selected": "Yes",
+            "action_type": "HW"
+          },
+          "Loose sensor cable screws": {
+            "status": "InProgress",
+            "selected": "Yes",
+            "action_type": "HW"
+          },
+          "Sensor cable damaged": {
+            "status": "Solved",
+            "selected": "Yes",
+            "action_type": "HW"
+          },
+          "Workflow robustness": {
+            "status": "OnHold",
+            "selected": "No",
+            "action_type": "SW"
+          },
+          "Second (rescue) image transfer path in IOSS": {
+            "status": "OnHold",
+            "selected": "No",
+            "action_type": "SW"
+          },
+          "Missing error handling in SW/FW": {
+            "status": "OnHold",
+            "selected": "No",
+            "action_type": "SW"
+          },
+          "No checkerboard support for AE sensor": {
+            "status": "",
+            "selected": "No",
+            "action_type": "SW",
+            "jira_tickets": [
+              {
+                "key": "Y3839-662",
+                "status": "OnHold",
+                "jira_status": "Open",
+                "selected": "No"
+              }
+            ]
+          },
+          "Others currently unknown": {
+            "status": "",
+            "selected": "No",
+            "action_type": "",
+            "jira_tickets": [
+              {
+                "key": "Y3839-541",
+                "status": "InProgress",
+                "jira_status": "IN PROGRESS",
+                "selected": "No"
+              }
+            ]
+          }
+        },
+        "No Power / \"Dying Boxes\" (USB module)": {
+          "USB3 remote hardware failure": {
+            "status": "",
+            "selected": "No",
+            "action_type": "HW",
+            "jira_tickets": [
+              {
+                "key": "Y3839-234",
+                "status": "InAnalysis",
+                "jira_status": "Accepted",
+                "selected": "No"
+              }
+            ]
+          },
+          "Electrostatic discharge (ESD) at the interfaces of the USB3 remote": {
+            "status": "OnHold",
+            "selected": "No",
+            "action_type": "HW"
+          },
+          "Micro-B USB interface physically damaged": {
+            "status": "OnHold",
+            "selected": "No",
+            "action_type": "HW"
+          },
+          "Voltage regulator (U12) broken": {
+            "status": "OnHold",
+            "selected": "No",
+            "action_type": "HW"
+          },
+          "Firmware update bricked the USB3 remote": {
+            "status": "Solved",
+            "selected": "Yes",
+            "action_type": "SW"
+          },
+          "USB cable physically damaged": {
+            "status": "OnHold",
+            "selected": "No",
+            "action_type": "CM"
+          },
+          "Others currently unknown": {
+            "status": "",
+            "selected": "No",
+            "action_type": "",
+            "jira_tickets": [
+              {
+                "key": "Y3839-663",
+                "status": "OnHold",
+                "jira_status": "Open",
+                "selected": "No"
+              }
+            ]
+          }
+        },
+        "Images not transferred": {
+          "USB module defect": {
+            "status": "OnHold",
+            "selected": "No",
+            "action_type": "HW"
+          },
+          "Software can trigger a FPGA reset": {
+            "status": "OnHold",
+            "selected": "No",
+            "action_type": "SW"
+          },
+          "Loose USB3 remote/sensor interface": {
+            "status": "Solved",
+            "selected": "Yes",
+            "action_type": "HW"
+          },
+          "More than one USB3 remote connected to acquisition PC": {
+            "status": "Solved",
+            "selected": "Yes",
+            "action_type": "CM"
+          },
+          "SW allocates too small buffer size": {
+            "status": "",
+            "selected": "No",
+            "action_type": "SW",
+            "jira_tickets": [
+              {
+                "key": "Y3839-384",
+                "status": "InAnalysis",
+                "jira_status": "Accepted",
+                "selected": "No"
+              }
+            ]
+          },
+          "Missing error handling in SW/FW": {
+            "status": "",
+            "selected": "No",
+            "action_type": "SW",
+            "jira_tickets": [
+              {
+                "key": "Y3839-255",
+                "status": "InAnalysis",
+                "jira_status": "Accepted",
+                "selected": "No"
+              },
+              {
+                "key": "Y3839-282",
+                "status": "OnHold",
+                "jira_status": "Open",
+                "selected": "No"
+              },
+              {
+                "key": "Y3839-520",
+                "status": "InAnalysis",
+                "jira_status": "Accepted",
+                "selected": "No"
+              },
+              {
+                "key": "Y3839-523",
+                "status": "InAnalysis",
+                "jira_status": "Accepted",
+                "selected": "No"
+              },
+              {
+                "key": "Y3839-529",
+                "status": "InAnalysis",
+                "jira_status": "Accepted",
+                "selected": "No"
+              },
+              {
+                "key": "Y3839-593",
+                "status": "OnHold",
+                "jira_status": "Open",
+                "selected": "No"
+              },
+              {
+                "key": "Y3839-738",
+                "status": "OnHold",
+                "jira_status": "Open",
+                "selected": "No"
+              }
+            ]
+          },
+          "SW timing issue": {
+            "status": "",
+            "selected": "No",
+            "action_type": "SW",
+            "jira_tickets": [
+              {
+                "key": "Y3839-547",
+                "status": "OnHold",
+                "jira_status": "Open",
+                "selected": "No"
+              }
+            ]
+          },
+          "Sensor self-triggering": {
+            "status": "",
+            "selected": "No",
+            "action_type": "HW",
+            "jira_tickets": [
+              {
+                "key": "Y3839-555",
+                "status": "InProgress",
+                "jira_status": "IN PROGRESS",
+                "selected": "No"
+              }
+            ]
+          },
+          "State-machine mismatch in SW/FW (out-of-sync)": {
+            "status": "",
+            "selected": "No",
+            "action_type": "SW",
+            "jira_tickets": [
+              {
+                "key": "Y3839-570",
+                "status": "InAnalysis",
+                "jira_status": "Accepted",
+                "selected": "No"
+              }
+            ]
+          },
+          "Others currently unknown": {
+            "status": "OnHold",
+            "selected": "No",
+            "action_type": ""
+          }
+        },
+        "Loosening Screws": {
+          "Mechanical wear": {
+            "status": "OnHold",
+            "selected": "No",
+            "action_type": "HW"
+          },
+          "Incorrect assembly (wrong torque used)": {
+            "status": "Solved",
+            "selected": "Yes",
+            "action_type": "HW"
+          },
+          "Incorrect torque used during sensor cable exchange": {
+            "status": "",
+            "selected": "Yes",
+            "action_type": "CM",
+            "jira_tickets": [
+              {
+                "key": "Y3839-549",
+                "status": "InProgress",
+                "jira_status": "IN PROGRESS",
+                "selected": "Yes"
+              }
+            ]
+          },
+          "Vibration / sensor handling loosens the connection": {
+            "status": "OnHold",
+            "selected": "No",
+            "action_type": "HW"
+          },
+          "Missing error handling Remote (FPGA) / Sensor (FPGA)": {
+            "status": "OnHold",
+            "selected": "No",
+            "action_type": "FW"
+          },
+          "Others currently unknown": {
+            "status": "OnHold",
+            "selected": "No",
+            "action_type": ""
+          }
+        },
+        "White Images": {
+          "Sensor defect": {
+            "status": "OnHold",
+            "selected": "No",
+            "action_type": "HW"
+          },
+          "Sensor self-triggering": {
+            "status": "OnHold",
+            "selected": "No",
+            "action_type": "HW"
+          },
+          "Sensor triggers by the influence of an electric field": {
+            "status": "",
+            "selected": "No",
+            "action_type": "HW",
+            "jira_tickets": [
+              {
+                "key": "Y3839-596",
+                "status": "OnHold",
+                "jira_status": "Open",
+                "selected": "No"
+              }
+            ]
+          },
+          "Sensor housing allows light to pass through": {
+            "status": "OnHold",
+            "selected": "No",
+            "action_type": "HW"
+          },
+          "Wrong alignment X-Ray generator and sensor (user fault)": {
+            "status": "OnHold",
+            "selected": "No",
+            "action_type": ""
+          },
+          "Wrong X-Ray generator power": {
+            "status": "OnHold",
+            "selected": "No",
+            "action_type": "HW"
+          },
+          "Sensor permanently armed (scattering X-Ray, background accumulation)": {
+            "status": "",
+            "selected": "No",
+            "action_type": "FW",
+            "jira_tickets": [
+              {
+                "key": "Y3839-722",
+                "status": "InAnalysis",
+                "jira_status": "Accepted",
+                "selected": "No"
+              }
+            ]
+          },
+          "Others currently unknown": {
+            "status": "OnHold",
+            "selected": "No",
+            "action_type": ""
+          }
+        },
+        "Inconstant/wrong signaling (SW vs. Interface)": {
+          "SW timing issue": {
+            "status": "",
+            "selected": "No",
+            "action_type": "SW",
+            "jira_tickets": [
+              {
+                "key": "Y3839-304",
+                "status": "InAnalysis",
+                "jira_status": "Accepted",
+                "selected": "No"
+              },
+              {
+                "key": "Y3839-525",
+                "status": "InAnalysis",
+                "jira_status": "Accepted",
+                "selected": "No"
+              }
+            ]
+          },
+          "Workflow sequence not correctly used by 3rd party SW": {
+            "status": "",
+            "selected": "No",
+            "action_type": "SW",
+            "jira_tickets": [
+              {
+                "key": "Y3839-733",
+                "status": "OnHold",
+                "jira_status": "Open",
+                "selected": "No"
+              },
+              {
+                "key": "Y3839-736",
+                "status": "InAnalysis",
+                "jira_status": "Accepted",
+                "selected": "No"
+              }
+            ]
+          },
+          "State-machine mismatch in SW/FW (out-of-sync)": {
+            "status": "",
+            "selected": "No",
+            "action_type": "FW",
+            "jira_tickets": [
+              {
+                "key": "Y3839-382",
+                "status": "InAnalysis",
+                "jira_status": "Accepted",
+                "selected": "No"
+              },
+              {
+                "key": "Y3839-524",
+                "status": "InAnalysis",
+                "jira_status": "Accepted",
+                "selected": "No"
+              },
+              {
+                "key": "Y3839-545",
+                "status": "InAnalysis",
+                "jira_status": "Accepted",
+                "selected": "No"
+              },
+              {
+                "key": "Y3839-546",
+                "status": "OnHold",
+                "jira_status": "Open",
+                "selected": "No"
+              },
+              {
+                "key": "Y3839-567",
+                "status": "InAnalysis",
+                "jira_status": "Accepted",
+                "selected": "No"
+              }
+            ]
+          },
+          "Missing signals/state changes from USB3 remote to PC": {
+            "status": "OnHold",
+            "selected": "No",
+            "action_type": "FW"
+          },
+          "Missing error handling in SW/FW": {
+            "status": "",
+            "selected": "No",
+            "action_type": "SW",
+            "jira_tickets": [
+              {
+                "key": "Y3839-478",
+                "status": "InAnalysis",
+                "jira_status": "Accepted",
+                "selected": "No"
+              },
+              {
+                "key": "Y3839-513",
+                "status": "InAnalysis",
+                "jira_status": "Accepted",
+                "selected": "No"
+              },
+              {
+                "key": "Y3839-533",
+                "status": "InAnalysis",
+                "jira_status": "Accepted",
+                "selected": "No"
+              }
+            ]
+          },
+          "FW Bug": {
+            "status": "",
+            "selected": "No",
+            "action_type": "SW",
+            "jira_tickets": [
+              {
+                "key": "Y3839-631",
+                "status": "OnHold",
+                "jira_status": "Open",
+                "selected": "No"
+              },
+              {
+                "key": "Y3839-639",
+                "status": "OnHold",
+                "jira_status": "Open",
+                "selected": "No"
+              },
+              {
+                "key": "Y3839-698",
+                "status": "InAnalysis",
+                "jira_status": "Accepted",
+                "selected": "No"
+              },
+              {
+                "key": "Y3839-731",
+                "status": "InAnalysis",
+                "jira_status": "Accepted",
+                "selected": "No"
+              }
+            ]
+          },
+          "SW Bug": {
+            "status": "",
+            "selected": "No",
+            "action_type": "SW",
+            "jira_tickets": [
+              {
+                "key": "Y3839-706",
+                "status": "InAnalysis",
+                "jira_status": "Accepted",
+                "selected": "No"
+              }
+            ]
+          },
+          "FPGA Bug": {
+            "status": "",
+            "selected": "No",
+            "action_type": "SW",
+            "jira_tickets": [
+              {
+                "key": "Y3839-741",
+                "status": "OnHold",
+                "jira_status": "Open",
+                "selected": "No"
+              }
+            ]
+          },
+          "Others currently unknown": {
+            "status": "OnHold",
+            "selected": "No",
+            "action_type": ""
+          }
+        },
+        "Overexposed images": {
+          "Wrong X-Ray generator settings": {
+            "status": "OnHold",
+            "selected": "No",
+            "action_type": "HW"
+          },
+          "Sensor sensitivity issue": {
+            "status": "OnHold",
+            "selected": "No",
+            "action_type": "HW"
+          },
+          "Error in the image processing path": {
+            "status": "OnHold",
+            "selected": "No",
+            "action_type": "SW"
+          },
+          "Different implementation for dark image substraction": {
+            "status": "OnHold",
+            "selected": "No",
+            "action_type": "SW"
+          },
+          "Others currently unknown": {
+            "status": "OnHold",
+            "selected": "No",
+            "action_type": ""
+          }
+        },
+        "Interface Update Issues": {
+          "Circuit fault on the RAM": {
+            "status": "OnHold",
+            "selected": "No",
+            "action_type": "HW"
+          },
+          "Power cycling the RAM during update corrupts the update file": {
+            "status": "Solved",
+            "selected": "Yes",
+            "action_type": "HW"
+          },
+          "Missing error handling in SW/FW": {
+            "status": "",
+            "selected": "No",
+            "action_type": "SW",
+            "jira_tickets": [
+              {
+                "key": "Y3839-307",
+                "status": "InAnalysis",
+                "jira_status": "Accepted",
+                "selected": "No"
+              },
+              {
+                "key": "Y3839-506",
+                "status": "OnHold",
+                "jira_status": "Open",
+                "selected": "No"
+              },
+              {
+                "key": "Y3839-510",
+                "status": "InAnalysis",
+                "jira_status": "Accepted",
+                "selected": "No"
+              }
+            ]
+          },
+          "Driver conflicts after IOSS/CDR reinstall for 3rd party": {
+            "status": "OnHold",
+            "selected": "No",
+            "action_type": "SW"
+          },
+          "FW Bug": {
+            "status": "",
+            "selected": "No",
+            "action_type": "SW",
+            "jira_tickets": [
+              {
+                "key": "Y3839-611",
+                "status": "OnHold",
+                "jira_status": "Open",
+                "selected": "No"
+              },
+              {
+                "key": "Y3839-661",
+                "status": "InAnalysis",
+                "jira_status": "Accepted",
+                "selected": "No"
+              },
+              {
+                "key": "Y3839-664",
+                "status": "OnHold",
+                "jira_status": "Open",
+                "selected": "No"
+              },
+              {
+                "key": "Y3839-689",
+                "status": "InAnalysis",
+                "jira_status": "Accepted",
+                "selected": "No"
+              },
+              {
+                "key": "Y3839-711",
+                "status": "InAnalysis",
+                "jira_status": "Accepted",
+                "selected": "No"
+              }
+            ]
+          },
+          "FPGA Bug": {
+            "status": "",
+            "selected": "No",
+            "action_type": "SW",
+            "jira_tickets": [
+              {
+                "key": "Y3839-625",
+                "status": "InProgress",
+                "jira_status": "IN PROGRESS",
+                "selected": "No"
+              }
+            ]
+          },
+          "IOSS not installed": {
+            "status": "",
+            "selected": "No",
+            "action_type": "SW",
+            "jira_tickets": [
+              {
+                "key": "Y3839-673",
+                "status": "InAnalysis",
+                "jira_status": "Accepted",
+                "selected": "No"
+              }
+            ]
           },
           "Others currently unknown": {
             "status": "OnHold",

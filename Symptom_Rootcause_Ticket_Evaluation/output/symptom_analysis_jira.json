@@ -783,7 +783,11 @@
               "priority": "Urgent",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-696"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-696",
+              "sprint": [
+                "Y3839_QualityInitiative_R1"
+              ],
+              "release_sprint": true
             },
             {
               "key": "Y3839-742",
@@ -792,7 +796,11 @@
               "priority": "Medium",
               "score": 99,
               "source": "training_override",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-742"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-742",
+              "sprint": [
+                "Y3839_QualityInitiative_R1"
+              ],
+              "release_sprint": true
             }
           ]
         },
@@ -2723,7 +2731,11 @@
               "priority": "Medium",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-383"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-383",
+              "sprint": [
+                "Y3839_QualityInitiative_R1"
+              ],
+              "release_sprint": true
             }
           ]
         },
@@ -2749,7 +2761,11 @@
               "priority": "Medium",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-598"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-598",
+              "sprint": [
+                "Y3839_WontDo_QI1"
+              ],
+              "release_sprint": false
             }
           ]
         },
@@ -2763,7 +2779,11 @@
               "priority": "Medium",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-718"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-718",
+              "sprint": [
+                "Y3839_QualityInitiative_R1"
+              ],
+              "release_sprint": true
             }
           ]
         },
@@ -2786,7 +2806,11 @@
               "priority": "Medium",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-575"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-575",
+              "sprint": [
+                "Y3839_QualityInitiative_R1"
+              ],
+              "release_sprint": true
             },
             {
               "key": "Y3839-599",
@@ -2795,7 +2819,11 @@
               "priority": "Medium",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-599"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-599",
+              "sprint": [
+                "Y3839_QualityInitiative_R1"
+              ],
+              "release_sprint": true
             },
             {
               "key": "Y3839-657",
@@ -2804,7 +2832,11 @@
               "priority": "Medium",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-657"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-657",
+              "sprint": [
+                "Y3839_QualityInitiative_R1"
+              ],
+              "release_sprint": true
             },
             {
               "key": "Y3839-691",
@@ -2813,7 +2845,11 @@
               "priority": "Medium",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-691"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-691",
+              "sprint": [
+                "Y3839_QualityInitiative_R1"
+              ],
+              "release_sprint": true
             },
             {
               "key": "Y3839-743",
@@ -2822,7 +2858,11 @@
               "priority": "Medium",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-743"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-743",
+              "sprint": [
+                "Y3839_WontDo_QI1"
+              ],
+              "release_sprint": false
             },
             {
               "key": "Y3839-744",
@@ -2831,7 +2871,11 @@
               "priority": "Medium",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-744"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-744",
+              "sprint": [
+                "Y3839_QualityInitiative_R1"
+              ],
+              "release_sprint": true
             }
           ]
         },
@@ -2845,7 +2889,11 @@
               "priority": "Lowest",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-305"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-305",
+              "sprint": [
+                "Y3839_WontDo_QI1"
+              ],
+              "release_sprint": false
             },
             {
               "key": "Y3839-373",
@@ -2854,7 +2902,11 @@
               "priority": "Medium",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-373"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-373",
+              "sprint": [
+                "Y3839_WontDo_QI1"
+              ],
+              "release_sprint": false
             },
             {
               "key": "Y3839-471",
@@ -2863,7 +2915,11 @@
               "priority": "High",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-471"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-471",
+              "sprint": [
+                "Y3839_QualityInitiative_R1"
+              ],
+              "release_sprint": true
             },
             {
               "key": "Y3839-479",
@@ -2872,7 +2928,11 @@
               "priority": "High",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-479"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-479",
+              "sprint": [
+                "Y3839_WontDo_QI1"
+              ],
+              "release_sprint": false
             },
             {
               "key": "Y3839-521",
@@ -2881,7 +2941,11 @@
               "priority": "High",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-521"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-521",
+              "sprint": [
+                "Y3839_QualityInitiative_R1"
+              ],
+              "release_sprint": true
             },
             {
               "key": "Y3839-522",
@@ -2890,7 +2954,11 @@
               "priority": "Medium",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-522"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-522",
+              "sprint": [
+                "Y3839_WontDo_QI1"
+              ],
+              "release_sprint": false
             },
             {
               "key": "Y3839-537",
@@ -2899,7 +2967,11 @@
               "priority": "High",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-537"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-537",
+              "sprint": [
+                "Y3839_QualityInitiative_R1"
+              ],
+              "release_sprint": true
             },
             {
               "key": "Y3839-538",
@@ -2908,7 +2980,11 @@
               "priority": "High",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-538"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-538",
+              "sprint": [
+                "Y3839_QualityInitiative_R1"
+              ],
+              "release_sprint": true
             },
             {
               "key": "Y3839-568",
@@ -2917,7 +2993,11 @@
               "priority": "Medium",
               "score": 99,
               "source": "training_override",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-568"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-568",
+              "sprint": [
+                "Y3839_QualityInitiative_R1"
+              ],
+              "release_sprint": true
             },
             {
               "key": "Y3839-594",
@@ -2926,7 +3006,11 @@
               "priority": "Medium",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-594"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-594",
+              "sprint": [
+                "Y3839_QualityInitiative_R1"
+              ],
+              "release_sprint": true
             },
             {
               "key": "Y3839-607",
@@ -2935,7 +3019,11 @@
               "priority": "Medium",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-607"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-607",
+              "sprint": [
+                "Y3839_QualityInitiative_R1"
+              ],
+              "release_sprint": true
             },
             {
               "key": "Y3839-690",
@@ -2944,7 +3032,11 @@
               "priority": "Medium",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-690"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-690",
+              "sprint": [
+                "Y3839_WontDo_QI1"
+              ],
+              "release_sprint": false
             },
             {
               "key": "Y3839-732",
@@ -2953,7 +3045,11 @@
               "priority": "Medium",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-732"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-732",
+              "sprint": [
+                "Y3839_QualityInitiative_R1"
+              ],
+              "release_sprint": true
             }
           ]
         },
@@ -2975,7 +3071,11 @@
               "priority": "Medium",
               "score": 99,
               "source": "training_override",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-745"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-745",
+              "sprint": [
+                "Y3839_WontDo_QI1"
+              ],
+              "release_sprint": false
             }
           ]
         },
@@ -2989,7 +3089,11 @@
               "priority": "Medium",
               "score": 99,
               "source": "training_override",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-739"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-739",
+              "sprint": [
+                "Y3839_QualityInitiative_R1"
+              ],
+              "release_sprint": true
             }
           ]
         }
@@ -3260,7 +3364,11 @@
               "priority": "Medium",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-541"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-541",
+              "sprint": [
+                "Y3839_QualityInitiative_R1"
+              ],
+              "release_sprint": true
             }
           ]
         }
@@ -3574,7 +3682,11 @@
               "priority": "High",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-384"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-384",
+              "sprint": [
+                "Y3839_WontDo_QI1"
+              ],
+              "release_sprint": false
             }
           ]
         },
@@ -3588,7 +3700,11 @@
               "priority": "Medium",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-255"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-255",
+              "sprint": [
+                "Y3839_WontDo_QI1"
+              ],
+              "release_sprint": false
             },
             {
               "key": "Y3839-282",
@@ -3597,7 +3713,11 @@
               "priority": "High",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-282"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-282",
+              "sprint": [
+                "Y3839_QualityInitiative_R1"
+              ],
+              "release_sprint": true
             },
             {
               "key": "Y3839-520",
@@ -3606,7 +3726,11 @@
               "priority": "High",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-520"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-520",
+              "sprint": [
+                "Y3839_QualityInitiative_R1"
+              ],
+              "release_sprint": true
             },
             {
               "key": "Y3839-523",
@@ -3615,7 +3739,11 @@
               "priority": "Urgent",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-523"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-523",
+              "sprint": [
+                "Y3839_WontDo_QI1"
+              ],
+              "release_sprint": false
             },
             {
               "key": "Y3839-529",
@@ -3624,7 +3752,11 @@
               "priority": "Medium",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-529"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-529",
+              "sprint": [
+                "Y3839_QualityInitiative_R1"
+              ],
+              "release_sprint": true
             },
             {
               "key": "Y3839-593",
@@ -3633,7 +3765,11 @@
               "priority": "Medium",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-593"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-593",
+              "sprint": [
+                "Y3839_QualityInitiative_R1"
+              ],
+              "release_sprint": true
             },
             {
               "key": "Y3839-738",
@@ -3642,7 +3778,11 @@
               "priority": "Medium",
               "score": 99,
               "source": "training_override",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-738"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-738",
+              "sprint": [
+                "Y3839_WontDo_QI1"
+              ],
+              "release_sprint": false
             }
           ]
         },
@@ -3656,7 +3796,11 @@
               "priority": "High",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-547"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-547",
+              "sprint": [
+                "Y3839_QualityInitiative_R1"
+              ],
+              "release_sprint": true
             }
           ]
         },
@@ -3670,7 +3814,11 @@
               "priority": "High",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-555"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-555",
+              "sprint": [
+                "Y3839_QualityInitiative_R1"
+              ],
+              "release_sprint": true
             }
           ]
         },
@@ -3684,7 +3832,11 @@
               "priority": "High",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-570"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-570",
+              "sprint": [
+                "Y3839_QualityInitiative_R1"
+              ],
+              "release_sprint": true
             }
           ]
         },
@@ -3800,7 +3952,9 @@
               "priority": "Medium",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-549"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-549",
+              "sprint": [],
+              "release_sprint": false
             }
           ]
         },
@@ -4391,7 +4545,11 @@
               "priority": "Medium",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-234"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-234",
+              "sprint": [
+                "Y3839_WontDo_QI1"
+              ],
+              "release_sprint": false
             }
           ]
         },
@@ -4425,7 +4583,11 @@
               "priority": "Medium",
               "score": 99,
               "source": "training_override",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-663"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-663",
+              "sprint": [
+                "Y3839_WontDo_QI1"
+              ],
+              "release_sprint": false
             }
           ]
         }
@@ -4568,7 +4730,11 @@
               "priority": "High",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-304"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-304",
+              "sprint": [
+                "Y3839_QualityInitiative_R1"
+              ],
+              "release_sprint": true
             },
             {
               "key": "Y3839-525",
@@ -4577,7 +4743,11 @@
               "priority": "Urgent",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-525"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-525",
+              "sprint": [
+                "Y3839_QualityInitiative_R1"
+              ],
+              "release_sprint": true
             }
           ]
         },
@@ -4614,7 +4784,11 @@
               "priority": "Low",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-382"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-382",
+              "sprint": [
+                "Y3839_WontDo_QI1"
+              ],
+              "release_sprint": false
             },
             {
               "key": "Y3839-524",
@@ -4623,7 +4797,11 @@
               "priority": "Low",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-524"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-524",
+              "sprint": [
+                "Y3839_QualityInitiative_R1"
+              ],
+              "release_sprint": true
             },
             {
               "key": "Y3839-545",
@@ -4632,7 +4810,11 @@
               "priority": "Medium",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-545"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-545",
+              "sprint": [
+                "Y3839_WontDo_QI1"
+              ],
+              "release_sprint": false
             },
             {
               "key": "Y3839-546",
@@ -4641,7 +4823,11 @@
               "priority": "Medium",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-546"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-546",
+              "sprint": [
+                "Y3839_QualityInitiative_R1"
+              ],
+              "release_sprint": true
             },
             {
               "key": "Y3839-567",
@@ -4650,7 +4836,11 @@
               "priority": "Medium",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-567"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-567",
+              "sprint": [
+                "Y3839_QualityInitiative_R1"
+              ],
+              "release_sprint": true
             }
           ]
         },
@@ -4668,7 +4858,11 @@
               "priority": "High",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-478"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-478",
+              "sprint": [
+                "Y3839_QualityInitiative_R1"
+              ],
+              "release_sprint": true
             },
             {
               "key": "Y3839-513",
@@ -4677,7 +4871,11 @@
               "priority": "Medium",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-513"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-513",
+              "sprint": [
+                "Y3839_WontDo_QI1"
+              ],
+              "release_sprint": false
             },
             {
               "key": "Y3839-533",
@@ -4686,7 +4884,11 @@
               "priority": "Medium",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-533"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-533",
+              "sprint": [
+                "Y3839_WontDo_QI1"
+              ],
+              "release_sprint": false
             }
           ]
         },
@@ -4700,7 +4902,11 @@
               "priority": "Medium",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-631"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-631",
+              "sprint": [
+                "Y3839_WontDo_QI1"
+              ],
+              "release_sprint": false
             },
             {
               "key": "Y3839-639",
@@ -4709,7 +4915,11 @@
               "priority": "Medium",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-639"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-639",
+              "sprint": [
+                "Y3839_QualityInitiative_R1"
+              ],
+              "release_sprint": true
             },
             {
               "key": "Y3839-698",
@@ -4718,7 +4928,11 @@
               "priority": "Medium",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-698"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-698",
+              "sprint": [
+                "Y3839_WontDo_QI1"
+              ],
+              "release_sprint": false
             },
             {
               "key": "Y3839-731",
@@ -4727,7 +4941,11 @@
               "priority": "Medium",
               "score": 99,
               "source": "training_override",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-731"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-731",
+              "sprint": [
+                "Y3839_WontDo_QI1"
+              ],
+              "release_sprint": false
             }
           ]
         },
@@ -4741,7 +4959,11 @@
               "priority": "Medium",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-706"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-706",
+              "sprint": [
+                "Y3839_WontDo_QI1"
+              ],
+              "release_sprint": false
             }
           ]
         },
@@ -4755,7 +4977,11 @@
               "priority": "Medium",
               "score": 99,
               "source": "training_override",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-741"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-741",
+              "sprint": [
+                "Y3839_QualityInitiative_R1"
+              ],
+              "release_sprint": true
             }
           ]
         },
@@ -5022,7 +5248,11 @@
               "priority": "Medium",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-596"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-596",
+              "sprint": [
+                "Y3839_WontDo_QI1"
+              ],
+              "release_sprint": false
             }
           ]
         },
@@ -5048,7 +5278,12 @@
               "priority": "Medium",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-722"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-722",
+              "sprint": [
+                "24.09.2026 medium: similar to white images. Not part of QualityInitiative 1",
+                "Y3839_WontDo_QI1"
+              ],
+              "release_sprint": false
             }
           ]
         },
@@ -5208,7 +5443,11 @@
               "priority": "Medium",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-307"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-307",
+              "sprint": [
+                "Y3839_WontDo_QI1"
+              ],
+              "release_sprint": false
             },
             {
               "key": "Y3839-506",
@@ -5217,7 +5456,11 @@
               "priority": "Low",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-506"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-506",
+              "sprint": [
+                "Y3839_WontDo_QI1"
+              ],
+              "release_sprint": false
             },
             {
               "key": "Y3839-510",
@@ -5226,7 +5469,11 @@
               "priority": "Medium",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-510"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-510",
+              "sprint": [
+                "Y3839_WontDo_QI1"
+              ],
+              "release_sprint": false
             }
           ]
         },
@@ -5244,7 +5491,11 @@
               "priority": "Medium",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-611"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-611",
+              "sprint": [
+                "Y3839_WontDo_QI1"
+              ],
+              "release_sprint": false
             },
             {
               "key": "Y3839-661",
@@ -5253,7 +5504,11 @@
               "priority": "Medium",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-661"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-661",
+              "sprint": [
+                "Y3839_WontDo_QI1"
+              ],
+              "release_sprint": false
             },
             {
               "key": "Y3839-664",
@@ -5262,7 +5517,11 @@
               "priority": "Medium",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-664"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-664",
+              "sprint": [
+                "Y3839_WontDo_QI1"
+              ],
+              "release_sprint": false
             },
             {
               "key": "Y3839-689",
@@ -5271,7 +5530,11 @@
               "priority": "Medium",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-689"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-689",
+              "sprint": [
+                "Y3839_WontDo_QI1"
+              ],
+              "release_sprint": false
             },
             {
               "key": "Y3839-711",
@@ -5280,7 +5543,11 @@
               "priority": "Medium",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-711"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-711",
+              "sprint": [
+                "Y3839_WontDo_QI1"
+              ],
+              "release_sprint": false
             }
           ]
         },
@@ -5294,7 +5561,11 @@
               "priority": "Medium",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-625"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-625",
+              "sprint": [
+                "Y3839_WontDo_QI1"
+              ],
+              "release_sprint": false
             }
           ]
         },
@@ -5308,7 +5579,11 @@
               "priority": "Medium",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-673"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-673",
+              "sprint": [
+                "Y3839_WontDo_QI1"
+              ],
+              "release_sprint": false
             }
           ]
         },

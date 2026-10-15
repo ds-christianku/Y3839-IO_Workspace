@@ -13,10 +13,5 @@
     "title": "[Y3839-737] Check for CDR Autodetect Monitor",
     "status": "backlog",
     "description": "Jira reference: https://jira.dentsplysirona.com/browse/Y3839-737"
-  },
-  {
-    "title": "Update only possible via IOSS (no longer Updater necessary)",
-    "status": "backlog",
-    "description": "Simplify update process by removing dependency on Updater tool and using IOSS exclusively."
   }
 ]

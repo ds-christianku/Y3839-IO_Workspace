@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 pipeline_03_render.py
@@ -37,14 +37,14 @@ def _trend_icon(pct):
     if pct is None:
         return '<span class="trend-new">NEW</span>'
     if pct > 50:
-        return f'<span class="trend-up-strong">▲▲ +{pct:.0f}%</span>'
+        return f'<span class="trend-up-strong">â–²â–² +{pct:.0f}%</span>'
     if pct > 10:
-        return f'<span class="trend-up">▲ +{pct:.0f}%</span>'
+        return f'<span class="trend-up">â–² +{pct:.0f}%</span>'
     if pct > -10:
-        return f'<span class="trend-stable">→ {pct:+.0f}%</span>'
+        return f'<span class="trend-stable">â†’ {pct:+.0f}%</span>'
     if pct > -50:
-        return f'<span class="trend-down">▼ {pct:.0f}%</span>'
-    return f'<span class="trend-down-strong">▼▼ {pct:.0f}%</span>'
+        return f'<span class="trend-down">â–¼ {pct:.0f}%</span>'
+    return f'<span class="trend-down-strong">â–¼â–¼ {pct:.0f}%</span>'
 
 
 def _bar(value, max_value, color="#2a7a9b"):
@@ -70,7 +70,10 @@ def _normalize_status(status):
 def _rc_entry_status(entry, default=""):
   """Read status from either legacy string values or object entries."""
   if isinstance(entry, dict):
-    return _normalize_status(entry.get("status", default))
+    raw_status = entry.get("status")
+    if raw_status is None or str(raw_status).strip() == "":
+      return _normalize_status(default)
+    return _normalize_status(raw_status)
   if entry is None:
     return _normalize_status(default)
   return _normalize_status(entry)
@@ -101,30 +104,42 @@ def _map_jira_ticket_status(status):
 def _collect_rc_statuses_for_counts(rc_entry, jira_tickets):
   """Return statuses to count for an RC; Jira RCs contribute one status per ticket."""
   statuses = []
-  if jira_tickets:
-    if isinstance(rc_entry, dict):
-      stored_tickets = rc_entry.get("jira_tickets", [])
-      if isinstance(stored_tickets, list) and stored_tickets:
-        for ticket in stored_tickets:
-          if not isinstance(ticket, dict):
-            continue
-          mapped = _map_jira_ticket_status(ticket.get("status") or ticket.get("jira_status"))
-          if mapped:
-            statuses.append(mapped)
-        if statuses:
-          return statuses
-    for ticket in jira_tickets:
-      mapped = _map_jira_ticket_status(ticket.get("status") if isinstance(ticket, dict) else "")
+
+  def _append_statuses(ticket_list):
+    for ticket in ticket_list:
+      if not isinstance(ticket, dict):
+        continue
+      mapped = _map_jira_ticket_status(ticket.get("status") or ticket.get("jira_status"))
       if mapped:
         statuses.append(mapped)
-    return statuses
+
+  if isinstance(rc_entry, dict):
+    stored_tickets = rc_entry.get("jira_tickets", [])
+    if isinstance(stored_tickets, list) and stored_tickets:
+      _append_statuses(stored_tickets)
+      if statuses:
+        return statuses
+
+  if jira_tickets:
+    _append_statuses(jira_tickets)
+    if statuses:
+      return statuses
 
   status = _rc_entry_status(rc_entry, "OnHold")
   return [status] if status else []
 
 
 def _build_symptom_status_stats(symptom_list, jira_sym_map, rc_status_map):
-  """Build per-symptom status counts from symptom/root-cause structures."""
+  """Build per-symptom status counts from symptom/root-cause structures.
+
+  Rules:
+  - Count each unique Jira ticket once per symptom.
+  - Count each actual root cause without a Jira ticket as 1 in the overall total.
+  - Selected-for-release counts only:
+      * unique Jira tickets in the release sprint
+      * RCs without Jira tickets whose manual selected flag is Yes
+  - Ignore generic placeholder/root-cause labels that do not exist in the current RC status map.
+  """
   symptom_stats = []
   for symptom in symptom_list:
     symptom_name = symptom.get("name", "")
@@ -136,19 +151,74 @@ def _build_symptom_status_stats(symptom_list, jira_sym_map, rc_status_map):
     inprogress = 0
     inanalysis = 0
     onhold = 0
+    bug_total = 0
+    bug_selected = 0
+    seen_ticket_keys = set()
+    ticket_statuses = []
+    symptom_rc_map = rc_status_map.get(symptom_name, {}) if isinstance(rc_status_map, dict) else {}
 
     for rc in rc_list:
-      raw_rc_entry = _lookup_rc_entry(rc_status_map.get(symptom_name, {}), rc, "OnHold")
-      rc_statuses = _collect_rc_statuses_for_counts(raw_rc_entry, jira_by_rc.get(_normalize_rc_key(rc), []))
-      for rc_status in rc_statuses:
-        if rc_status == "Solved":
-          completed += 1
-        elif rc_status == "InProgress":
-          inprogress += 1
-        elif rc_status == "InAnalysis":
-          inanalysis += 1
-        elif rc_status == "OnHold":
-          onhold += 1
+      raw_rc_entry = _lookup_rc_entry(symptom_rc_map, rc, None)
+      normalized_rc_key = _normalize_rc_key(rc)
+      base_tickets = jira_by_rc.get(normalized_rc_key, [])
+      if not isinstance(base_tickets, list):
+        base_tickets = []
+
+      fallback_tickets = []
+      if isinstance(raw_rc_entry, dict):
+        fallback_tickets = raw_rc_entry.get("jira_tickets", [])
+      if not isinstance(fallback_tickets, list):
+        fallback_tickets = []
+
+      candidate_tickets = list(base_tickets)
+      if not candidate_tickets and fallback_tickets:
+        candidate_tickets = list(fallback_tickets)
+
+      unique_tickets = []
+      seen_in_rc = set()
+      for ticket in candidate_tickets:
+        if not isinstance(ticket, dict):
+          continue
+        ticket_key = str(ticket.get("key", "") or ticket.get("id", "")).strip()
+        if ticket_key:
+          if ticket_key in seen_in_rc or ticket_key in seen_ticket_keys:
+            continue
+          seen_in_rc.add(ticket_key)
+          seen_ticket_keys.add(ticket_key)
+        unique_tickets.append(ticket)
+
+      if unique_tickets:
+        bug_total += len(unique_tickets)
+        for ticket in unique_tickets:
+          mapped = _map_jira_ticket_status(ticket.get("status") or ticket.get("jira_status"))
+          if mapped:
+            ticket_statuses.append(mapped)
+          if _ticket_selected_for_release(ticket):
+            bug_selected += 1
+        continue
+
+      if isinstance(raw_rc_entry, dict) and isinstance(raw_rc_entry.get("jira_tickets", []), list) and raw_rc_entry.get("jira_tickets"):
+        continue
+
+      if raw_rc_entry is None:
+        continue
+
+      bug_total += 1
+      status = _rc_entry_status(raw_rc_entry, "OnHold")
+      if status:
+        ticket_statuses.append(status)
+      if isinstance(raw_rc_entry, dict) and str(raw_rc_entry.get("selected", "")).strip().lower() in {"yes", "true", "1"}:
+        bug_selected += 1
+
+    for rc_status in ticket_statuses:
+      if rc_status == "Solved":
+        completed += 1
+      elif rc_status == "InProgress":
+        inprogress += 1
+      elif rc_status == "InAnalysis":
+        inanalysis += 1
+      elif rc_status == "OnHold":
+        onhold += 1
 
     symptom_total = completed + inprogress + inanalysis + onhold
     open_count = inanalysis + inprogress + onhold
@@ -161,6 +231,8 @@ def _build_symptom_status_stats(symptom_list, jira_sym_map, rc_status_map):
       "onhold": onhold,
       "total": symptom_total,
       "open": open_count,
+      "bugs_total": bug_total,
+      "bugs_selected": bug_selected,
     })
 
   return symptom_stats
@@ -252,8 +324,88 @@ def _selected_ticket_statuses(entry):
   return statuses
 
 
+def _normalize_sprint_name(value):
+  """Normalize Jira sprint names so they match across naming variants."""
+  if value is None:
+    return ""
+  text = str(value).strip()
+  if not text:
+    return ""
+  return re.sub(r"[^a-z0-9]+", "", text.casefold())
+
+
+def _extract_sprint_names(value):
+  """Extract real Jira sprint names from nested dicts and serialized Sprint objects."""
+  if value is None:
+    return []
+  if isinstance(value, dict):
+    names = []
+    for key in ("name", "value"):
+      candidate = value.get(key)
+      if candidate is not None:
+        names.extend(_extract_sprint_names(candidate))
+    return names
+  if isinstance(value, (list, tuple)):
+    names = []
+    for item in value:
+      names.extend(_extract_sprint_names(item))
+    return names
+
+  text = str(value).strip()
+  if not text:
+    return []
+
+  matches = re.findall(r"name=([^,\]]+)", text)
+  if matches:
+    return [m.strip() for m in matches if m.strip()]
+
+  if "Y3839_" in text:
+    matches = re.findall(r"Y3839_[A-Za-z0-9_]+", text)
+    if matches:
+      return [m.strip() for m in matches if m.strip()]
+
+  return [text] if any(token in text.lower() for token in ("qualityinitiative", "sprint", "y3839_", "wontdo", "qi")) else []
+
+
+def _ticket_in_release_sprint(ticket):
+  """Return True when the Jira ticket belongs to the release sprint."""
+  if not isinstance(ticket, dict):
+    return False
+  raw_values = []
+  for key in ("sprint", "sprints", "sprint_name", "release_sprint"):
+    value = ticket.get(key)
+    if value is None:
+      continue
+    raw_values.extend(value if isinstance(value, list) else [value])
+  if not raw_values:
+    return False
+
+  normalized_release = _normalize_sprint_name("Y3839_QualityInitiative_R1")
+  for raw_value in raw_values:
+    for candidate in _extract_sprint_names(raw_value):
+      if _normalize_sprint_name(candidate) == normalized_release:
+        return True
+  return False
+
+
+def _ticket_selected_for_release(ticket, issue_lookup=None):
+  """Return True when the ticket is flagged as selected for the release."""
+  if not isinstance(ticket, dict):
+    return False
+  key = str(ticket.get("key", "")).strip()
+  if key and isinstance(issue_lookup, dict) and key in issue_lookup:
+    merged_ticket = dict(issue_lookup[key])
+    merged_ticket.update(ticket)
+    ticket = merged_ticket
+
+  raw_value = str(ticket.get("selected", ticket.get("selected_for_release", ""))).strip().lower()
+  if raw_value in {"yes", "true", "1"}:
+    return True
+  return _ticket_in_release_sprint(ticket)
+
+
 def _rc_selected_value(entry, default="No"):
-  """Read selected flag from RC entry with legacy ticket-level fallback."""
+  """Read selected flag from RC entry with Jira sprint-based fallback for release tickets."""
   if isinstance(entry, dict):
     rc_selected = str(entry.get("selected", "")).strip().lower()
     if rc_selected in {"yes", "no"}:
@@ -261,7 +413,10 @@ def _rc_selected_value(entry, default="No"):
     tickets = entry.get("jira_tickets", [])
     if isinstance(tickets, list) and tickets:
       if any(
-        isinstance(ticket, dict) and str(ticket.get("selected", "")).strip().lower() == "yes"
+        isinstance(ticket, dict) and (
+          str(ticket.get("selected", "")).strip().lower() == "yes"
+          or _ticket_in_release_sprint(ticket)
+        )
         for ticket in tickets
       ):
         return "Yes"
@@ -557,7 +712,7 @@ def run():
 
     date_min = meta.get("date_min", "")[:10]
     date_max = meta.get("date_max", "")[:10]
-    date_range = f"{date_min} – {date_max}" if date_min and date_max else " / ".join(years)
+    date_range = f"{date_min} â€“ {date_max}" if date_min and date_max else " / ".join(years)
     symptoms = sorted(data["symptoms"], key=lambda s: (s.get("priority", 99), -s["total"]))
 
     for symptom in symptoms:
@@ -628,7 +783,7 @@ def run():
             <th>Ticket Volume</th>
             <th>% Total</th>
             {y_headers}
-            <th>Trend {y1}→{y2}</th>
+            <th>Trend {y1}â†’{y2}</th>
             <th>AI Categories (Top 3)</th>
             <th>Search Keywords</th>
           </tr>
@@ -740,6 +895,41 @@ def run():
         jira_data = {}
         jira_sym_map = {}
 
+    issue_lookup = {}
+    if jira_issues_path.exists():
+        with open(jira_issues_path, encoding="utf-8") as f:
+            for issue in json.load(f):
+                key = issue.get("key")
+                if key:
+                    issue_lookup[key] = issue
+
+    def _hydrate_ticket_metadata(ticket):
+        if not isinstance(ticket, dict):
+            return ticket
+        key = str(ticket.get("key", "")).strip()
+        if not key or key not in issue_lookup:
+            return ticket
+        issue = issue_lookup[key]
+        merged = dict(ticket)
+        if "sprint" not in merged and "sprint" in issue:
+            merged["sprint"] = issue.get("sprint", [])
+        if "sprints" not in merged and "sprints" in issue:
+            merged["sprints"] = issue.get("sprints", [])
+        if "sprint_name" not in merged and "sprint_name" in issue:
+            merged["sprint_name"] = issue.get("sprint_name")
+        if "release_sprint" not in merged and "release_sprint" in issue:
+            merged["release_sprint"] = issue.get("release_sprint")
+        return merged
+
+    if jira_sym_map:
+        for symptom in jira_sym_map.values():
+            for rc in symptom.get("root_causes_jira", []) or []:
+                if not isinstance(rc, dict):
+                    continue
+                tickets = rc.get("jira_tickets", [])
+                if isinstance(tickets, list):
+                    rc["jira_tickets"] = [_hydrate_ticket_metadata(t) for t in tickets]
+
     # Keep render RC taxonomy in sync with Jira-enriched output so all Jira groups are visible.
     for symptom in symptoms:
       symptom_name = symptom.get("name", "")
@@ -842,7 +1032,10 @@ def run():
               "key": ticket.get("key", ""),
               "status": _map_jira_ticket_status(raw_status),
               "jira_status": raw_status,
+              "sprint": ticket.get("sprint") or ticket.get("sprints") or ticket.get("sprint_name"),
             })
+          if any(_ticket_in_release_sprint(ticket_row) for ticket_row in ticket_rows):
+            default_selected = "Yes"
           symptom_rc_map[rc_name] = {
             "status": "",
             "selected": default_selected,
@@ -856,17 +1049,17 @@ def run():
             "action_type": action_type,
           }
 
-    # Proxy rule: loose sensor cable screws in target symptoms inherits status from
-    # the Loosening Screws symptom state model.
-    _apply_loose_screws_proxy_status(rc_status_map)
-
-    # Derive selected_for_release map from current RC snapshot.
+    # Jira tickets in the release sprint are selected automatically and should not require a manual switch.
     for symptom_name, rc_entries in rc_status_map.items():
       if not isinstance(rc_entries, dict):
         continue
       selected_for_release_map[symptom_name] = {}
       for rc_name, rc_entry in rc_entries.items():
-        selected_value = _rc_selected_value(rc_entry, "No")
+        tickets = rc_entry.get("jira_tickets", []) if isinstance(rc_entry, dict) else []
+        if isinstance(tickets, list) and tickets and any(_ticket_selected_for_release(ticket, issue_lookup) for ticket in tickets):
+          selected_value = "Yes"
+        else:
+          selected_value = _rc_selected_value(rc_entry, "No")
         selected_for_release_map[symptom_name][rc_name] = selected_value
 
     # Compute Jira coverage stats
@@ -947,6 +1140,7 @@ def run():
     # Build release-scope breakdown from selected RCs (tickets plus solved RCs without tickets).
     release_scope_counts = {"Solved": 0, "CM": 0, "HW": 0, "SW": 0, "Other Symptoms": 0}
     release_ic_rc_counter = {}
+    release_scope_seen_no_jira = set()
     for symptom_name, rc_entries in rc_status_map.items():
       if not isinstance(rc_entries, dict):
         continue
@@ -960,7 +1154,11 @@ def run():
 
         action_type = str(rc_entry.get("action_type", "")).strip().upper()
         tickets = rc_entry.get("jira_tickets", [])
-        ticket_count = len(tickets) if isinstance(tickets, list) else 0
+        selected_tickets = [
+          ticket for ticket in (tickets if isinstance(tickets, list) else [])
+          if isinstance(ticket, dict) and _ticket_selected_for_release(ticket, issue_lookup)
+        ]
+        ticket_count = len(selected_tickets)
 
         if ticket_count > 0:
           if symptom_name == "Intermittent Connectivity" and action_type in {"CM", "HW", "SW"}:
@@ -972,6 +1170,10 @@ def run():
 
         # RCs without Jira tickets contribute as virtual entries.
         mapped_status = _normalize_status(rc_entry.get("status", ""))
+        normalized_no_jira_key = _normalize_rc_key(rc_name)
+        if normalized_no_jira_key in release_scope_seen_no_jira:
+          continue
+        release_scope_seen_no_jira.add(normalized_no_jira_key)
         if mapped_status == "Solved":
           release_scope_counts["Solved"] += 1
         elif symptom_name == "Intermittent Connectivity" and action_type in {"CM", "HW", "SW"}:
@@ -1006,7 +1208,7 @@ def run():
       )
     release_ic_top3_html = "".join(release_ic_top3_rows) if release_ic_top3_rows else '<li style="color:#888">No selected root causes available.</li>'
 
-    # Symptoms and Root Causes section — with Jira ticket links per root cause
+    # Symptoms and Root Causes section â€” with Jira ticket links per root cause
     rc_section_rows = ""
     editable_rc_count = 0
     for s in sorted_symptoms:
@@ -1032,12 +1234,23 @@ def run():
           symptom_release_map = selected_for_release_map.get(s["name"], {}) if isinstance(selected_for_release_map, dict) else {}
           if isinstance(symptom_release_map, dict):
             stored_release_value = _lookup_rc_entry(symptom_release_map, rc, "")
-          if str(stored_release_value).strip().lower() in {"yes", "no"}:
+          selected_ticket_count = sum(1 for ticket in tickets if _ticket_selected_for_release(ticket, issue_lookup)) if tickets else 0
+          if tickets:
+            release_selected = "Yes" if selected_ticket_count > 0 else "No"
+          elif str(stored_release_value).strip().lower() in {"yes", "no"}:
             release_selected = "Yes" if str(stored_release_value).strip().lower() == "yes" else "No"
           else:
             release_selected = _release_selected_value(raw_rc_entry, _normalize_rc_key(rc) in release_rc_keys)
 
-          release_control = _release_select(s["name"], rc, release_selected)
+          if tickets:
+            release_control = (
+              f'<span title="{selected_ticket_count}/{len(tickets)} tickets selected for release" '
+              f'style="display:inline-block;padding:3px 8px;border-radius:999px;font-size:0.75em;font-weight:700;'
+              f'background:{"#10b981" if selected_ticket_count > 0 else "#e2e8f0"};color:{"white" if selected_ticket_count > 0 else "#475569"};'
+              f'border:1px solid {"#10b981" if selected_ticket_count > 0 else "#cbd5e1"}">{selected_ticket_count}/{len(tickets)}</span>'
+            )
+          else:
+            release_control = _release_select(s["name"], rc, release_selected)
           if is_derived_loose_screws:
             status_badge = _status_badge(rc_status_value)
           else:
@@ -1050,6 +1263,12 @@ def run():
             for t in tickets:
               tk = t["key"]
               t_tip = (jira_summaries.get(tk) or t["summary"])[:500].replace('"', '&quot;').replace('<', '&lt;').replace('>', '&gt;').replace('\n', ' ')
+              selected_flag = _ticket_selected_for_release(t, issue_lookup)
+              selected_badge = (
+                f'<span style="display:inline-block;padding:1px 6px;border-radius:999px;font-size:0.72em;font-weight:700;'
+                f'background:{"#10b981" if selected_flag else "#e2e8f0"};color:{"white" if selected_flag else "#475569"};'
+                f'border:1px solid {"#10b981" if selected_flag else "#cbd5e1"}">{"Selected" if selected_flag else "No"}</span>'
+              )
               ticket_details += (
                 f'<tr style="background:#fffef0;cursor:pointer" onclick="showBugDetail(\'{tk}\')" title="{t_tip}">'
                 f'<td style="padding:4px 8px;white-space:nowrap">'
@@ -1059,6 +1278,7 @@ def run():
                 f'<td style="padding:4px 8px;white-space:nowrap;font-size:0.8em">'
                 f'<span style="background:#e2e8f0;border-radius:3px;padding:1px 5px">{t["status"]}</span></td>'
                 f'<td style="padding:4px 8px;font-size:0.8em;color:#888">{t["priority"]}</td>'
+                f'<td style="padding:4px 8px;white-space:nowrap;font-size:0.8em">{selected_badge}</td>'
                 f'</tr>'
               )
             jira_toggle = (
@@ -1066,7 +1286,7 @@ def run():
               f'style="margin-left:8px;cursor:pointer;background:#ffc107;color:#333;'
               f'border-radius:3px;padding:1px 6px;font-size:0.75em;font-weight:600;'
               f'user-select:none" title="Show/hide Jira tickets">'
-              f'Jira Bugs: {ticket_count}</span>'
+              f'Jira Bugs: {ticket_count} Â· {selected_ticket_count}/{ticket_count}</span>'
               f'<table id="{rc_id}" style="display:none;margin-top:4px;margin-left:16px;'
               f'border:1px solid #ffc107;border-radius:4px;font-size:0.82em;width:calc(100% - 16px)">'
               f'<thead><tr style="background:#fff3cd">'
@@ -1074,6 +1294,7 @@ def run():
               f'<th style="padding:3px 8px;text-align:left">Summary</th>'
               f'<th style="padding:3px 8px;text-align:left">Status</th>'
               f'<th style="padding:3px 8px;text-align:left">Priority</th>'
+              f'<th style="padding:3px 8px;text-align:left">Release</th>'
               f'</tr></thead><tbody>{ticket_details}</tbody></table>'
             )
           else:
@@ -1164,7 +1385,7 @@ def run():
             )
             rc_section_rows += f"""
         <tr style="background:#f8f9fa">
-          <td><span style="background:#6c757d;color:white;border-radius:4px;padding:2px 8px;font-size:0.82em;font-weight:600">–</span></td>
+          <td><span style="background:#6c757d;color:white;border-radius:4px;padding:2px 8px;font-size:0.82em;font-weight:600">â€“</span></td>
           <td><strong>Not Assigned</strong><br><span style="font-size:0.8em;color:#888">{len(_unassigned_bugs)} open bugs without symptom assignment</span></td>
           <td><ul style="margin:0;padding-left:16px;font-size:0.88em;color:#666"><li>{_ua_toggle}</li></ul></td>
           <td></td>
@@ -1183,7 +1404,7 @@ def run():
                     "ai_summary": jira_summaries.get(_k, ""),
                 }
     jira_bugs_js = _json.dumps(jira_bugs_for_js, ensure_ascii=False)
-    # Build ticket→symptom/RC index for search
+    # Build ticketâ†’symptom/RC index for search
     ticket_index: dict = {}
     for _sym in jira_data.get("symptoms", []):
         for _rc in _sym.get("root_causes_jira", []):
@@ -1203,7 +1424,7 @@ def run():
             _b = jira_bugs_for_js[_k]
             ticket_index[_k] = [{
                 "symptom": "Not Assigned",
-                "rc": "–",
+                "rc": "â€“",
                 "status": _b.get("status", ""),
                 "priority": _b.get("priority", ""),
                 "url": _b.get("url", ""),
@@ -1308,7 +1529,11 @@ def run():
         if not isinstance(rc_entry, dict):
           continue
         tickets = rc_entry.get("jira_tickets", [])
-        ticket_count = len(tickets) if isinstance(tickets, list) else 0
+        selected_tickets = [
+          ticket for ticket in (tickets if isinstance(tickets, list) else [])
+          if isinstance(ticket, dict) and _ticket_selected_for_release(ticket, issue_lookup)
+        ]
+        ticket_count = len(selected_tickets)
         if ticket_count > 0:
           current_status = _derive_status_from_tickets(tickets)
           source_label = f"Jira ({ticket_count})"
@@ -1571,7 +1796,7 @@ def run():
             
             rc_timeline_html += f"""
         <div style="flex:1;min-width:200px;{card_style};border-radius:6px;padding:12px 14px;margin-bottom:12px">
-          <div style="font-weight:600;font-size:0.85em;color:var(--accent)">{week} — {date}{badge_current}</div>
+          <div style="font-weight:600;font-size:0.85em;color:var(--accent)">{week} â€” {date}{badge_current}</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;font-size:0.75em">
             <div style="background:#10b981;color:white;border-radius:4px;padding:6px 8px;text-align:center"><div style="font-weight:600;font-size:1.1em">{week_counts.get('Solved', 0)}</div>Solved</div>
             <div style="background:#3b82f6;color:white;border-radius:4px;padding:6px 8px;text-align:center"><div style="font-weight:600;font-size:1.1em">{week_counts.get('InProgress', 0)}</div>In Progress</div>
@@ -1709,6 +1934,72 @@ def run():
     overall_chart_inprogress = [stat["inprogress"] for stat in symptom_stats]
     overall_chart_inanalysis = [stat["inanalysis"] for stat in symptom_stats]
     overall_chart_onhold = [stat["onhold"] for stat in symptom_stats]
+    overall_chart_bug_total = [int(stat.get("bugs_total", 0) or 0) for stat in symptom_stats]
+    overall_chart_bug_selected = [int(stat.get("bugs_selected", 0) or 0) for stat in symptom_stats]
+
+    selected_status_solved = []
+    selected_status_inprogress = []
+    selected_status_inanalysis = []
+    selected_status_onhold = []
+    for symptom_name in overall_chart_labels:
+      selected_counts = {"Solved": 0, "InProgress": 0, "InAnalysis": 0, "OnHold": 0}
+      seen_ticket_keys = set()
+      symptom = next((item for item in symptoms if item.get("name") == symptom_name), None)
+      symptom_rc_entries = rc_status_map.get(symptom_name, {}) if isinstance(rc_status_map, dict) else {}
+      jira_enriched = (jira_sym_map.get(symptom_name) or {}).get("root_causes_jira", [])
+      jira_by_rc = _jira_tickets_by_normalized_rc(jira_enriched)
+
+      if isinstance(symptom, dict):
+        for rc in symptom.get("root_causes", []):
+          raw_rc_entry = _lookup_rc_entry(symptom_rc_entries, rc, None)
+          normalized_rc_key = _normalize_rc_key(rc)
+          base_tickets = jira_by_rc.get(normalized_rc_key, [])
+          if not isinstance(base_tickets, list):
+            base_tickets = []
+
+          fallback_tickets = []
+          if isinstance(raw_rc_entry, dict):
+            fallback_tickets = raw_rc_entry.get("jira_tickets", [])
+          if not isinstance(fallback_tickets, list):
+            fallback_tickets = []
+
+          candidate_tickets = list(base_tickets)
+          if not candidate_tickets and fallback_tickets:
+            candidate_tickets = list(fallback_tickets)
+
+          unique_tickets = []
+          seen_in_rc = set()
+          for ticket in candidate_tickets:
+            if not isinstance(ticket, dict):
+              continue
+            ticket_key = str(ticket.get("key", "") or ticket.get("id", "")).strip()
+            if ticket_key:
+              if ticket_key in seen_in_rc or ticket_key in seen_ticket_keys:
+                continue
+              seen_in_rc.add(ticket_key)
+              seen_ticket_keys.add(ticket_key)
+            unique_tickets.append(ticket)
+
+          for ticket in unique_tickets:
+            if not _ticket_selected_for_release(ticket, issue_lookup):
+              continue
+            ticket_status = _map_jira_ticket_status(ticket.get("status") or ticket.get("jira_status"))
+            if ticket_status in selected_counts:
+              selected_counts[ticket_status] += 1
+
+          if not unique_tickets and isinstance(raw_rc_entry, dict):
+            if isinstance(raw_rc_entry.get("jira_tickets", []), list) and raw_rc_entry.get("jira_tickets"):
+              continue
+            selected_flag = str(raw_rc_entry.get("selected", "")).strip().lower() in {"yes", "true", "1"}
+            if selected_flag:
+              ticket_status = _normalize_status(raw_rc_entry.get("status", "OnHold"))
+              if ticket_status in selected_counts:
+                selected_counts[ticket_status] += 1
+
+      selected_status_solved.append(selected_counts["Solved"])
+      selected_status_inprogress.append(selected_counts["InProgress"])
+      selected_status_inanalysis.append(selected_counts["InAnalysis"])
+      selected_status_onhold.append(selected_counts["OnHold"])
 
     # Upcoming release timeline data from history (always 20 ISO weeks)
     def _week_key_to_monday(week_key):
@@ -1759,7 +2050,7 @@ def run():
         release_history_by_week[week_key][status_name] += value
 
     timeline_start_week = "2026-W36"
-    timeline_end_week = "2027-W13"
+    timeline_end_week = "2027-W08"
     timeline_start_monday = _week_key_to_monday(timeline_start_week) or datetime.utcnow()
     timeline_end_monday = _week_key_to_monday(timeline_end_week) or timeline_start_monday
 
@@ -1784,9 +2075,9 @@ def run():
 
     _default_release_milestones = [
       {"week": "2026-W40", "label": "Release-Scope defined", "phase": "Planning and Refinement of Release Scope", "color": "#7c3aed"},
-      {"week": "2027-W07", "label": "SW-Freeze", "phase": "Implementation", "color": "#2563eb"},
-      {"week": "2027-W10", "label": "Testing finished", "phase": "Testing", "color": "#f59e0b"},
-      {"week": "2027-W12", "label": "SW-Release (Roll-Out)", "phase": "Documentation", "color": "#10b981"},
+      {"week": "2026-W53", "label": "SW-Freeze", "phase": "Implementation", "color": "#2563eb"},
+      {"week": "2027-W04", "label": "Testing finished", "phase": "Testing", "color": "#f59e0b"},
+      {"week": "2027-W08", "label": "SW-Release (Roll-Out)", "phase": "Documentation", "color": "#10b981"},
     ]
     _milestone_json_path = BASE_DIR / "output" / "release_milestones.json"
     if _milestone_json_path.exists():
@@ -1804,8 +2095,8 @@ def run():
     release_milestone_band_html = ""
 
     rc_timeline_chart_js = f"""
-  // Status Development by Symptom (scope-specific stacked bars)
-  function createStatusBySymptomChart(canvasId, labels, solvedData, inProgressData, inAnalysisData, onHoldData) {{
+  // Status Development by Symptom: each bar represents the ticket status mix for that symptom; the selected-for-release series keeps a dashed black outline.
+  function createStatusBySymptomChart(canvasId, labels, solvedData, inProgressData, inAnalysisData, onHoldData, selectedSolvedData, selectedInProgressData, selectedInAnalysisData, selectedOnHoldData) {{
     const ctx = document.getElementById(canvasId);
     if (!ctx) return;
     return new Chart(ctx, {{
@@ -1814,36 +2105,76 @@ def run():
         labels: labels,
         datasets: [
           {{
-            label: 'OnHold',
-            data: onHoldData,
-            backgroundColor: '#9ca3af',
-            borderColor: '#64748b',
-            borderWidth: 1,
-            stack: 'rc-status'
-          }},
-          {{
-            label: 'InAnalysis',
-            data: inAnalysisData,
-            backgroundColor: '#f59e0b',
-            borderColor: '#d97706',
-            borderWidth: 1,
-            stack: 'rc-status'
-          }},
-          {{
-            label: 'InProgress',
-            data: inProgressData,
-            backgroundColor: '#3b82f6',
-            borderColor: '#2563eb',
-            borderWidth: 1,
-            stack: 'rc-status'
-          }},
-          {{
-            label: 'Solved',
+            label: 'Overall Solved',
             data: solvedData,
             backgroundColor: '#10b981',
-            borderColor: '#0f9b6f',
-            borderWidth: 1,
-            stack: 'rc-status'
+            borderColor: '#000000',
+            borderWidth: 1.5,
+            borderRadius: 0,
+            stack: 'overall-status'
+          }},
+          {{
+            label: 'Overall InProgress',
+            data: inProgressData,
+            backgroundColor: '#3b82f6',
+            borderColor: '#000000',
+            borderWidth: 1.5,
+            borderRadius: 0,
+            stack: 'overall-status'
+          }},
+          {{
+            label: 'Overall InAnalysis',
+            data: inAnalysisData,
+            backgroundColor: '#f59e0b',
+            borderColor: '#000000',
+            borderWidth: 1.5,
+            borderRadius: 0,
+            stack: 'overall-status'
+          }},
+          {{
+            label: 'Overall OnHold',
+            data: onHoldData,
+            backgroundColor: '#9ca3af',
+            borderColor: '#000000',
+            borderWidth: 1.5,
+            borderRadius: 0,
+            stack: 'overall-status'
+          }},
+          {{
+            label: 'Selected Solved',
+            data: selectedSolvedData,
+            backgroundColor: '#10b981',
+            borderColor: '#000000',
+            borderWidth: 1.5,
+            borderRadius: 0,
+            stack: 'selected-status'
+          }},
+          {{
+            label: 'Selected InProgress',
+            data: selectedInProgressData,
+            backgroundColor: '#3b82f6',
+            borderColor: '#000000',
+            borderWidth: 1.5,
+            borderRadius: 0,
+            stack: 'selected-status'
+          }},
+          {{
+            label: 'Selected InAnalysis',
+            data: selectedInAnalysisData,
+            backgroundColor: '#f59e0b',
+            borderColor: '#000000',
+            borderWidth: 1.5,
+            borderRadius: 0,
+            stack: 'selected-status'
+          }},
+          {{
+            label: 'Selected OnHold',
+            data: selectedOnHoldData,
+            backgroundColor: '#9ca3af',
+            borderColor: '#000000',
+            borderWidth: 1.5,
+            borderRadius: 0,
+            stack: 'selected-status'
           }}
         ]
       }},
@@ -1854,10 +2185,36 @@ def run():
           legend: {{
             display: true,
             position: 'top',
+            title: {{
+              display: true,
+              text: 'Note: first bar group = Overall, second bar group = Selected for Release',
+              color: '#475569',
+              font: {{ size: 11, weight: '600' }}
+            }},
             labels: {{
               font: {{ size: 11, weight: '600' }},
               padding: 12,
-              usePointStyle: true
+              usePointStyle: true,
+              generateLabels: function(chart) {{
+                const seen = new Set();
+                const labels = [];
+                chart.data.datasets.forEach((dataset, index) => {{
+                  const label = (dataset.label || '').replace(/^Overall\s+/, '').replace(/^Selected\s+/, '');
+                  if (!label || seen.has(label)) return;
+                  seen.add(label);
+                  labels.push({{
+                    text: label,
+                    fillStyle: dataset.backgroundColor,
+                    strokeStyle: dataset.borderColor,
+                    lineWidth: dataset.borderWidth || 1,
+                    borderDash: [],
+                    hidden: dataset.hidden,
+                    datasetIndex: index,
+                    index: labels.length
+                  }});
+                }});
+                return labels;
+              }}
             }}
           }}
         }},
@@ -1875,7 +2232,7 @@ def run():
           y: {{
             stacked: true,
             beginAtZero: true,
-            title: {{ display: true, text: 'Root Cause Count', font: {{ weight: '600' }} }},
+            title: {{ display: true, text: 'Bug Count', font: {{ weight: '600' }} }},
             grid: {{ color: 'rgba(0, 0, 0, 0.06)' }}
           }}
         }}
@@ -1994,7 +2351,27 @@ def run():
               usePointStyle: true
             }}
           }},
-          tooltip: {{ enabled: false }}
+          tooltip: {{
+            enabled: true,
+            callbacks: {{
+              title: function(items) {{
+                const first = items && items[0];
+                if (!first) return '';
+                const weekKey = labels[first.dataIndex] || '';
+                const date = weekToDate(weekKey);
+                if (!date) return weekKey;
+                return date.toLocaleDateString('de-DE', {{
+                  timeZone: 'UTC',
+                  day: '2-digit',
+                  month: '2-digit',
+                  year: 'numeric'
+                }});
+              }},
+              label: function(ctx) {{
+                return `${{ctx.dataset.label}}: ${{ctx.parsed.y}} Tickets`;
+              }}
+            }}
+          }}
         }},
         scales: {{
           x: {{
@@ -2109,6 +2486,8 @@ def run():
         }}
       }}]
     }});
+
+    return chart;
   }}
 
   window.overallStatusChart = createStatusBySymptomChart(
@@ -2117,7 +2496,11 @@ def run():
     {json.dumps(overall_chart_solved)},
     {json.dumps(overall_chart_inprogress)},
     {json.dumps(overall_chart_inanalysis)},
-    {json.dumps(overall_chart_onhold)}
+    {json.dumps(overall_chart_onhold)},
+    {json.dumps(selected_status_solved)},
+    {json.dumps(selected_status_inprogress)},
+    {json.dumps(selected_status_inanalysis)},
+    {json.dumps(selected_status_onhold)}
   );
 
   window.releaseOverTimeChart = createReleaseOverTimeChart(
@@ -2213,7 +2596,7 @@ def run():
         )
       _unmatched_section = f"""
   <section style="margin-bottom:28px">
-    <h2 style="font-size:1.1em;margin-bottom:4px;color:var(--accent)">Unmatched Tickets — Category Breakdown</h2>
+    <h2 style="font-size:1.1em;margin-bottom:4px;color:var(--accent)">Unmatched Tickets â€” Category Breakdown</h2>
     <p style="font-size:0.83em;color:#888;margin-bottom:14px">{_unmatched_total:,} tickets ({_unmatched_pct_total}% of {total:,} total) could not be assigned to any tracked symptom.</p>
     <p style="font-size:0.78em;color:#9aa3af;margin:-6px 0 12px 0">{_classified_source_note}</p>
     <table>
@@ -2409,7 +2792,7 @@ def run():
 <header>
   <div style="display:flex;align-items:center;justify-content:space-between;gap:24px">
     <div style="flex:1">
-      <h1>Symptom Root Cause — Ticket Trend Evaluation</h1>
+      <h1>Symptom Root Cause â€” Ticket Trend Evaluation</h1>
       <div class="meta">Generated: {generated} &nbsp;|&nbsp; Source: tickets_raw.json{f' &nbsp;|&nbsp; Jira Import: {jira_import_date}' if jira_import_date else ''}</div>
       <!-- Filter bar inside header -->
       <div style="margin-top:18px;display:flex;flex-direction:column;gap:10px;font-size:0.92em">
@@ -2476,7 +2859,7 @@ def run():
     <div class="kpi">
       <div class="label">Analysis Period</div>
       <div class="value" style="font-size:1.1em">{date_range}</div>
-      <div class="sub">Oldest → newest ticket</div>
+      <div class="sub">Oldest â†’ newest ticket</div>
     </div>
   </div>
 
@@ -2637,9 +3020,9 @@ def run():
       </div>
       <span style="white-space:nowrap;font-size:0.9em">
         <span style="color:#2563eb;font-weight:600">{jira_assigned} assigned</span>
-        &nbsp;·&nbsp;
+        &nbsp;Â·&nbsp;
         <span style="color:#888">{jira_unassigned} unassigned</span>
-        &nbsp;·&nbsp;
+        &nbsp;Â·&nbsp;
         <span style="color:#444;font-weight:600">{jira_pct} %</span>
       </span>
     </div>
@@ -2893,7 +3276,7 @@ function applyFilter() {{
     if (trendEl && c1>0) {{
       const tp = ((c2-c1)/c1*100).toFixed(0);
       const cls = tp>50?'trend-up-strong':tp>10?'trend-up':tp>-10?'trend-stable':tp>-50?'trend-down':'trend-down-strong';
-      const arrow = tp>50?'▲▲ +':tp>10?'▲ +':tp>-10?'→ ':tp>-50?'▼ ':'▼▼ ';
+      const arrow = tp>50?'â–²â–² +':tp>10?'â–² +':tp>-10?'â†’ ':tp>-50?'â–¼ ':'â–¼â–¼ ';
       trendEl.className = 'trend-cell '+cls;
       trendEl.textContent = arrow+tp+'%';
     }}
@@ -3383,10 +3766,10 @@ function ticketSearch(val) {{
     const hits = TICKET_INDEX[key];
     const bug  = JIRA_BUGS[key];
     if (!hits && !bug) {{
-      html += '<div class="ts-result"><div class="ts-not-found">❌ ' + key + ' — not found in any symptom or open bug list</div></div>';
+      html += '<div class="ts-result"><div class="ts-not-found">âŒ ' + key + ' â€” not found in any symptom or open bug list</div></div>';
       continue;
     }}
-    const entries = hits || [{{symptom:'Not Assigned',rc:'–',status:bug.status,priority:bug.priority,url:bug.url,summary:bug.summary}}];
+    const entries = hits || [{{symptom:'Not Assigned',rc:'â€“',status:bug.status,priority:bug.priority,url:bug.url,summary:bug.summary}}];
     const pcol = PRIO_COL[entries[0].priority] || '#444';
     html += '<div class="ts-result">'
       + '<div class="ts-result-header">'
@@ -3461,3 +3844,4 @@ resetFilters();
 
 if __name__ == "__main__":
     run()
+
