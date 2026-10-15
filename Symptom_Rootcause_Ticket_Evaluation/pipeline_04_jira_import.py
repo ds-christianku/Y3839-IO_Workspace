@@ -8,6 +8,7 @@ Credentials are read from environment variables (never hardcoded).
 
 import json
 import os
+import re
 import urllib.request
 import urllib.error
 import urllib.parse
@@ -18,8 +19,80 @@ OUTPUT    = BASE_DIR / "output" / "jira_issues.json"
 
 JIRA_BASE = "https://jira.dentsplysirona.com"
 JQL       = "project=Y3839 AND statusCategory!=Done ORDER BY priority ASC"
-FIELDS    = "summary,status,issuetype,priority,assignee,description,labels,components"
+FIELDS    = "*all"
 MAX       = 200
+
+RELEASE_SPRINT_NAMES = {"Y3839_QualityInitiative_R1"}
+
+
+def _extract_sprint_candidates(value):
+    """Extract real sprint names from Jira sprint object strings like `name=Y3839_QualityInitiative_R1`."""
+    if value is None:
+        return []
+    text = str(value).strip()
+    if not text:
+        return []
+
+    matches = re.findall(r"name=([^,\]]+)", text)
+    if matches:
+        return [m.strip() for m in matches if m.strip()]
+
+    if "Y3839_" in text:
+        matches = re.findall(r"Y3839_[A-Za-z0-9_]+", text)
+        if matches:
+            return [m.strip() for m in matches if m.strip()]
+
+    return [text] if text and any(token in text.lower() for token in ("qualityinitiative", "sprint", "y3839_")) else []
+
+
+def _walk_values(value, out):
+    """Recursively collect nested string values that may contain sprint metadata."""
+    if isinstance(value, dict):
+        for k, v in value.items():
+            key_name = str(k).lower()
+            if key_name in {"name", "value", "state", "startdate", "enddate", "id"}:
+                if isinstance(v, str) and v.strip():
+                    out.update(_extract_sprint_candidates(v))
+            _walk_values(v, out)
+        return
+    if isinstance(value, list):
+        for item in value:
+            _walk_values(item, out)
+        return
+    if isinstance(value, tuple):
+        for item in value:
+            _walk_values(item, out)
+        return
+    if isinstance(value, str) and value.strip():
+        out.update(_extract_sprint_candidates(value))
+
+
+def extract_sprint_names(raw_sprints):
+    """Extract Jira sprint names from the raw customfield payload or any nested field value."""
+    names = set()
+    if raw_sprints is None:
+        return names
+
+    if isinstance(raw_sprints, (list, tuple)):
+        raw_items = list(raw_sprints)
+    else:
+        raw_items = [raw_sprints]
+
+    for item in raw_items:
+        if isinstance(item, dict):
+            _walk_values(item, names)
+            continue
+        if isinstance(item, str):
+            names.update(_extract_sprint_candidates(item))
+            continue
+        if item is not None:
+            names.update(_extract_sprint_candidates(item))
+
+    return {
+        name.strip()
+        for name in names
+        if name and any(token in name.lower() for token in ("qualityinitiative", "sprint", "y3839_", "wontdo", "qi"))
+    }
 
 
 def get_credentials():
@@ -63,6 +136,7 @@ def simplify(issues: list) -> list:
     result = []
     for i in issues:
         f = i.get("fields", {})
+        sprint_names = sorted(extract_sprint_names(f))
         result.append({
             "key":         i["key"],
             "summary":     f.get("summary", ""),
@@ -73,6 +147,8 @@ def simplify(issues: list) -> list:
             "assignee":    (f.get("assignee") or {}).get("displayName", "Unassigned"),
             "labels":      f.get("labels", []),
             "components":  [c["name"] for c in f.get("components", [])],
+            "sprint":      sprint_names,
+            "release_sprint": any(name in RELEASE_SPRINT_NAMES for name in sprint_names),
             "url":         f"{JIRA_BASE}/browse/{i['key']}",
         })
     return result

@@ -1,4 +1,4 @@
-﻿Ticket,Summary,Symptom,Root Cause
+Ticket,Summary,Symptom,Root Cause
 Y3839-696,Preview image is not always available within 7seconds as required,3rd Party Slowness (NAM),Others currently unknown
 Y3839-255,Missing message when starting intraoral acquisition with insufficient disk space,Images not transferred,Missing error handling in SW/FW
 Y3839-282,"8000991426, XIOS AE sporadically no image provided",Images not transferred,Missing error handling in SW/FW
@@ -9,24 +9,24 @@ Y3839-570,"Eaglesoft/IOSS: No image received after exposure, USB3 interface stuc
 Y3839-593,Checkered pattern image in a X-Ray series (Dr. Mathes),Images not transferred,Missing error handling in SW/FW
 Y3839-547,Spring Oaks -> Lost Images,Images not transferred,Software timing error
 Y3839-384,Insufficient buff size resulting in error during exposure and loss of image,Images not transferred,SW allocates too small buffer size
-Y3839-382,"Sporadic ""Application Error"" when starting exposure series",Inconstant ready-for-exposure signaling (SW vs. Interface),State-machine mismatch in SW/FW (out-of-sync)
-Y3839-524,During Bensheim automated testing - randomly Autotake flashes red even though everything is fine and an image is still a,Inconstant ready-for-exposure signaling (SW vs. Interface),State-machine mismatch in SW/FW (out-of-sync)
-Y3839-698,"On plug-in of incompatible sensor, Sensor LED lights up green before turning red",Inconstant ready-for-exposure signaling (SW vs. Interface),State-machine mismatch in SW/FW (out-of-sync)
-Y3839-706,Documentation: rotation buttons are usable,Inconstant ready-for-exposure signaling (SW vs. Interface),State-machine mismatch in SW/FW (out-of-sync)
-Y3839-304,Sporadically no sensor initialization phase at Exposure view,Inconstant ready-for-exposure signaling (SW vs. Interface),SW timing issue
-Y3839-525,"Remote and sensor stuck in ready, not switching to ready-for-exposure",Inconstant ready-for-exposure signaling (SW vs. Interface),SW timing issue
-Y3839-533,Sensor never becomes exposure ready when calibration file read fails,Inconstant ready-for-exposure signaling (SW vs. Interface),SW timing issue
-Y3839-545,USB3 remote was stuck in boot loop,Inconstant ready-for-exposure signaling (SW vs. Interface),SW timing issue
-Y3839-546,Exposure appears double in template acquisition,Inconstant ready-for-exposure signaling (SW vs. Interface),SW timing issue
-Y3839-567,Eaglesoft/IOSS: USB3 interface not ready for next exposure though Eaglesoft indicates so,Inconstant ready-for-exposure signaling (SW vs. Interface),SW timing issue
-Y3839-571,"Eaglesoft/Dentrix [CDR]: ""Unable to take X-Ray"" error after switching to AE sensor, no image acquired",Inconstant ready-for-exposure signaling (SW vs. Interface),Workflow sequence not correctly used by 3rd party SW
-Y3839-573,"Dentrix/CDR: USB3 interface fails to reconnect to sensor after multiple plug cycles, sensor LED stays orange",Inconstant ready-for-exposure signaling (SW vs. Interface),Workflow sequence not correctly used by 3rd party SW
-Y3839-583,Dentrix/CDR: No image delivered after exposure following ~9 min wait in ready state,Inconstant ready-for-exposure signaling (SW vs. Interface),Workflow sequence not correctly used by 3rd party SW
-Y3839-631,Unexpected host LED state in non-Sidexis setup,Inconstant ready-for-exposure signaling (SW vs. Interface),Workflow sequence not correctly used by 3rd party SW
-Y3839-638,"Dentrix/CDR: Dentrix shows ""Ready for exposure"" while Interface LED is orange",Inconstant ready-for-exposure signaling (SW vs. Interface),Workflow sequence not correctly used by 3rd party SW
-Y3839-639,It is possible to acquire images with IOSS without enabling event detection,Inconstant ready-for-exposure signaling (SW vs. Interface),Workflow sequence not correctly used by 3rd party SW
-Y3839-733,CDR AutoAcquire setting has no impact in Eaglesoft,Inconstant ready-for-exposure signaling (SW vs. Interface),Workflow sequence not correctly used by 3rd party SW
-Y3839-736,IOSS - Eaglesoft: Bitewing Series - same exposure is loaded in two frames and stuck at taking the exposure for the third,Inconstant ready-for-exposure signaling (SW vs. Interface),Workflow sequence not correctly used by 3rd party SW
+Y3839-382,"Sporadic ""Application Error"" when starting exposure series",Inconstant/wrong signaling (SW vs. Interface),State-machine mismatch in SW/FW (out-of-sync)
+Y3839-524,During Bensheim automated testing - randomly Autotake flashes red even though everything is fine and an image is still a,Inconstant/wrong signaling (SW vs. Interface),State-machine mismatch in SW/FW (out-of-sync)
+Y3839-698,"On plug-in of incompatible sensor, Sensor LED lights up green before turning red",Inconstant/wrong signaling (SW vs. Interface),State-machine mismatch in SW/FW (out-of-sync)
+Y3839-706,Documentation: rotation buttons are usable,Inconstant/wrong signaling (SW vs. Interface),State-machine mismatch in SW/FW (out-of-sync)
+Y3839-304,Sporadically no sensor initialization phase at Exposure view,Inconstant/wrong signaling (SW vs. Interface),SW timing issue
+Y3839-525,"Remote and sensor stuck in ready, not switching to ready-for-exposure",Inconstant/wrong signaling (SW vs. Interface),SW timing issue
+Y3839-533,Sensor never becomes exposure ready when calibration file read fails,Inconstant/wrong signaling (SW vs. Interface),SW timing issue
+Y3839-545,USB3 remote was stuck in boot loop,Inconstant/wrong signaling (SW vs. Interface),SW timing issue
+Y3839-546,Exposure appears double in template acquisition,Inconstant/wrong signaling (SW vs. Interface),SW timing issue
+Y3839-567,Eaglesoft/IOSS: USB3 interface not ready for next exposure though Eaglesoft indicates so,Inconstant/wrong signaling (SW vs. Interface),SW timing issue
+Y3839-571,"Eaglesoft/Dentrix [CDR]: ""Unable to take X-Ray"" error after switching to AE sensor, no image acquired",Inconstant/wrong signaling (SW vs. Interface),Workflow sequence not correctly used by 3rd party SW
+Y3839-573,"Dentrix/CDR: USB3 interface fails to reconnect to sensor after multiple plug cycles, sensor LED stays orange",Inconstant/wrong signaling (SW vs. Interface),Workflow sequence not correctly used by 3rd party SW
+Y3839-583,Dentrix/CDR: No image delivered after exposure following ~9 min wait in ready state,Inconstant/wrong signaling (SW vs. Interface),Workflow sequence not correctly used by 3rd party SW
+Y3839-631,Unexpected host LED state in non-Sidexis setup,Inconstant/wrong signaling (SW vs. Interface),Workflow sequence not correctly used by 3rd party SW
+Y3839-638,"Dentrix/CDR: Dentrix shows ""Ready for exposure"" while Interface LED is orange",Inconstant/wrong signaling (SW vs. Interface),Workflow sequence not correctly used by 3rd party SW
+Y3839-639,It is possible to acquire images with IOSS without enabling event detection,Inconstant/wrong signaling (SW vs. Interface),Workflow sequence not correctly used by 3rd party SW
+Y3839-733,CDR AutoAcquire setting has no impact in Eaglesoft,Inconstant/wrong signaling (SW vs. Interface),Workflow sequence not correctly used by 3rd party SW
+Y3839-736,IOSS - Eaglesoft: Bitewing Series - same exposure is loaded in two frames and stuck at taking the exposure for the third,Inconstant/wrong signaling (SW vs. Interface),Workflow sequence not correctly used by 3rd party SW
 Y3839-673,Updater Tool: No update possible if no USB drivers are installed,Interface Update Issues,Driver conflicts after IOSS/CDR reinstall for 3rd party
 Y3839-710,Remote Box is not usable after reinstall of IOSS/CDR Drivers,Interface Update Issues,Driver conflicts after IOSS/CDR reinstall for 3rd party
 Y3839-307,Sensor upgrading fails for XIOS XG,Interface Update Issues,Missing error handling in SW/FW
@@ -90,3 +90,4 @@ Y3839-734,Synergy/Raptor USB Interface Module Self-Resets and Disconnects During
 Y3839-722,CDR: Sensor remains armed (event detection not disabled) if integrator transitions from State 6 directly to State 3 (Idl,White Images,"Sensor permanently armed (scattering X-Ray, background accumulation)"
 Y3839-586,White images with different sensors (Waukee Dental),White Images,Sensor self-triggering
 Y3839-596,Sensor triggers due to electrostatic charge without x-ray and shows white image,White Images,Sensor triggers by the influence of an electric field
+

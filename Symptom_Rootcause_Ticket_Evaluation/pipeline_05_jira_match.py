@@ -72,11 +72,11 @@ def ask_llm(client, model: str, provider: str, base_url: str | None, prompt: str
             "model": model,
             "messages": [{"role": "user", "content": prompt}],
             "stream": False,
-            "think": False,
             "options": {
                 "temperature": 0,
-                "num_predict": 2048,
+                "num_predict": 64,
                 "num_ctx": 8192,
+                "think": False,
             },
         }).encode("utf-8")
         req = urllib.request.Request(url, data=payload, headers={"Content-Type": "application/json"})
