@@ -2101,7 +2101,7 @@ def run():
     }}
 """
     else:
-        rc_timeline_html = '<div style="color:#888;font-style:italic;padding:16px">No historical data available yet. Weekly snapshots will appear here after running save_rc_status_snapshot.py.</div>'
+        rc_timeline_html = '<div style="color:#888;font-style:italic;padding:16px">No historical data available yet. Weekly snapshots will appear here after saving a first history entry in rc_status_history.json.</div>'
         rc_timeline_chart_js = ""
 
     # Build symptom status data for overall chart from shared symptom/root-cause counts.

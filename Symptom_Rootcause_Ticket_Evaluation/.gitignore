@@ -6,3 +6,6 @@ __pycache__/
 *.tmp
 *.bak
 Thumbs.db
+output/Symptom_Trend_Report.html
+output/ticket_export.csv
+output/*.xlsx

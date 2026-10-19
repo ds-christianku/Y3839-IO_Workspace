@@ -6,12 +6,7 @@ Dieses System trackt die Root Cause (RC) Status-Änderungen wochenweise und erm�
 
 ## 📁 Dateien
 
-### 1. `rc_status.json`
-- **Zweck**: Aktuelle Status der Root Causes (für diese Woche)
-- **Format**: `{ "rc_status": { "RC_NAME": "Status", ... } }`
-- **Status-Werte**: `OnHold`, `InAnalysis`, `InProgress`, `Completed`
-
-### 2. `rc_status_history.json`
+### 1. `rc_status_history.json`
 - **Zweck**: Wöchentliche Snapshots der RC-Status über die Zeit
 - **Format**: Array von Weekly-Entries mit Status-Snapshots
 - **Beispiel**:
@@ -30,17 +25,6 @@ Dieses System trackt die Root Cause (RC) Status-Änderungen wochenweise und erm�
 
 ## 🔧 Scripts
 
-### `save_rc_status_snapshot.py`
-Speichert den aktuellen Status aus `rc_status.json` als wöchentlichen Snapshot.
-
-```bash
-python save_rc_status_snapshot.py
-```
-
-**Output**: 
-- Erstellt/aktualisiert den Eintrag für die aktuelle Woche (ISO-Week)
-- Zeigt Zusammenfassung der Status-Verteilung
-
 ### `view_rc_status_history.py`
 Zeigt die komplette Status-Historie mit Änderungen über die Zeit.
 
@@ -56,9 +40,8 @@ python view_rc_status_history.py
 ## 📅 Workflow
 
 ### Wöchentliche Aktualisierung:
-1. **Montag/Freitag**: Alle notwendigen Status-Updates in `rc_status.json` durchführen
-2. **Snapshot speichern**: `python save_rc_status_snapshot.py`
-3. **Report generieren**: `python run_pipeline.py`
+1. **Montag/Freitag**: Status-Eintrag der aktuellen Woche in `output/rc_status_history.json` aktualisieren oder über den HTML-Report bestätigen
+2. **Report generieren**: `python run_pipeline.py`
 
 ### Status überwachen:
 ```bash
@@ -76,18 +59,16 @@ python view_rc_status_history.py
 
 ## 🎯 Beispiel: Status ändern
 
-1. **Datei öffnen**: `output/rc_status.json`
-2. **RC suchen und Status ändern**:
+1. **Datei öffnen**: `output/rc_status_history.json`
+2. **Aktuelle Woche suchen und RC-Status ändern**:
    ```json
    "Loose sensor cable screws [CM]": "Completed" → "InProgress"
    ```
 3. **Speichern**
-4. **Snapshot**: `python save_rc_status_snapshot.py`
-5. **Report**: `python run_pipeline.py`
+4. **Report**: `python run_pipeline.py`
 
 ## 📈 Tracking-Features
 
-✅ **Automatische Wochenerkennung** - ISO-Week Format  
 ✅ **Historische Snapshots** - Alle Wochen-Einträge gespeichert  
 ✅ **Status-Vergleich** - Änderungen zwischen Wochen sichtbar  
 ✅ **Trend-Analyse** - Sichtbar in `view_rc_status_history.py`  
