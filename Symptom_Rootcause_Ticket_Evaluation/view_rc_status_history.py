@@ -13,9 +13,27 @@ BASE_DIR = Path(__file__).parent
 
 
 def normalize_status(status):
-    if status == "Completed":
+    if status is None:
+        return ""
+    normalized = str(status).strip()
+    if not normalized:
+        return ""
+    if normalized in {"Open", "InAnalysis", "InProgress", "InTesting", "Solved"}:
+        return normalized
+    if normalized == "Completed":
         return "Solved"
-    return status or ""
+    upper = normalized.upper()
+    if upper in {"ONHOLD", "IN QUARANTINE", "QUARANTINE"}:
+        return "Open"
+    if upper == "IN QA":
+        return "InTesting"
+    if upper in {"IN PROGRESS", "INPROGRESS", "IN_PROGRESS"}:
+        return "InProgress"
+    if upper in {"ACCEPTED", "IN ANALYSIS", "IN ANALYISIS"}:
+        return "InAnalysis"
+    if upper in {"SOLVED", "DONE", "RESOLVED", "CLOSED"}:
+        return "Solved"
+    return "Open"
 
 def main():
     history_path = BASE_DIR / "output" / "rc_status_history.json"

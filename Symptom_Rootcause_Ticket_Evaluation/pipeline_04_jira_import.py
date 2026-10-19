@@ -16,6 +16,7 @@ from pathlib import Path
 
 BASE_DIR  = Path(__file__).parent
 OUTPUT    = BASE_DIR / "output" / "jira_issues.json"
+JIRA_SYM_OUTPUT = BASE_DIR / "output" / "symptom_analysis_jira.json"
 
 JIRA_BASE = "https://jira.dentsplysirona.com"
 JQL       = "project=Y3839 AND statusCategory!=Done ORDER BY priority ASC"
@@ -101,7 +102,7 @@ def get_credentials():
     return token
 
 
-def fetch_issues(token: str) -> list:
+def fetch_issues(token: str, jql: str = JQL) -> list:
     headers = {
         "Authorization": f"Bearer {token}",
         "Content-Type":  "application/json",
@@ -111,7 +112,7 @@ def fetch_issues(token: str) -> list:
     while True:
         url = (
             f"{JIRA_BASE}/rest/api/2/search"
-            f"?jql={urllib.parse.quote(JQL)}"
+            f"?jql={urllib.parse.quote(jql)}"
             f"&fields={FIELDS}"
             f"&maxResults={MAX}"
             f"&startAt={start}"
@@ -130,6 +131,111 @@ def fetch_issues(token: str) -> list:
         if start >= data["total"] or not batch:
             break
     return issues
+
+
+def _load_existing_jira_issues() -> list:
+    if not OUTPUT.exists():
+        return []
+    with open(OUTPUT, encoding="utf-8") as f:
+        data = json.load(f)
+    return data if isinstance(data, list) else []
+
+
+def _load_known_ticket_keys() -> list[str]:
+    keys: list[str] = []
+    seen = set()
+
+    for issue in _load_existing_jira_issues():
+        key = str(issue.get("key", "")).strip()
+        if key and key not in seen:
+            seen.add(key)
+            keys.append(key)
+
+    if JIRA_SYM_OUTPUT.exists():
+        with open(JIRA_SYM_OUTPUT, encoding="utf-8") as f:
+            jira_sym_data = json.load(f)
+        for symptom in jira_sym_data.get("symptoms", []) if isinstance(jira_sym_data, dict) else []:
+            for rc in symptom.get("root_causes_jira", []) if isinstance(symptom, dict) else []:
+                for ticket in rc.get("jira_tickets", []) if isinstance(rc, dict) else []:
+                    key = str(ticket.get("key", "")).strip() if isinstance(ticket, dict) else ""
+                    if key and key not in seen:
+                        seen.add(key)
+                        keys.append(key)
+
+    return keys
+
+
+def _fetch_known_issues(token: str, keys: list[str], batch_size: int = 50) -> list:
+    issues = []
+    for start in range(0, len(keys), batch_size):
+        batch_keys = keys[start:start + batch_size]
+        quoted_keys = ",".join(batch_keys)
+        batch_jql = f"key in ({quoted_keys}) ORDER BY key ASC"
+        issues.extend(fetch_issues(token, jql=batch_jql))
+    return issues
+
+
+def _merge_issue_updates(existing_issues: list, refreshed_issues: list) -> tuple[list, int]:
+    refreshed_by_key = {
+        str(issue.get("key", "")).strip(): issue
+        for issue in refreshed_issues
+        if isinstance(issue, dict) and str(issue.get("key", "")).strip()
+    }
+    merged = []
+    updated = 0
+    for issue in existing_issues:
+        key = str(issue.get("key", "")).strip() if isinstance(issue, dict) else ""
+        if key and key in refreshed_by_key:
+            merged.append(refreshed_by_key[key])
+            updated += 1
+        else:
+            merged.append(issue)
+    return merged, updated
+
+
+def _update_symptom_analysis_ticket_statuses(refreshed_issues: list) -> tuple[int, int]:
+    if not JIRA_SYM_OUTPUT.exists():
+        return 0, 0
+
+    with open(JIRA_SYM_OUTPUT, encoding="utf-8") as f:
+        jira_sym_data = json.load(f)
+
+    refreshed_by_key = {
+        str(issue.get("key", "")).strip(): issue
+        for issue in refreshed_issues
+        if isinstance(issue, dict) and str(issue.get("key", "")).strip()
+    }
+
+    touched = 0
+    updated = 0
+    for symptom in jira_sym_data.get("symptoms", []) if isinstance(jira_sym_data, dict) else []:
+        if not isinstance(symptom, dict):
+            continue
+        for rc in symptom.get("root_causes_jira", []) or []:
+            if not isinstance(rc, dict):
+                continue
+            tickets = rc.get("jira_tickets", [])
+            if not isinstance(tickets, list):
+                continue
+            for ticket in tickets:
+                if not isinstance(ticket, dict):
+                    continue
+                key = str(ticket.get("key", "")).strip()
+                if not key or key not in refreshed_by_key:
+                    continue
+                touched += 1
+                source = refreshed_by_key[key]
+                for field in ("summary", "status", "priority", "assignee", "labels", "components", "sprint", "release_sprint", "url"):
+                    old_value = ticket.get(field)
+                    new_value = source.get(field)
+                    if old_value != new_value:
+                        ticket[field] = new_value
+                        updated += 1
+
+    with open(JIRA_SYM_OUTPUT, "w", encoding="utf-8") as f:
+        json.dump(jira_sym_data, f, ensure_ascii=False, indent=2)
+
+    return touched, updated
 
 
 def simplify(issues: list) -> list:
@@ -154,10 +260,28 @@ def simplify(issues: list) -> list:
     return result
 
 
-def run():
+def run(status_only: bool = False):
     print("=== Pipeline 04: Jira Import ===")
     token = get_credentials()
     print(f"Fetching from: {JIRA_BASE}")
+    if status_only:
+        known_keys = _load_known_ticket_keys()
+        print(f"Mode: status-only refresh for known tickets ({len(known_keys)} keys)\n")
+        if not known_keys:
+            print("No known Jira keys found in existing outputs. Nothing to update.")
+            return
+        refreshed = simplify(_fetch_known_issues(token, known_keys))
+        existing_issues = _load_existing_jira_issues()
+        simplified, updated_issue_count = _merge_issue_updates(existing_issues, refreshed)
+        touched_tickets, updated_ticket_fields = _update_symptom_analysis_ticket_statuses(refreshed)
+        OUTPUT.parent.mkdir(parents=True, exist_ok=True)
+        with open(OUTPUT, "w", encoding="utf-8") as f:
+            json.dump(simplified, f, ensure_ascii=False, indent=2)
+        print(f"✓ Updated {updated_issue_count} existing issues in: {OUTPUT}")
+        print(f"✓ Refreshed {touched_tickets} embedded Jira tickets in: {JIRA_SYM_OUTPUT}")
+        print(f"  Changed embedded ticket fields: {updated_ticket_fields}")
+        return
+
     print(f"JQL: {JQL}\n")
     issues = fetch_issues(token)
     simplified = simplify(issues)
@@ -172,5 +296,9 @@ def run():
 
 
 if __name__ == "__main__":
-    run()
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--status-only", action="store_true", help="Update only existing Jira ticket statuses and metadata without syncing new tickets")
+    args = parser.parse_args()
+    run(status_only=args.status_only)
 

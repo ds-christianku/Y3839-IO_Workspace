@@ -787,20 +787,36 @@
               "sprint": [
                 "Y3839_QualityInitiative_R1"
               ],
-              "release_sprint": true
+              "release_sprint": true,
+              "assignee": "Roecher, Erik (External)",
+              "labels": [
+                "Team_DX5",
+                "investigate",
+                "rated"
+              ],
+              "components": [
+                "Team_DX5"
+              ]
             },
             {
               "key": "Y3839-742",
               "summary": "Race Conditions during GPIF transactions",
-              "status": "Open",
-              "priority": "Medium",
+              "status": "IN PROGRESS",
+              "priority": "Urgent",
               "score": 99,
               "source": "training_override",
               "url": "https://jira.dentsplysirona.com/browse/Y3839-742",
               "sprint": [
                 "Y3839_QualityInitiative_R1"
               ],
-              "release_sprint": true
+              "release_sprint": true,
+              "assignee": "Petek, Michael Alan",
+              "labels": [
+                "FPGA-FW"
+              ],
+              "components": [
+                "USB3-Remote-FW"
+              ]
             }
           ]
         },
@@ -2728,14 +2744,29 @@
               "key": "Y3839-383",
               "summary": "Connected device is not recognized by IOSS",
               "status": "Accepted",
-              "priority": "Medium",
+              "priority": "High",
               "score": 75,
               "source": "llm",
               "url": "https://jira.dentsplysirona.com/browse/Y3839-383",
               "sprint": [
                 "Y3839_QualityInitiative_R1"
               ],
-              "release_sprint": true
+              "release_sprint": true,
+              "assignee": "Unassigned",
+              "labels": [
+                "C_RaceConditions",
+                "Clustered",
+                "FW-IOSS",
+                "REVIEWED_DX5",
+                "Software",
+                "Team_DX5",
+                "connectivity",
+                "investigate",
+                "rated"
+              ],
+              "components": [
+                "IOSS"
+              ]
             }
           ]
         },
@@ -2756,7 +2787,7 @@
           "jira_tickets": [
             {
               "key": "Y3839-598",
-              "summary": "USB3 Interface Stuck in Red LED State which requires PC Restart to Restore Connection",
+              "summary": "USB3 Interface Stuck in Orange LED State which requires PC Restart to Restore Connection",
               "status": "Open",
               "priority": "Medium",
               "score": 75,
@@ -2765,7 +2796,16 @@
               "sprint": [
                 "Y3839_WontDo_QI1"
               ],
-              "release_sprint": false
+              "release_sprint": false,
+              "assignee": "Torpus, Sebastian",
+              "labels": [
+                "Team_DX5",
+                "Team_ESDX",
+                "rated"
+              ],
+              "components": [
+                "CDR"
+              ]
             }
           ]
         },
@@ -2775,15 +2815,25 @@
             {
               "key": "Y3839-718",
               "summary": "Corrupted Calibration file ",
-              "status": "Accepted",
-              "priority": "Medium",
+              "status": "IN PROGRESS",
+              "priority": "Urgent",
               "score": 75,
               "source": "llm",
               "url": "https://jira.dentsplysirona.com/browse/Y3839-718",
               "sprint": [
                 "Y3839_QualityInitiative_R1"
               ],
-              "release_sprint": true
+              "release_sprint": true,
+              "assignee": "Ding, Xiang",
+              "labels": [
+                "C_SensorLink",
+                "Clustered",
+                "Sensor-FPGA",
+                "rated"
+              ],
+              "components": [
+                "USB3-Remote-FPGA"
+              ]
             }
           ]
         },
@@ -2792,90 +2842,172 @@
           "jira_tickets": [
             {
               "key": "Y3839-231",
-              "summary": "Schick AE sensor connection LED sporadically not powered when the USB 3.0 connection to host PC is i",
-              "status": "Accepted",
+              "summary": "Schick AE sensor connection LED sporadically not powered when the USB 3.0 connection to host PC is interrupted",
+              "status": "Closed",
               "priority": "Medium",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-231"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-231",
+              "assignee": "Unassigned",
+              "labels": [
+                "rated"
+              ],
+              "components": [
+                "USB3-Remote-FW",
+                "USB3-Remote-HW"
+              ],
+              "sprint": [],
+              "release_sprint": false
             },
             {
               "key": "Y3839-575",
               "summary": "Sensor sporadically not detected after repeated USB3 Interface reconnect",
-              "status": "Open",
-              "priority": "Medium",
+              "status": "IN PROGRESS",
+              "priority": "Urgent",
               "score": 75,
               "source": "llm",
               "url": "https://jira.dentsplysirona.com/browse/Y3839-575",
               "sprint": [
                 "Y3839_QualityInitiative_R1"
               ],
-              "release_sprint": true
+              "release_sprint": true,
+              "assignee": "Kurz, Christian",
+              "labels": [
+                "C_SensorDetection",
+                "Clustered",
+                "FPGA-FW",
+                "Sensor-FPGA",
+                "rated"
+              ],
+              "components": [
+                "USB3-Remote-FPGA"
+              ]
             },
             {
               "key": "Y3839-599",
               "summary": "Sidexis[IOSS]/Dentrix[CDR]: USB3 Interface Sporadically Fails to Detect Sensor After Reconnection",
-              "status": "Open",
-              "priority": "Medium",
+              "status": "IN PROGRESS",
+              "priority": "Urgent",
               "score": 75,
               "source": "llm",
               "url": "https://jira.dentsplysirona.com/browse/Y3839-599",
               "sprint": [
                 "Y3839_QualityInitiative_R1"
               ],
-              "release_sprint": true
+              "release_sprint": true,
+              "assignee": "Ding, Xiang",
+              "labels": [
+                "C_SensorDetection",
+                "Clustered",
+                "FPGA-FW",
+                "Sensor-FPGA",
+                "Team_ELDX",
+                "rated"
+              ],
+              "components": [
+                "IOSS",
+                "Team_ELDX"
+              ]
             },
             {
               "key": "Y3839-657",
-              "summary": "Dentrix [CDR]: AE Sensor Not Recognized After Multiple Reconnects cycles and Orange LED Remains Acti",
-              "status": "Open",
-              "priority": "Medium",
+              "summary": "Gen2/3 Sensor Not Recognized After Multiple Reconnects cycles and Orange LED Remains Active",
+              "status": "IN PROGRESS",
+              "priority": "Urgent",
               "score": 75,
               "source": "llm",
               "url": "https://jira.dentsplysirona.com/browse/Y3839-657",
               "sprint": [
                 "Y3839_QualityInitiative_R1"
               ],
-              "release_sprint": true
+              "release_sprint": true,
+              "assignee": "Kurz, Christian",
+              "labels": [
+                "C_SensorDetection",
+                "Clustered",
+                "FPGA-FW",
+                "Sensor-FPGA",
+                "rated"
+              ],
+              "components": [
+                "USB3-Remote-FPGA",
+                "USB3-Remote-FW",
+                "USB3-Remote-HW"
+              ]
             },
             {
               "key": "Y3839-691",
-              "summary": "Sensor detection not stable",
-              "status": "Open",
-              "priority": "Medium",
+              "summary": "Gen1 Sensor detection not stable",
+              "status": "IN PROGRESS",
+              "priority": "Urgent",
               "score": 75,
               "source": "llm",
               "url": "https://jira.dentsplysirona.com/browse/Y3839-691",
               "sprint": [
                 "Y3839_QualityInitiative_R1"
               ],
-              "release_sprint": true
+              "release_sprint": true,
+              "assignee": "Ding, Xiang",
+              "labels": [
+                "C_SensorDetection",
+                "Clustered",
+                "FPGA-FW",
+                "Sensor-FPGA",
+                "Team_ESDX",
+                "rated"
+              ],
+              "components": [
+                "Team_ESDX",
+                "USB3-Remote-FPGA",
+                "USB3-Remote-FW"
+              ]
             },
             {
               "key": "Y3839-743",
               "summary": "Interface Resets On Sensor Plug And Unplug",
               "status": "Open",
-              "priority": "Medium",
+              "priority": "Low",
               "score": 75,
               "source": "llm",
               "url": "https://jira.dentsplysirona.com/browse/Y3839-743",
               "sprint": [
                 "Y3839_WontDo_QI1"
               ],
-              "release_sprint": false
+              "release_sprint": false,
+              "assignee": "Petek, Michael Alan",
+              "labels": [
+                "Team_ESDX"
+              ],
+              "components": [
+                "Team_ESDX",
+                "USB3-Remote-FW"
+              ]
             },
             {
               "key": "Y3839-744",
-              "summary": "Dentrix/CDR: USB3 sporadically fails to detect sensor after repeated plug/unplug – Sensor LED stays ",
-              "status": "Open",
-              "priority": "Medium",
+              "summary": "Dentrix/CDR: USB3 sporadically fails to detect sensor after repeated plug/unplug – Sensor LED stays off, device unresponsive to reconnection",
+              "status": "IN PROGRESS",
+              "priority": "Urgent",
               "score": 75,
               "source": "llm",
               "url": "https://jira.dentsplysirona.com/browse/Y3839-744",
               "sprint": [
                 "Y3839_QualityInitiative_R1"
               ],
-              "release_sprint": true
+              "release_sprint": true,
+              "assignee": "Petek, Michael Alan",
+              "labels": [
+                "C_SensorDetection",
+                "Clustered",
+                "FPGA-FW",
+                "Sensor-FPGA",
+                "Team_ESDX"
+              ],
+              "components": [
+                "CDR",
+                "Sensor",
+                "USB3-Remote-FW"
+              ]
             }
           ]
         },
@@ -2886,18 +3018,28 @@
               "key": "Y3839-305",
               "summary": "Acquisition view shows wrong loading indicator during exposure with sensor disconnect",
               "status": "Accepted",
-              "priority": "Lowest",
+              "priority": "Low",
               "score": 75,
               "source": "llm",
               "url": "https://jira.dentsplysirona.com/browse/Y3839-305",
               "sprint": [
                 "Y3839_WontDo_QI1"
               ],
-              "release_sprint": false
+              "release_sprint": false,
+              "assignee": "Unassigned",
+              "labels": [
+                "REVIEWED_DX5",
+                "Software",
+                "Team_DX5",
+                "rated"
+              ],
+              "components": [
+                "IOSS"
+              ]
             },
             {
               "key": "Y3839-373",
-              "summary": "Disconnecting sensor from USB2-Remote does not reliably indicate the missing sensor in the status ba",
+              "summary": "Disconnecting sensor from USB2-Remote does not reliably indicate the missing sensor in the status bar",
               "status": "Accepted",
               "priority": "Medium",
               "score": 75,
@@ -2906,20 +3048,41 @@
               "sprint": [
                 "Y3839_WontDo_QI1"
               ],
-              "release_sprint": false
+              "release_sprint": false,
+              "assignee": "Unassigned",
+              "labels": [
+                "Team_DX5",
+                "rated"
+              ],
+              "components": [
+                "IOSS",
+                "Team_DX5",
+                "USB2-Remote"
+              ]
             },
             {
               "key": "Y3839-471",
               "summary": "Remote signals sensor connection even tokens are not received any more",
               "status": "Accepted",
-              "priority": "High",
+              "priority": "Urgent",
               "score": 75,
               "source": "llm",
               "url": "https://jira.dentsplysirona.com/browse/Y3839-471",
               "sprint": [
                 "Y3839_QualityInitiative_R1"
               ],
-              "release_sprint": true
+              "release_sprint": true,
+              "assignee": "Petek, Michael Alan",
+              "labels": [
+                "C_SensorLink",
+                "Clustered",
+                "FPGA-FW",
+                "Sensor-FPGA",
+                "rated"
+              ],
+              "components": [
+                "USB3-Remote-FW"
+              ]
             },
             {
               "key": "Y3839-479",
@@ -2932,124 +3095,237 @@
               "sprint": [
                 "Y3839_WontDo_QI1"
               ],
-              "release_sprint": false
+              "release_sprint": false,
+              "assignee": "Unassigned",
+              "labels": [
+                "connectivity",
+                "csc",
+                "rated"
+              ],
+              "components": [
+                "IOSS",
+                "Team_DX5"
+              ]
             },
             {
               "key": "Y3839-521",
               "summary": "USB Device not detected reliably after PBT_APMRESUMEAUTOMATIC",
               "status": "Accepted",
-              "priority": "High",
+              "priority": "Urgent",
               "score": 75,
               "source": "llm",
               "url": "https://jira.dentsplysirona.com/browse/Y3839-521",
               "sprint": [
                 "Y3839_QualityInitiative_R1"
               ],
-              "release_sprint": true
+              "release_sprint": true,
+              "assignee": "Unassigned",
+              "labels": [
+                "Backoffice",
+                "C_FastBoot",
+                "Clustered",
+                "FW-IOSS",
+                "REVIEWED_DX5",
+                "Siroforce",
+                "Software",
+                "Team_DX5",
+                "connectivity",
+                "investigate",
+                "rated"
+              ],
+              "components": [
+                "IOSS"
+              ]
             },
             {
               "key": "Y3839-522",
               "summary": "IOSS Crashes when disconnecting supreme sensor from USB 2 interface",
               "status": "Accepted",
-              "priority": "Medium",
+              "priority": "High",
               "score": 75,
               "source": "llm",
               "url": "https://jira.dentsplysirona.com/browse/Y3839-522",
               "sprint": [
                 "Y3839_WontDo_QI1"
               ],
-              "release_sprint": false
+              "release_sprint": false,
+              "assignee": "Unassigned",
+              "labels": [
+                "Backoffice",
+                "REVIEWED_DX5",
+                "Siroforce",
+                "Software",
+                "Team_DX5",
+                "rated"
+              ],
+              "components": [
+                "IOSS"
+              ]
             },
             {
               "key": "Y3839-537",
               "summary": "InUse lock not released when SSE connection between Sidexis and IO-Sensor-Service is lost",
               "status": "Accepted",
-              "priority": "High",
+              "priority": "Urgent",
               "score": 75,
               "source": "llm",
               "url": "https://jira.dentsplysirona.com/browse/Y3839-537",
               "sprint": [
                 "Y3839_QualityInitiative_R1"
               ],
-              "release_sprint": true
+              "release_sprint": true,
+              "assignee": "Unassigned",
+              "labels": [
+                "Software",
+                "Team_DX5",
+                "investigate",
+                "rated"
+              ],
+              "components": [
+                "IOSS"
+              ]
             },
             {
               "key": "Y3839-538",
               "summary": "USB race condition on cold boot causes sensor NoHardware state",
               "status": "Accepted",
-              "priority": "High",
+              "priority": "Urgent",
               "score": 75,
               "source": "llm",
               "url": "https://jira.dentsplysirona.com/browse/Y3839-538",
               "sprint": [
                 "Y3839_QualityInitiative_R1"
               ],
-              "release_sprint": true
+              "release_sprint": true,
+              "assignee": "Unassigned",
+              "labels": [
+                "C_RaceConditions",
+                "Clustered",
+                "Software",
+                "Team_DX5",
+                "investigate",
+                "rated"
+              ],
+              "components": [
+                "IOSS"
+              ]
             },
             {
               "key": "Y3839-568",
-              "summary": "Sidexis/IOSS: Viewport remains red after sensor reconnect, sensor shown twice in configuration app a",
+              "summary": "Sidexis/IOSS: Viewport remains red after sensor reconnect, sensor shown twice in configuration app and Sidexis",
               "status": "Accepted",
-              "priority": "Medium",
+              "priority": "Urgent",
               "score": 99,
               "source": "training_override",
               "url": "https://jira.dentsplysirona.com/browse/Y3839-568",
               "sprint": [
                 "Y3839_QualityInitiative_R1"
               ],
-              "release_sprint": true
+              "release_sprint": true,
+              "assignee": "Unassigned",
+              "labels": [
+                "C_RaceConditions",
+                "Clustered",
+                "FW-IOSS",
+                "Team_DX5",
+                "investigate",
+                "rated"
+              ],
+              "components": [
+                "IOSS"
+              ]
             },
             {
               "key": "Y3839-594",
               "summary": "The Sensor LED stays orange sporadically after unplugging the sensor",
               "status": "Open",
-              "priority": "Medium",
+              "priority": "High",
               "score": 75,
               "source": "llm",
               "url": "https://jira.dentsplysirona.com/browse/Y3839-594",
               "sprint": [
                 "Y3839_QualityInitiative_R1"
               ],
-              "release_sprint": true
+              "release_sprint": true,
+              "assignee": "Ding, Xiang",
+              "labels": [
+                "C_SensorDetection",
+                "Clustered",
+                "investigate",
+                "rated"
+              ],
+              "components": [
+                "USB3-Remote-FPGA"
+              ]
             },
             {
               "key": "Y3839-607",
               "summary": "USB3 Interface: Sensor LED turns orange during consecutive acquisitions in TA",
               "status": "Open",
-              "priority": "Medium",
+              "priority": "High",
               "score": 75,
               "source": "llm",
               "url": "https://jira.dentsplysirona.com/browse/Y3839-607",
               "sprint": [
                 "Y3839_QualityInitiative_R1"
               ],
-              "release_sprint": true
+              "release_sprint": true,
+              "assignee": "Petek, Michael Alan",
+              "labels": [
+                "Team_ESDX",
+                "investigate",
+                "rated"
+              ],
+              "components": [
+                "Team_ESDX",
+                "USB3-Remote-FPGA",
+                "USB3-Remote-FW"
+              ]
             },
             {
               "key": "Y3839-690",
               "summary": "Error flag destroys USB3 channel to host computer",
               "status": "Open",
-              "priority": "Medium",
+              "priority": "Low",
               "score": 75,
               "source": "llm",
               "url": "https://jira.dentsplysirona.com/browse/Y3839-690",
               "sprint": [
                 "Y3839_WontDo_QI1"
               ],
-              "release_sprint": false
+              "release_sprint": false,
+              "assignee": "Petek, Michael Alan",
+              "labels": [
+                "Team_ESDX",
+                "rated"
+              ],
+              "components": [
+                "Team_ESDX",
+                "USB3-Remote-FW"
+              ]
             },
             {
               "key": "Y3839-732",
-              "summary": "Sensor stays unregistered in Sidexis after 401 on device re-registration (expired refresh token, no ",
+              "summary": "Sensor stays unregistered in Sidexis after 401 on device re-registration (expired refresh token, no retry)",
               "status": "Open",
-              "priority": "Medium",
+              "priority": "High",
               "score": 75,
               "source": "llm",
               "url": "https://jira.dentsplysirona.com/browse/Y3839-732",
               "sprint": [
                 "Y3839_QualityInitiative_R1"
               ],
-              "release_sprint": true
+              "release_sprint": true,
+              "assignee": "Wenz, Steffen",
+              "labels": [
+                "Siroforce",
+                "Team_DX5",
+                "investigate"
+              ],
+              "components": [
+                "IOSS",
+                "Team_DX5"
+              ]
             }
           ]
         },
@@ -3068,14 +3344,19 @@
               "key": "Y3839-745",
               "summary": "FPGA dies after interface lies around with plugged sensor",
               "status": "Open",
-              "priority": "Medium",
+              "priority": "Low",
               "score": 99,
               "source": "training_override",
               "url": "https://jira.dentsplysirona.com/browse/Y3839-745",
               "sprint": [
                 "Y3839_WontDo_QI1"
               ],
-              "release_sprint": false
+              "release_sprint": false,
+              "assignee": "Ding, Xiang",
+              "labels": [],
+              "components": [
+                "USB3-Remote-FPGA"
+              ]
             }
           ]
         },
@@ -3085,15 +3366,26 @@
             {
               "key": "Y3839-739",
               "summary": "Interface goes into reboot loop when Gen 2 sensor is plugged",
-              "status": "Open",
-              "priority": "Medium",
+              "status": "In QA",
+              "priority": "High",
               "score": 99,
               "source": "training_override",
               "url": "https://jira.dentsplysirona.com/browse/Y3839-739",
               "sprint": [
                 "Y3839_QualityInitiative_R1"
               ],
-              "release_sprint": true
+              "release_sprint": true,
+              "assignee": "Unassigned",
+              "labels": [
+                "C_SensorLink",
+                "Clustered",
+                "Sensor-FPGA",
+                "investigate"
+              ],
+              "components": [
+                "USB3-Remote-FPGA",
+                "USB3-Remote-FW"
+              ]
             }
           ]
         }
@@ -3346,11 +3638,19 @@
             {
               "key": "Y3839-662",
               "summary": "HyperRAM is not erased for Gen3 Sensors",
-              "status": "Open",
-              "priority": "Medium",
+              "status": "Closed",
+              "priority": "Low",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-662"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-662",
+              "assignee": "Unassigned",
+              "labels": [],
+              "components": [
+                "USB3-Remote-FPGA",
+                "USB3-Remote-FW"
+              ],
+              "sprint": [],
+              "release_sprint": false
             }
           ]
         },
@@ -3361,14 +3661,22 @@
               "key": "Y3839-541",
               "summary": "Negative effect of checkerboard pattern on image quality",
               "status": "IN PROGRESS",
-              "priority": "Medium",
+              "priority": "High",
               "score": 75,
               "source": "llm",
               "url": "https://jira.dentsplysirona.com/browse/Y3839-541",
               "sprint": [
                 "Y3839_QualityInitiative_R1"
               ],
-              "release_sprint": true
+              "release_sprint": true,
+              "assignee": "Ding, Xiang",
+              "labels": [
+                "investigate",
+                "rated"
+              ],
+              "components": [
+                "USB3-Remote-FPGA"
+              ]
             }
           ]
         }
@@ -3679,14 +3987,25 @@
               "key": "Y3839-384",
               "summary": "Insufficient buff size resulting in error during exposure and loss of image",
               "status": "Accepted",
-              "priority": "High",
+              "priority": "Medium",
               "score": 75,
               "source": "llm",
               "url": "https://jira.dentsplysirona.com/browse/Y3839-384",
               "sprint": [
                 "Y3839_WontDo_QI1"
               ],
-              "release_sprint": false
+              "release_sprint": false,
+              "assignee": "Unassigned",
+              "labels": [
+                "REVIEWED_DX5",
+                "Software",
+                "Team_DX5",
+                "connectivity",
+                "rated"
+              ],
+              "components": [
+                "IOSS"
+              ]
             }
           ]
         },
@@ -3704,85 +4023,165 @@
               "sprint": [
                 "Y3839_WontDo_QI1"
               ],
-              "release_sprint": false
+              "release_sprint": false,
+              "assignee": "Unassigned",
+              "labels": [
+                "REVIEWED_DX5",
+                "Software",
+                "Team_DX5",
+                "csc",
+                "rated"
+              ],
+              "components": [
+                "IOSS"
+              ]
             },
             {
               "key": "Y3839-282",
               "summary": "8000991426, XIOS AE sporadically no image provided",
               "status": "Open",
-              "priority": "High",
+              "priority": "Urgent",
               "score": 75,
               "source": "llm",
               "url": "https://jira.dentsplysirona.com/browse/Y3839-282",
               "sprint": [
                 "Y3839_QualityInitiative_R1"
               ],
-              "release_sprint": true
+              "release_sprint": true,
+              "assignee": "Kappes, Jannik",
+              "labels": [
+                "C_FastBoot",
+                "Clustered",
+                "FW-IOSS",
+                "REVIEWED_DX5",
+                "Software",
+                "Team_DX5",
+                "connectivity",
+                "investigate",
+                "rated"
+              ],
+              "components": [
+                "IOSS"
+              ]
             },
             {
               "key": "Y3839-520",
               "summary": "Saving image did not succeed",
               "status": "Accepted",
-              "priority": "High",
+              "priority": "Urgent",
               "score": 75,
               "source": "llm",
               "url": "https://jira.dentsplysirona.com/browse/Y3839-520",
               "sprint": [
                 "Y3839_QualityInitiative_R1"
               ],
-              "release_sprint": true
+              "release_sprint": true,
+              "assignee": "Roecher, Erik (External)",
+              "labels": [
+                "C_MemoryLeak",
+                "Clustered",
+                "REVIEWED_DX5",
+                "Software",
+                "Team_DX5",
+                "connectivity",
+                "investigate",
+                "rated"
+              ],
+              "components": [
+                "IOSS"
+              ]
             },
             {
               "key": "Y3839-523",
-              "summary": "In the acquisition window acquired Image would not be displayed if during image acquisition the sele",
+              "summary": "In the acquisition window acquired Image would not be displayed if during image acquisition the selected image odontogram is opened.",
               "status": "Accepted",
-              "priority": "Urgent",
+              "priority": "Low",
               "score": 75,
               "source": "llm",
               "url": "https://jira.dentsplysirona.com/browse/Y3839-523",
               "sprint": [
                 "Y3839_WontDo_QI1"
               ],
-              "release_sprint": false
+              "release_sprint": false,
+              "assignee": "Unassigned",
+              "labels": [
+                "Fix",
+                "Software",
+                "Team_DX5",
+                "rated"
+              ],
+              "components": [
+                "IOSS"
+              ]
             },
             {
               "key": "Y3839-529",
               "summary": "Saving image failed due to resources ; Image Loss",
               "status": "Accepted",
-              "priority": "Medium",
+              "priority": "Urgent",
               "score": 75,
               "source": "llm",
               "url": "https://jira.dentsplysirona.com/browse/Y3839-529",
               "sprint": [
                 "Y3839_QualityInitiative_R1"
               ],
-              "release_sprint": true
+              "release_sprint": true,
+              "assignee": "Unassigned",
+              "labels": [
+                "C_MemoryLeak",
+                "Clustered",
+                "Software",
+                "Team_DX5",
+                "investigate",
+                "rated"
+              ],
+              "components": [
+                "IOSS"
+              ]
             },
             {
               "key": "Y3839-593",
               "summary": "Checkered pattern image in a X-Ray series (Dr. Mathes)",
               "status": "Open",
-              "priority": "Medium",
+              "priority": "Urgent",
               "score": 75,
               "source": "llm",
               "url": "https://jira.dentsplysirona.com/browse/Y3839-593",
               "sprint": [
                 "Y3839_QualityInitiative_R1"
               ],
-              "release_sprint": true
+              "release_sprint": true,
+              "assignee": "Ding, Xiang",
+              "labels": [
+                "C_SensorLink",
+                "Clustered",
+                "Sensor-FPGA",
+                "Siroforce",
+                "rated"
+              ],
+              "components": [
+                "Sensor",
+                "USB3-Remote-FPGA",
+                "USB3-Remote-FW"
+              ]
             },
             {
               "key": "Y3839-738",
               "summary": "Unplugging Sensor in State Image Ready Leads To Image Loss",
               "status": "Open",
-              "priority": "Medium",
+              "priority": "Low",
               "score": 99,
               "source": "training_override",
               "url": "https://jira.dentsplysirona.com/browse/Y3839-738",
               "sprint": [
                 "Y3839_WontDo_QI1"
               ],
-              "release_sprint": false
+              "release_sprint": false,
+              "assignee": "Petek, Michael Alan",
+              "labels": [],
+              "components": [
+                "USB3-Remote-FW"
+              ]
             }
           ]
         },
@@ -3793,14 +4192,27 @@
               "key": "Y3839-547",
               "summary": "Spring Oaks -> Lost Images",
               "status": "Open",
-              "priority": "High",
+              "priority": "Urgent",
               "score": 75,
               "source": "llm",
               "url": "https://jira.dentsplysirona.com/browse/Y3839-547",
               "sprint": [
                 "Y3839_QualityInitiative_R1"
               ],
-              "release_sprint": true
+              "release_sprint": true,
+              "assignee": "Wenz, Steffen",
+              "labels": [
+                "C_Sync",
+                "Clustered",
+                "FW-IOSS",
+                "Software",
+                "Team_DX5",
+                "investigate",
+                "rated"
+              ],
+              "components": [
+                "IOSS"
+              ]
             }
           ]
         },
@@ -3809,16 +4221,29 @@
           "jira_tickets": [
             {
               "key": "Y3839-555",
-              "summary": "X-ray applied but no image acquired/transmitted (Spring Oaks)",
+              "summary": "Invalid Transition from Not Ready to In Acquisition (Spring Oaks)",
               "status": "IN PROGRESS",
-              "priority": "High",
+              "priority": "Urgent",
               "score": 75,
               "source": "llm",
               "url": "https://jira.dentsplysirona.com/browse/Y3839-555",
               "sprint": [
                 "Y3839_QualityInitiative_R1"
               ],
-              "release_sprint": true
+              "release_sprint": true,
+              "assignee": "Unassigned",
+              "labels": [
+                "C_Sync",
+                "Clustered",
+                "FW-IOSS",
+                "Team_DX5",
+                "investigate",
+                "rated"
+              ],
+              "components": [
+                "Team_DX5",
+                "USB3-Remote-FW"
+              ]
             }
           ]
         },
@@ -3829,14 +4254,28 @@
               "key": "Y3839-570",
               "summary": "Eaglesoft/IOSS: No image received after exposure, USB3 interface stuck in state 6",
               "status": "Accepted",
-              "priority": "High",
+              "priority": "Urgent",
               "score": 75,
               "source": "llm",
               "url": "https://jira.dentsplysirona.com/browse/Y3839-570",
               "sprint": [
                 "Y3839_QualityInitiative_R1"
               ],
-              "release_sprint": true
+              "release_sprint": true,
+              "assignee": "Unassigned",
+              "labels": [
+                "C_Sync",
+                "Clustered",
+                "Dentrix",
+                "Eaglesoft",
+                "FW-IOSS",
+                "Team_DX5",
+                "investigate",
+                "rated"
+              ],
+              "components": [
+                "IOSS"
+              ]
             }
           ]
         },
@@ -3948,13 +4387,20 @@
             {
               "key": "Y3839-549",
               "summary": "defective sensors @practices Rümenapp and Ernst",
-              "status": "IN PROGRESS",
-              "priority": "Medium",
+              "status": "In QA",
+              "priority": "High",
               "score": 75,
               "source": "llm",
               "url": "https://jira.dentsplysirona.com/browse/Y3839-549",
               "sprint": [],
-              "release_sprint": false
+              "release_sprint": false,
+              "assignee": "Unassigned",
+              "labels": [
+                "rated"
+              ],
+              "components": [
+                "Sensor"
+              ]
             }
           ]
         },
@@ -4542,14 +4988,23 @@
               "key": "Y3839-234",
               "summary": "Connection Status LED lights up dimly when USB3 remote plugged in host PC",
               "status": "Accepted",
-              "priority": "Medium",
+              "priority": "Low",
               "score": 75,
               "source": "llm",
               "url": "https://jira.dentsplysirona.com/browse/Y3839-234",
               "sprint": [
                 "Y3839_WontDo_QI1"
               ],
-              "release_sprint": false
+              "release_sprint": false,
+              "assignee": "Ding, Xiang",
+              "labels": [
+                "rated"
+              ],
+              "components": [
+                "USB3-Remote-FPGA",
+                "USB3-Remote-FW",
+                "USB3-Remote-HW"
+              ]
             }
           ]
         },
@@ -4580,14 +5035,21 @@
               "key": "Y3839-663",
               "summary": "Power cycle leads to unstable voltage ",
               "status": "Open",
-              "priority": "Medium",
+              "priority": "Low",
               "score": 99,
               "source": "training_override",
               "url": "https://jira.dentsplysirona.com/browse/Y3839-663",
               "sprint": [
                 "Y3839_WontDo_QI1"
               ],
-              "release_sprint": false
+              "release_sprint": false,
+              "assignee": "Darmer, Frank",
+              "labels": [
+                "rated"
+              ],
+              "components": [
+                "USB3-Remote-FW"
+              ]
             }
           ]
         }
@@ -4727,14 +5189,27 @@
               "key": "Y3839-304",
               "summary": "Sporadically no sensor initialization phase at Exposure view",
               "status": "Accepted",
-              "priority": "High",
+              "priority": "Urgent",
               "score": 75,
               "source": "llm",
               "url": "https://jira.dentsplysirona.com/browse/Y3839-304",
               "sprint": [
                 "Y3839_QualityInitiative_R1"
               ],
-              "release_sprint": true
+              "release_sprint": true,
+              "assignee": "Unassigned",
+              "labels": [
+                "FW-IOSS",
+                "REVIEWED_DX5",
+                "Software",
+                "Team_DX5",
+                "connectivity",
+                "investigate",
+                "rated"
+              ],
+              "components": [
+                "IOSS"
+              ]
             },
             {
               "key": "Y3839-525",
@@ -4747,7 +5222,18 @@
               "sprint": [
                 "Y3839_QualityInitiative_R1"
               ],
-              "release_sprint": true
+              "release_sprint": true,
+              "assignee": "Kurz, Christian",
+              "labels": [
+                "C_Sync",
+                "Clustered",
+                "FW-IOSS",
+                "Team_ESDX",
+                "rated"
+              ],
+              "components": [
+                "USB3-Remote-FW"
+              ]
             }
           ]
         },
@@ -4757,20 +5243,38 @@
             {
               "key": "Y3839-733",
               "summary": "CDR AutoAcquire setting has no impact in Eaglesoft",
-              "status": "Open",
+              "status": "Closed",
               "priority": "Medium",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-733"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-733",
+              "assignee": "Unassigned",
+              "labels": [],
+              "components": [
+                "CDR"
+              ],
+              "sprint": [],
+              "release_sprint": false
             },
             {
               "key": "Y3839-736",
-              "summary": "IOSS - Eaglesoft: Bitewing Series - same exposure is loaded in two frames and stuck at taking the ex",
-              "status": "Accepted",
+              "summary": "IOSS - Eaglesoft: Bitewing Series - same exposure is loaded in two frames and stuck at taking the exposure for the third frame",
+              "status": "Closed",
               "priority": "Medium",
               "score": 75,
               "source": "llm",
-              "url": "https://jira.dentsplysirona.com/browse/Y3839-736"
+              "url": "https://jira.dentsplysirona.com/browse/Y3839-736",
+              "assignee": "Unassigned",
+              "labels": [
+                "Team_DX5"
+              ],
+              "components": [
+                "CDR",
+                "IOSS",
+                "USB3-Remote-FW"
+              ],
+              "sprint": [],
+              "release_sprint": false
             }
           ]
         },
@@ -4781,27 +5285,56 @@
               "key": "Y3839-382",
               "summary": "Sporadic \"Application Error\" when starting exposure series",
               "status": "Accepted",
-              "priority": "Low",
+              "priority": "Medium",
               "score": 75,
               "source": "llm",
               "url": "https://jira.dentsplysirona.com/browse/Y3839-382",
               "sprint": [
                 "Y3839_WontDo_QI1"
               ],
-              "release_sprint": false
+              "release_sprint": false,
+              "assignee": "Unassigned",
+              "labels": [
+                "REVIEWED_DX5",
+                "Software",
+                "Team_DX5",
+                "rated"
+              ],
+              "components": [
+                "IOSS"
+              ]
             },
             {
               "key": "Y3839-524",
-              "summary": "During Bensheim automated testing - randomly Autotake flashes red even though everything is fine and",
+              "summary": "During Bensheim automated testing - randomly Autotake flashes red even though everything is fine and an image is still able to be acquired",
               "status": "Accepted",
-              "priority": "Low",
+              "priority": "High",
               "score": 75,
               "source": "llm",
               "url": "https://jira.dentsplysirona.com/browse/Y3839-524",
               "sprint": [
                 "Y3839_QualityInitiative_R1"
               ],
-              "release_sprint": true
+              "release_sprint": true,
+              "assignee": "Unassigned",
+              "labels": [
+                "Analyze",
+                "C_Sync",
+                "Clustered",
+                "FW-IOSS",
+                "Fix",
+                "REVIEWED_DX5",
+                "Software",
+                "Team_DX5",
+                "automated",
+                "connectivity",
+                "investigate",
+                "rated"
+              ],
+              "components": [
+                "IOSS",
+                "USB3-Remote-FW"
+              ]
             },
             {
               "key": "Y3839-545",
@@ -4814,33 +5347,67 @@
               "sprint": [
                 "Y3839_WontDo_QI1"
               ],
-              "release_sprint": false
+              "release_sprint": false,
+              "assignee": "Unassigned",
+              "labels": [
+                "Team_DX5",
+                "rated"
+              ],
+              "components": [
+                "IOSS"
+              ]
             },
             {
               "key": "Y3839-546",
               "summary": "Exposure appears double in template acquisition",
               "status": "Open",
-              "priority": "Medium",
+              "priority": "Urgent",
               "score": 75,
               "source": "llm",
               "url": "https://jira.dentsplysirona.com/browse/Y3839-546",
               "sprint": [
                 "Y3839_QualityInitiative_R1"
               ],
-              "release_sprint": true
+              "release_sprint": true,
+              "assignee": "Wenz, Steffen",
+              "labels": [
+                "C_Sync",
+                "Clustered",
+                "FW-IOSS",
+                "Software",
+                "Team_DX5",
+                "investigate",
+                "rated"
+              ],
+              "components": [
+                "IOSS"
+              ]
             },
             {
               "key": "Y3839-567",
               "summary": "Eaglesoft/IOSS: USB3 interface not ready for next exposure though Eaglesoft indicates so",
               "status": "Accepted",
-              "priority": "Medium",
+              "priority": "Urgent",
               "score": 75,
               "source": "llm",
               "url": "https://jira.dentsplysirona.com/browse/Y3839-567",
               "sprint": [
                 "Y3839_QualityInitiative_R1"
               ],
-              "release_sprint": true
+              "release_sprint": true,
+              "assignee": "Unassigned",
+              "labels": [
+                "C_Sync",
+                "Clustered",
+                "FW-IOSS",
+                "Team_DX5",
+                "investigate",
+                "rated"
+              ],
+              "components": [
+                "External_Issue",
+                "Team_DX5"
+              ]
             }
           ]
         },
@@ -4855,40 +5422,71 @@
               "key": "Y3839-478",
               "summary": "Acquisition app not initializing properly",
               "status": "Accepted",
-              "priority": "High",
+              "priority": "Urgent",
               "score": 75,
               "source": "llm",
               "url": "https://jira.dentsplysirona.com/browse/Y3839-478",
               "sprint": [
                 "Y3839_QualityInitiative_R1"
               ],
-              "release_sprint": true
+              "release_sprint": true,
+              "assignee": "Unassigned",
+              "labels": [
+                "REVIEWED_DX5",
+                "Software",
+                "Team_DX5",
+                "connectivity",
+                "investigate",
+                "rated"
+              ],
+              "components": [
+                "IOSS"
+              ]
             },
             {
               "key": "Y3839-513",
-              "summary": "Performing an exposure causes an unhandled state when connecting IOSS to a Server different from the",
+              "summary": "Performing an exposure causes an unhandled state when connecting IOSS to a Server different from the one the local Sidexis client is connected to",
               "status": "Accepted",
-              "priority": "Medium",
+              "priority": "Low",
               "score": 75,
               "source": "llm",
               "url": "https://jira.dentsplysirona.com/browse/Y3839-513",
               "sprint": [
                 "Y3839_WontDo_QI1"
               ],
-              "release_sprint": false
+              "release_sprint": false,
+              "assignee": "Unassigned",
+              "labels": [
+                "Software",
+                "Team_DX5",
+                "csc",
+                "rated"
+              ],
+              "components": [
+                "IOSS"
+              ]
             },
             {
               "key": "Y3839-533",
               "summary": "Sensor never becomes exposure ready when calibration file read fails",
               "status": "Accepted",
-              "priority": "Medium",
+              "priority": "High",
               "score": 75,
               "source": "llm",
               "url": "https://jira.dentsplysirona.com/browse/Y3839-533",
               "sprint": [
                 "Y3839_WontDo_QI1"
               ],
-              "release_sprint": false
+              "release_sprint": false,
+              "assignee": "Unassigned",
+              "labels": [
+                "Software",
+                "Team_DX5",
+                "rated"
+              ],
+              "components": [
+                "IOSS"
+              ]
             }
           ]
         },
@@ -4899,40 +5497,74 @@
               "key": "Y3839-631",
               "summary": "Unexpected host LED state in non-Sidexis setup",
               "status": "Open",
-              "priority": "Medium",
+              "priority": "Low",
               "score": 75,
               "source": "llm",
               "url": "https://jira.dentsplysirona.com/browse/Y3839-631",
               "sprint": [
                 "Y3839_WontDo_QI1"
               ],
-              "release_sprint": false
+              "release_sprint": false,
+              "assignee": "Unassigned",
+              "labels": [
+                "Software",
+                "Team_DX5",
+                "rated"
+              ],
+              "components": [
+                "IOSS",
+                "Team_DX5"
+              ]
             },
             {
               "key": "Y3839-639",
               "summary": "It is possible to acquire images with IOSS without enabling event detection",
               "status": "Open",
-              "priority": "Medium",
+              "priority": "Urgent",
               "score": 75,
               "source": "llm",
               "url": "https://jira.dentsplysirona.com/browse/Y3839-639",
               "sprint": [
                 "Y3839_QualityInitiative_R1"
               ],
-              "release_sprint": true
+              "release_sprint": true,
+              "assignee": "Wenz, Steffen",
+              "labels": [
+                "C_Sync",
+                "Clustered",
+                "FW-IOSS",
+                "Software",
+                "Team_DX5",
+                "Team_ESDX",
+                "investigate",
+                "rated"
+              ],
+              "components": [
+                "IOSS",
+                "Team_DX5"
+              ]
             },
             {
               "key": "Y3839-698",
               "summary": "On plug-in of incompatible sensor, Sensor LED lights up green before turning red",
               "status": "Accepted",
-              "priority": "Medium",
+              "priority": "Low",
               "score": 75,
               "source": "llm",
               "url": "https://jira.dentsplysirona.com/browse/Y3839-698",
               "sprint": [
                 "Y3839_WontDo_QI1"
               ],
-              "release_sprint": false
+              "release_sprint": false,
+              "assignee": "Ding, Xiang",
+              "labels": [
+                "Team_ESDX",
+                "rated"
+              ],
+              "components": [
+                "Team_ESDX",
+                "USB3-Remote-FPGA"
+              ]
             },
             {
               "key": "Y3839-731",
@@ -4945,7 +5577,15 @@
               "sprint": [
                 "Y3839_WontDo_QI1"
               ],
-              "release_sprint": false
+              "release_sprint": false,
+              "assignee": "Petek, Michael Alan",
+              "labels": [
+                "rated"
+              ],
+              "components": [
+                "CDR",
+                "USB3-Remote-FPGA"
+              ]
             }
           ]
         },
@@ -4956,14 +5596,22 @@
               "key": "Y3839-706",
               "summary": "Documentation: rotation buttons are usable",
               "status": "Accepted",
-              "priority": "Medium",
+              "priority": "Low",
               "score": 75,
               "source": "llm",
               "url": "https://jira.dentsplysirona.com/browse/Y3839-706",
               "sprint": [
                 "Y3839_WontDo_QI1"
               ],
-              "release_sprint": false
+              "release_sprint": false,
+              "assignee": "Wenz, Steffen",
+              "labels": [
+                "Documentation",
+                "rated"
+              ],
+              "components": [
+                "TechFile"
+              ]
             }
           ]
         },
@@ -4974,14 +5622,24 @@
               "key": "Y3839-741",
               "summary": "Sensor LED is green even if sensor is not responding",
               "status": "Open",
-              "priority": "Medium",
+              "priority": "Urgent",
               "score": 99,
               "source": "training_override",
               "url": "https://jira.dentsplysirona.com/browse/Y3839-741",
               "sprint": [
                 "Y3839_QualityInitiative_R1"
               ],
-              "release_sprint": true
+              "release_sprint": true,
+              "assignee": "Ding, Xiang",
+              "labels": [
+                "C_SensorLink",
+                "Clustered",
+                "Sensor-FPGA"
+              ],
+              "components": [
+                "USB3-Remote-FPGA",
+                "USB3-Remote-FW"
+              ]
             }
           ]
         },
@@ -5252,7 +5910,15 @@
               "sprint": [
                 "Y3839_WontDo_QI1"
               ],
-              "release_sprint": false
+              "release_sprint": false,
+              "assignee": "Damnik, Markus",
+              "labels": [
+                "Team_ELDX",
+                "rated"
+              ],
+              "components": [
+                "Team_ELDX"
+              ]
             }
           ]
         },
@@ -5273,7 +5939,7 @@
           "jira_tickets": [
             {
               "key": "Y3839-722",
-              "summary": "USB3 Interface firmware: Event detection is not disabled on State 6 → State 3 transition — sensor re",
+              "summary": "Image is delivered unexpectedly on acquisition request",
               "status": "Accepted",
               "priority": "Medium",
               "score": 75,
@@ -5283,7 +5949,15 @@
                 "24.09.2026 medium: similar to white images. Not part of QualityInitiative 1",
                 "Y3839_WontDo_QI1"
               ],
-              "release_sprint": false
+              "release_sprint": false,
+              "assignee": "Petek, Michael Alan",
+              "labels": [
+                "rated"
+              ],
+              "components": [
+                "CDR",
+                "USB3-Remote-FW"
+              ]
             }
           ]
         },
@@ -5440,14 +6114,21 @@
               "key": "Y3839-307",
               "summary": "Sensor upgrading fails for XIOS XG",
               "status": "Accepted",
-              "priority": "Medium",
+              "priority": "Low",
               "score": 75,
               "source": "llm",
               "url": "https://jira.dentsplysirona.com/browse/Y3839-307",
               "sprint": [
                 "Y3839_WontDo_QI1"
               ],
-              "release_sprint": false
+              "release_sprint": false,
+              "assignee": "Torpus, Sebastian",
+              "labels": [
+                "rated"
+              ],
+              "components": [
+                "USB3-Remote-FW"
+              ]
             },
             {
               "key": "Y3839-506",
@@ -5460,20 +6141,38 @@
               "sprint": [
                 "Y3839_WontDo_QI1"
               ],
-              "release_sprint": false
+              "release_sprint": false,
+              "assignee": "Unassigned",
+              "labels": [
+                "REVIEWED_DX5",
+                "Software",
+                "Team_DX5",
+                "csc",
+                "rated"
+              ],
+              "components": [
+                "IOSS"
+              ]
             },
             {
               "key": "Y3839-510",
               "summary": "Only one firmware available for XIOS XG Supreme/Schick 33 sensors",
               "status": "Accepted",
-              "priority": "Medium",
+              "priority": "Low",
               "score": 75,
               "source": "llm",
               "url": "https://jira.dentsplysirona.com/browse/Y3839-510",
               "sprint": [
                 "Y3839_WontDo_QI1"
               ],
-              "release_sprint": false
+              "release_sprint": false,
+              "assignee": "Beckhaus, Christian",
+              "labels": [
+                "rated"
+              ],
+              "components": [
+                "Sensor"
+              ]
             }
           ]
         },
@@ -5488,40 +6187,67 @@
               "key": "Y3839-611",
               "summary": " FirmwareUpgradeUtility is sending commands when an USB Stick is connected ",
               "status": "Open",
-              "priority": "Medium",
+              "priority": "Low",
               "score": 75,
               "source": "llm",
               "url": "https://jira.dentsplysirona.com/browse/Y3839-611",
               "sprint": [
                 "Y3839_WontDo_QI1"
               ],
-              "release_sprint": false
+              "release_sprint": false,
+              "assignee": "Wenz, Steffen",
+              "labels": [
+                "Software",
+                "rated"
+              ],
+              "components": [
+                "FirmwareUpgradeUtility",
+                "VelocityUSBTestClient"
+              ]
             },
             {
               "key": "Y3839-661",
               "summary": "SensorConnected property does not update in Upgrade State",
               "status": "Accepted",
-              "priority": "Medium",
+              "priority": "Low",
               "score": 75,
               "source": "llm",
               "url": "https://jira.dentsplysirona.com/browse/Y3839-661",
               "sprint": [
                 "Y3839_WontDo_QI1"
               ],
-              "release_sprint": false
+              "release_sprint": false,
+              "assignee": "Petek, Michael Alan",
+              "labels": [
+                "Team_ESDX",
+                "rated"
+              ],
+              "components": [
+                "Team_ESDX",
+                "USB3-Remote-FW"
+              ]
             },
             {
               "key": "Y3839-664",
               "summary": "FPGA image still loaded after sensor unplugged",
               "status": "Open",
-              "priority": "Medium",
+              "priority": "Low",
               "score": 75,
               "source": "llm",
               "url": "https://jira.dentsplysirona.com/browse/Y3839-664",
               "sprint": [
                 "Y3839_WontDo_QI1"
               ],
-              "release_sprint": false
+              "release_sprint": false,
+              "assignee": "Petek, Michael Alan",
+              "labels": [
+                "Team_ESDX",
+                "rated"
+              ],
+              "components": [
+                "Team_ESDX",
+                "USB3-Remote-FW"
+              ]
             },
             {
               "key": "Y3839-689",
@@ -5534,20 +6260,37 @@
               "sprint": [
                 "Y3839_WontDo_QI1"
               ],
-              "release_sprint": false
+              "release_sprint": false,
+              "assignee": "Unassigned",
+              "labels": [
+                "Team_DX5",
+                "csc",
+                "rated"
+              ],
+              "components": [
+                "FirmwareUpgradeUtility",
+                "Team_DX5"
+              ]
             },
             {
               "key": "Y3839-711",
               "summary": "AE Updater tool blocks update due to false sensor connection detection",
               "status": "Accepted",
-              "priority": "Medium",
+              "priority": "Low",
               "score": 75,
               "source": "llm",
               "url": "https://jira.dentsplysirona.com/browse/Y3839-711",
               "sprint": [
                 "Y3839_WontDo_QI1"
               ],
-              "release_sprint": false
+              "release_sprint": false,
+              "assignee": "Unassigned",
+              "labels": [
+                "rated"
+              ],
+              "components": [
+                "FirmwareUpgradeUtility"
+              ]
             }
           ]
         },
@@ -5557,15 +6300,24 @@
             {
               "key": "Y3839-625",
               "summary": "GETFPGAVersions returns null after successful flash",
-              "status": "IN PROGRESS",
-              "priority": "Medium",
+              "status": "In QA",
+              "priority": "Low",
               "score": 75,
               "source": "llm",
               "url": "https://jira.dentsplysirona.com/browse/Y3839-625",
               "sprint": [
                 "Y3839_WontDo_QI1"
               ],
-              "release_sprint": false
+              "release_sprint": false,
+              "assignee": "Unassigned",
+              "labels": [
+                "Team_ELDX",
+                "rated"
+              ],
+              "components": [
+                "Team_ELDX",
+                "USB3-Remote-FPGA"
+              ]
             }
           ]
         },
@@ -5583,7 +6335,17 @@
               "sprint": [
                 "Y3839_WontDo_QI1"
               ],
-              "release_sprint": false
+              "release_sprint": false,
+              "assignee": "Unassigned",
+              "labels": [
+                "Team_DX5",
+                "csc",
+                "rated"
+              ],
+              "components": [
+                "FirmwareUpgradeUtility",
+                "Team_DX5"
+              ]
             }
           ]
         },
