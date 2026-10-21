@@ -2256,7 +2256,7 @@ def run():
       release_history_by_week[current_release_week_key] = dict(release_status_counts)
 
     timeline_start_week = "2026-W36"
-    timeline_end_week = "2027-W08"
+    timeline_end_week = "2027-W03"
     timeline_start_monday = _week_key_to_monday(timeline_start_week) or datetime.utcnow()
     timeline_end_monday = _week_key_to_monday(timeline_end_week) or timeline_start_monday
 
@@ -2692,7 +2692,8 @@ def run():
           const yBottom = yScale.bottom;
 
           const todayWeekKey = isoWeekKeyForDate(new Date());
-          const todayIndex = labels.indexOf(todayWeekKey);
+          const exactTodayIndex = labels.indexOf(todayWeekKey);
+          const todayIndex = exactTodayIndex >= 0 ? exactTodayIndex : labels.length - 1;
           if (todayIndex >= 0) {{
             const todayX = xScale.getPixelForValue(todayIndex);
             ctx.save();
@@ -2700,24 +2701,26 @@ def run():
             ctx.fillStyle = '#111827';
             ctx.lineWidth = 2;
             ctx.setLineDash([7, 5]);
+            const markerTopY = yTop + 18;
+            const markerBottomY = yBottom - 4;
             ctx.beginPath();
-            ctx.moveTo(todayX, yTop - 16);
-            ctx.lineTo(todayX, yBottom - 10);
+            ctx.moveTo(todayX, markerBottomY);
+            ctx.lineTo(todayX, markerTopY);
             ctx.stroke();
             ctx.setLineDash([]);
 
-            const headSize = 7;
+            const headSize = 8;
             ctx.beginPath();
-            ctx.moveTo(todayX, yTop - 18);
-            ctx.lineTo(todayX - headSize, yTop - 8);
-            ctx.lineTo(todayX + headSize, yTop - 8);
+            ctx.moveTo(todayX, markerTopY);
+            ctx.lineTo(todayX - headSize, markerTopY + headSize);
+            ctx.lineTo(todayX + headSize, markerTopY + headSize);
             ctx.closePath();
             ctx.fill();
 
             ctx.font = '600 10px sans-serif';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'bottom';
-            ctx.fillText('Today', todayX, yTop - 22);
+            ctx.fillText('Today', todayX, markerTopY + 2);
             ctx.restore();
           }}
 
@@ -3248,7 +3251,7 @@ def run():
       <div id="status-dev-title" style="font-size:0.9em;font-weight:600;margin-bottom:12px;color:var(--muted);text-transform:uppercase">Current Root Cause Status</div>
       <div style="background:#f8fafc;border:1px solid #d0dde8;border-radius:8px;padding:16px">
         <div id="status-chart-overall">
-          <canvas id="rc-timeline-chart-overall" height="90"></canvas>
+          <canvas id="rc-timeline-chart-overall" height="120"></canvas>
         </div>
         <div id="status-chart-release" style="display:none">
           <canvas id="rc-timeline-chart-release" height="120"></canvas>

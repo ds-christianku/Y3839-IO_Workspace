@@ -12,19 +12,19 @@
     "color": "#7c3aed"
   },
   {
-    "week": "2026-W53",
+    "week": "2026-W51",
     "label": "SW-Freeze",
     "phase": "Implementation",
     "color": "#2563eb"
   },
   {
-    "week": "2027-W04",
+    "week": "2027-W01",
     "label": "Testing finished",
     "phase": "Testing",
     "color": "#f59e0b"
   },
   {
-    "week": "2027-W08",
+    "week": "2027-W02",
     "label": "SW-Release (Roll-Out)",
     "phase": "Documentation",
     "color": "#10b981"
